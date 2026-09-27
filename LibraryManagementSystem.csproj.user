@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="Dialogs\BookEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\LibrarianEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\MemberEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Dialogs\SimpleEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\MainShellForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Panels\AuthorsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\BooksPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\BorrowPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\CategoriesPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\DashboardPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\LibrariansPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\MembersPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\PublishersPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\ReportsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Panels\ReturnPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

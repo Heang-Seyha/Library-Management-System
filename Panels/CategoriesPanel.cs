@@ -1,0 +1,195 @@
+using LibraryManagementSystem.Dialogs;
+using LibraryManagementSystem.Helpers;
+using LibraryManagementSystem.Models;
+using LibraryManagementSystem.Services;
+
+namespace LibraryManagementSystem.Panels
+{
+    /// <summary>
+    /// Category management panel for book classification and genres (Admin only).
+    /// 100% compatible with the Visual Studio WinForms Designer.
+    /// </summary>
+    public partial class CategoriesPanel : UserControl
+    {
+        private List<Category> _items = new();
+
+        public CategoriesPanel()
+        {
+            InitializeComponent();
+            this.Load += CategoriesPanel_Load;
+        }
+
+        private void CategoriesPanel_Load(object? sender, EventArgs e)
+        {
+            if (DesignMode) return;
+
+            UIHelper.StyleDataGridView(dgv);
+
+            btnAdd.Click += BtnAdd_Click;
+            btnEdit.Click += BtnEdit_Click;
+            btnDelete.Click += BtnDelete_Click;
+            btnRefresh.Click += (s, ev) => LoadData();
+
+            LoadData();
+        }
+
+        public void LoadData()
+        {
+            try
+            {
+                this.Cursor = Cursors.WaitCursor;
+                using var ctx = Program.CreateDbContext();
+                _items = new CategoryService(ctx).GetAll();
+                dgv.Rows.Clear();
+                foreach (var c in _items)
+                {
+                    dgv.Rows.Add(c.CategoryId, c.Name, c.Description);
+                }
+                UIHelper.UpdateGridState(dgv, _items.Count, false, "Category");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Unable to load categories from database.\n\nDetails: {ex.Message}",
+                    "Database Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+            }
+        }
+
+        private int SelectedId() => dgv.SelectedRows.Count == 0 ? -1 : (int)dgv.SelectedRows[0].Cells["colId"].Value;
+
+        private void BtnAdd_Click(object? sender, EventArgs e)
+        {
+            if (!SessionManager.IsAdmin)
+            {
+                MessageBox.Show("Administrator privileges are required to add categories.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using var dlg = new SimpleEditDialog("Add Category", new (string, string, bool, int, bool)[]
+            {
+                ("Category Name", "", false, 100, true),
+                ("Description", "", false, 500, false)
+            });
+
+            if (dlg.ShowDialog() != DialogResult.OK) return;
+
+            try
+            {
+                using var ctx = Program.CreateDbContext();
+                var (ok, msg) = new CategoryService(ctx).Add(new Category
+                {
+                    Name = dlg.Values[0],
+                    Description = dlg.Values[1]
+                });
+
+                MessageBox.Show(msg, ok ? "Success" : "Error", MessageBoxButtons.OK,
+                    ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+
+                if (ok) LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not add category.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnEdit_Click(object? sender, EventArgs e)
+        {
+            if (!SessionManager.IsAdmin)
+            {
+                MessageBox.Show("Administrator privileges are required to edit categories.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int id = SelectedId();
+            if (id == -1)
+            {
+                MessageBox.Show("Please select a category to edit.", "No Selection",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var cat = _items.FirstOrDefault(c => c.CategoryId == id);
+            if (cat == null)
+            {
+                MessageBox.Show("Selected category was not found. The list will refresh.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                LoadData();
+                return;
+            }
+
+            using var dlg = new SimpleEditDialog("Edit Category", new (string, string, bool, int, bool)[]
+            {
+                ("Category Name", cat.Name, false, 100, true),
+                ("Description", cat.Description ?? "", false, 500, false)
+            });
+
+            if (dlg.ShowDialog() != DialogResult.OK) return;
+
+            try
+            {
+                using var ctx = Program.CreateDbContext();
+                var (ok, msg) = new CategoryService(ctx).Update(new Category
+                {
+                    CategoryId = id,
+                    Name = dlg.Values[0],
+                    Description = dlg.Values[1]
+                });
+
+                MessageBox.Show(msg, ok ? "Success" : "Error", MessageBoxButtons.OK,
+                    ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+
+                if (ok) LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not update category.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnDelete_Click(object? sender, EventArgs e)
+        {
+            if (!SessionManager.IsAdmin)
+            {
+                MessageBox.Show("Administrator privileges are required to delete categories.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int id = SelectedId();
+            if (id == -1)
+            {
+                MessageBox.Show("Please select a category to delete.", "No Selection",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var cat = _items.FirstOrDefault(c => c.CategoryId == id);
+            string catName = cat?.Name ?? $"ID {id}";
+
+            if (MessageBox.Show(
+                $"Are you sure you want to delete category '{catName}'?\n\nNote: If books are currently assigned to this category, deletion will be prevented.",
+                "Confirm Deletion",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning) != DialogResult.Yes) return;
+
+            try
+            {
+                using var ctx = Program.CreateDbContext();
+                var (ok, msg) = new CategoryService(ctx).Delete(id);
+                MessageBox.Show(msg, ok ? "Success" : "Delete Failed", MessageBoxButtons.OK,
+                    ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+
+                if (ok) LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not delete category.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
+}
