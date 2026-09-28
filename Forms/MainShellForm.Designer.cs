@@ -55,27 +55,27 @@ namespace LibraryManagementSystem.Forms
         {
             pnlSidebar = new Panel();
             pnlNavButtons = new Panel();
-            pnlBottomSpacer = new Panel();
-            pnlNavDivider1 = new Panel();
-            pnlNavDivider2 = new Panel();
-            pnlNavDivider3 = new Panel();
-            pnlNavDivider4 = new Panel();
             pnlNavDivider5 = new Panel();
             btnNavLibrarians = new Button();
             btnNavReports = new Button();
             lblGroupAdmin = new Label();
+            pnlNavDivider4 = new Panel();
             btnNavPublishers = new Button();
             btnNavAuthors = new Button();
             btnNavCategories = new Button();
             lblGroupMetadata = new Label();
+            pnlNavDivider3 = new Panel();
             btnNavMembers = new Button();
             btnNavBooks = new Button();
             lblGroupManagement = new Label();
+            pnlNavDivider2 = new Panel();
             btnNavReturn = new Button();
             btnNavBorrow = new Button();
             lblGroupOperations = new Label();
+            pnlNavDivider1 = new Panel();
             btnNavDashboard = new Button();
             lblGroupMain = new Label();
+            pnlBottomSpacer = new Panel();
             pnlLogout = new Panel();
             btnLogout = new Button();
             pnlBrand = new Panel();
@@ -104,7 +104,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // pnlNavButtons
             // 
-            pnlNavButtons.BackColor = Color.SteelBlue;
+            pnlNavButtons.BackColor = Color.FromArgb(63, 117, 162);
             pnlNavButtons.Controls.Add(pnlNavDivider5);
             pnlNavButtons.Controls.Add(btnNavLibrarians);
             pnlNavButtons.Controls.Add(btnNavReports);
@@ -129,12 +129,21 @@ namespace LibraryManagementSystem.Forms
             pnlNavButtons.ForeColor = Color.FromArgb(13, 59, 102);
             pnlNavButtons.Location = new Point(0, 90);
             pnlNavButtons.Name = "pnlNavButtons";
-            pnlNavButtons.Size = new Size(220, 592);
+            pnlNavButtons.Size = new Size(220, 566);
             pnlNavButtons.TabIndex = 2;
+            // 
+            // pnlNavDivider5
+            // 
+            pnlNavDivider5.BackColor = Color.FromArgb(13, 59, 102);
+            pnlNavDivider5.Dock = DockStyle.Top;
+            pnlNavDivider5.Location = new Point(0, 518);
+            pnlNavDivider5.Name = "pnlNavDivider5";
+            pnlNavDivider5.Size = new Size(220, 1);
+            pnlNavDivider5.TabIndex = 24;
             // 
             // btnNavLibrarians
             // 
-            btnNavLibrarians.BackColor = Color.SteelBlue;
+            btnNavLibrarians.BackColor = Color.FromArgb(63, 117, 162);
             btnNavLibrarians.Cursor = Cursors.Hand;
             btnNavLibrarians.Dock = DockStyle.Top;
             btnNavLibrarians.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -144,7 +153,7 @@ namespace LibraryManagementSystem.Forms
             btnNavLibrarians.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavLibrarians.ForeColor = Color.White;
             btnNavLibrarians.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavLibrarians.Location = new Point(0, 478);
+            btnNavLibrarians.Location = new Point(0, 482);
             btnNavLibrarians.Margin = new Padding(4, 2, 4, 2);
             btnNavLibrarians.Name = "btnNavLibrarians";
             btnNavLibrarians.Padding = new Padding(16, 0, 0, 0);
@@ -157,7 +166,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // btnNavReports
             // 
-            btnNavReports.BackColor = Color.SteelBlue;
+            btnNavReports.BackColor = Color.FromArgb(63, 117, 162);
             btnNavReports.Cursor = Cursors.Hand;
             btnNavReports.Dock = DockStyle.Top;
             btnNavReports.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -167,7 +176,7 @@ namespace LibraryManagementSystem.Forms
             btnNavReports.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavReports.ForeColor = Color.White;
             btnNavReports.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavReports.Location = new Point(0, 442);
+            btnNavReports.Location = new Point(0, 446);
             btnNavReports.Margin = new Padding(4, 2, 4, 2);
             btnNavReports.Name = "btnNavReports";
             btnNavReports.Padding = new Padding(16, 0, 0, 0);
@@ -180,21 +189,30 @@ namespace LibraryManagementSystem.Forms
             // 
             // lblGroupAdmin
             // 
-            lblGroupAdmin.BackColor = Color.SteelBlue;
+            lblGroupAdmin.BackColor = Color.FromArgb(63, 117, 162);
             lblGroupAdmin.Dock = DockStyle.Top;
             lblGroupAdmin.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             lblGroupAdmin.ForeColor = Color.FromArgb(208, 225, 253);
-            lblGroupAdmin.Location = new Point(0, 410);
+            lblGroupAdmin.Location = new Point(0, 414);
             lblGroupAdmin.Name = "lblGroupAdmin";
             lblGroupAdmin.Padding = new Padding(16, 12, 0, 4);
             lblGroupAdmin.Size = new Size(220, 32);
             lblGroupAdmin.TabIndex = 14;
-            lblGroupAdmin.Text = "ADMIN";
+            lblGroupAdmin.Text = "SYSTEM";
             lblGroupAdmin.TextAlign = ContentAlignment.BottomLeft;
+            // 
+            // pnlNavDivider4
+            // 
+            pnlNavDivider4.BackColor = Color.FromArgb(13, 59, 102);
+            pnlNavDivider4.Dock = DockStyle.Top;
+            pnlNavDivider4.Location = new Point(0, 413);
+            pnlNavDivider4.Name = "pnlNavDivider4";
+            pnlNavDivider4.Size = new Size(220, 1);
+            pnlNavDivider4.TabIndex = 23;
             // 
             // btnNavPublishers
             // 
-            btnNavPublishers.BackColor = Color.SteelBlue;
+            btnNavPublishers.BackColor = Color.FromArgb(63, 117, 162);
             btnNavPublishers.Cursor = Cursors.Hand;
             btnNavPublishers.Dock = DockStyle.Top;
             btnNavPublishers.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -204,7 +222,7 @@ namespace LibraryManagementSystem.Forms
             btnNavPublishers.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavPublishers.ForeColor = Color.White;
             btnNavPublishers.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavPublishers.Location = new Point(0, 374);
+            btnNavPublishers.Location = new Point(0, 377);
             btnNavPublishers.Margin = new Padding(4, 2, 4, 2);
             btnNavPublishers.Name = "btnNavPublishers";
             btnNavPublishers.Padding = new Padding(16, 0, 0, 0);
@@ -217,7 +235,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // btnNavAuthors
             // 
-            btnNavAuthors.BackColor = Color.SteelBlue;
+            btnNavAuthors.BackColor = Color.FromArgb(63, 117, 162);
             btnNavAuthors.Cursor = Cursors.Hand;
             btnNavAuthors.Dock = DockStyle.Top;
             btnNavAuthors.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -227,7 +245,7 @@ namespace LibraryManagementSystem.Forms
             btnNavAuthors.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavAuthors.ForeColor = Color.White;
             btnNavAuthors.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavAuthors.Location = new Point(0, 338);
+            btnNavAuthors.Location = new Point(0, 341);
             btnNavAuthors.Margin = new Padding(4, 2, 4, 2);
             btnNavAuthors.Name = "btnNavAuthors";
             btnNavAuthors.Padding = new Padding(16, 0, 0, 0);
@@ -240,7 +258,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // btnNavCategories
             // 
-            btnNavCategories.BackColor = Color.SteelBlue;
+            btnNavCategories.BackColor = Color.FromArgb(63, 117, 162);
             btnNavCategories.Cursor = Cursors.Hand;
             btnNavCategories.Dock = DockStyle.Top;
             btnNavCategories.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -250,7 +268,7 @@ namespace LibraryManagementSystem.Forms
             btnNavCategories.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavCategories.ForeColor = Color.White;
             btnNavCategories.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavCategories.Location = new Point(0, 302);
+            btnNavCategories.Location = new Point(0, 305);
             btnNavCategories.Margin = new Padding(4, 2, 4, 2);
             btnNavCategories.Name = "btnNavCategories";
             btnNavCategories.Padding = new Padding(16, 0, 0, 0);
@@ -263,11 +281,11 @@ namespace LibraryManagementSystem.Forms
             // 
             // lblGroupMetadata
             // 
-            lblGroupMetadata.BackColor = Color.SteelBlue;
+            lblGroupMetadata.BackColor = Color.FromArgb(63, 117, 162);
             lblGroupMetadata.Dock = DockStyle.Top;
             lblGroupMetadata.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             lblGroupMetadata.ForeColor = Color.FromArgb(208, 225, 253);
-            lblGroupMetadata.Location = new Point(0, 270);
+            lblGroupMetadata.Location = new Point(0, 273);
             lblGroupMetadata.Name = "lblGroupMetadata";
             lblGroupMetadata.Padding = new Padding(16, 12, 0, 4);
             lblGroupMetadata.Size = new Size(220, 32);
@@ -275,9 +293,18 @@ namespace LibraryManagementSystem.Forms
             lblGroupMetadata.Text = "METADATA";
             lblGroupMetadata.TextAlign = ContentAlignment.BottomLeft;
             // 
+            // pnlNavDivider3
+            // 
+            pnlNavDivider3.BackColor = Color.FromArgb(13, 59, 102);
+            pnlNavDivider3.Dock = DockStyle.Top;
+            pnlNavDivider3.Location = new Point(0, 272);
+            pnlNavDivider3.Name = "pnlNavDivider3";
+            pnlNavDivider3.Size = new Size(220, 1);
+            pnlNavDivider3.TabIndex = 22;
+            // 
             // btnNavMembers
             // 
-            btnNavMembers.BackColor = Color.SteelBlue;
+            btnNavMembers.BackColor = Color.FromArgb(63, 117, 162);
             btnNavMembers.Cursor = Cursors.Hand;
             btnNavMembers.Dock = DockStyle.Top;
             btnNavMembers.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -287,7 +314,7 @@ namespace LibraryManagementSystem.Forms
             btnNavMembers.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavMembers.ForeColor = Color.White;
             btnNavMembers.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavMembers.Location = new Point(0, 234);
+            btnNavMembers.Location = new Point(0, 236);
             btnNavMembers.Margin = new Padding(4, 2, 4, 2);
             btnNavMembers.Name = "btnNavMembers";
             btnNavMembers.Padding = new Padding(16, 0, 0, 0);
@@ -300,7 +327,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // btnNavBooks
             // 
-            btnNavBooks.BackColor = Color.SteelBlue;
+            btnNavBooks.BackColor = Color.FromArgb(63, 117, 162);
             btnNavBooks.Cursor = Cursors.Hand;
             btnNavBooks.Dock = DockStyle.Top;
             btnNavBooks.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -310,7 +337,7 @@ namespace LibraryManagementSystem.Forms
             btnNavBooks.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavBooks.ForeColor = Color.White;
             btnNavBooks.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavBooks.Location = new Point(0, 198);
+            btnNavBooks.Location = new Point(0, 200);
             btnNavBooks.Margin = new Padding(4, 2, 4, 2);
             btnNavBooks.Name = "btnNavBooks";
             btnNavBooks.Padding = new Padding(16, 0, 0, 0);
@@ -323,11 +350,11 @@ namespace LibraryManagementSystem.Forms
             // 
             // lblGroupManagement
             // 
-            lblGroupManagement.BackColor = Color.SteelBlue;
+            lblGroupManagement.BackColor = Color.FromArgb(63, 117, 162);
             lblGroupManagement.Dock = DockStyle.Top;
             lblGroupManagement.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             lblGroupManagement.ForeColor = Color.FromArgb(208, 225, 253);
-            lblGroupManagement.Location = new Point(0, 166);
+            lblGroupManagement.Location = new Point(0, 168);
             lblGroupManagement.Name = "lblGroupManagement";
             lblGroupManagement.Padding = new Padding(16, 12, 0, 4);
             lblGroupManagement.Size = new Size(220, 32);
@@ -335,9 +362,18 @@ namespace LibraryManagementSystem.Forms
             lblGroupManagement.Text = "MANAGEMENT";
             lblGroupManagement.TextAlign = ContentAlignment.BottomLeft;
             // 
+            // pnlNavDivider2
+            // 
+            pnlNavDivider2.BackColor = Color.FromArgb(13, 59, 102);
+            pnlNavDivider2.Dock = DockStyle.Top;
+            pnlNavDivider2.Location = new Point(0, 167);
+            pnlNavDivider2.Name = "pnlNavDivider2";
+            pnlNavDivider2.Size = new Size(220, 1);
+            pnlNavDivider2.TabIndex = 21;
+            // 
             // btnNavReturn
             // 
-            btnNavReturn.BackColor = Color.SteelBlue;
+            btnNavReturn.BackColor = Color.FromArgb(63, 117, 162);
             btnNavReturn.Cursor = Cursors.Hand;
             btnNavReturn.Dock = DockStyle.Top;
             btnNavReturn.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -347,7 +383,7 @@ namespace LibraryManagementSystem.Forms
             btnNavReturn.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavReturn.ForeColor = Color.White;
             btnNavReturn.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavReturn.Location = new Point(0, 130);
+            btnNavReturn.Location = new Point(0, 131);
             btnNavReturn.Margin = new Padding(4, 2, 4, 2);
             btnNavReturn.Name = "btnNavReturn";
             btnNavReturn.Padding = new Padding(16, 0, 0, 0);
@@ -360,7 +396,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // btnNavBorrow
             // 
-            btnNavBorrow.BackColor = Color.SteelBlue;
+            btnNavBorrow.BackColor = Color.FromArgb(63, 117, 162);
             btnNavBorrow.Cursor = Cursors.Hand;
             btnNavBorrow.Dock = DockStyle.Top;
             btnNavBorrow.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -370,7 +406,7 @@ namespace LibraryManagementSystem.Forms
             btnNavBorrow.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnNavBorrow.ForeColor = Color.White;
             btnNavBorrow.ImageAlign = ContentAlignment.MiddleLeft;
-            btnNavBorrow.Location = new Point(0, 94);
+            btnNavBorrow.Location = new Point(0, 95);
             btnNavBorrow.Margin = new Padding(4, 2, 4, 2);
             btnNavBorrow.Name = "btnNavBorrow";
             btnNavBorrow.Padding = new Padding(16, 0, 0, 0);
@@ -383,11 +419,11 @@ namespace LibraryManagementSystem.Forms
             // 
             // lblGroupOperations
             // 
-            lblGroupOperations.BackColor = Color.SteelBlue;
+            lblGroupOperations.BackColor = Color.FromArgb(63, 117, 162);
             lblGroupOperations.Dock = DockStyle.Top;
             lblGroupOperations.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             lblGroupOperations.ForeColor = Color.FromArgb(208, 225, 253);
-            lblGroupOperations.Location = new Point(0, 62);
+            lblGroupOperations.Location = new Point(0, 63);
             lblGroupOperations.Name = "lblGroupOperations";
             lblGroupOperations.Padding = new Padding(16, 12, 0, 4);
             lblGroupOperations.Size = new Size(220, 32);
@@ -395,9 +431,18 @@ namespace LibraryManagementSystem.Forms
             lblGroupOperations.Text = "OPERATIONS";
             lblGroupOperations.TextAlign = ContentAlignment.BottomLeft;
             // 
+            // pnlNavDivider1
+            // 
+            pnlNavDivider1.BackColor = Color.FromArgb(13, 59, 102);
+            pnlNavDivider1.Dock = DockStyle.Top;
+            pnlNavDivider1.Location = new Point(0, 62);
+            pnlNavDivider1.Name = "pnlNavDivider1";
+            pnlNavDivider1.Size = new Size(220, 1);
+            pnlNavDivider1.TabIndex = 20;
+            // 
             // btnNavDashboard
             // 
-            btnNavDashboard.BackColor = Color.SteelBlue;
+            btnNavDashboard.BackColor = Color.FromArgb(63, 117, 162);
             btnNavDashboard.Cursor = Cursors.Hand;
             btnNavDashboard.Dock = DockStyle.Top;
             btnNavDashboard.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
@@ -420,7 +465,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // lblGroupMain
             // 
-            lblGroupMain.BackColor = Color.SteelBlue;
+            lblGroupMain.BackColor = Color.FromArgb(63, 117, 162);
             lblGroupMain.Dock = DockStyle.Top;
             lblGroupMain.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             lblGroupMain.ForeColor = Color.FromArgb(208, 225, 253);
@@ -432,9 +477,18 @@ namespace LibraryManagementSystem.Forms
             lblGroupMain.Text = "MAIN";
             lblGroupMain.TextAlign = ContentAlignment.BottomLeft;
             // 
+            // pnlBottomSpacer
+            // 
+            pnlBottomSpacer.BackColor = Color.FromArgb(63, 117, 162);
+            pnlBottomSpacer.Dock = DockStyle.Bottom;
+            pnlBottomSpacer.Location = new Point(0, 656);
+            pnlBottomSpacer.Name = "pnlBottomSpacer";
+            pnlBottomSpacer.Size = new Size(220, 26);
+            pnlBottomSpacer.TabIndex = 3;
+            // 
             // pnlLogout
             // 
-            pnlLogout.BackColor = Color.SteelBlue;
+            pnlLogout.BackColor = Color.FromArgb(63, 117, 162);
             pnlLogout.BorderStyle = BorderStyle.Fixed3D;
             pnlLogout.Controls.Add(btnLogout);
             pnlLogout.Dock = DockStyle.Bottom;
@@ -445,7 +499,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // btnLogout
             // 
-            btnLogout.BackColor = Color.SteelBlue;
+            btnLogout.BackColor = Color.FromArgb(63, 117, 162);
             btnLogout.Cursor = Cursors.Hand;
             btnLogout.Dock = DockStyle.Fill;
             btnLogout.FlatAppearance.BorderSize = 0;
@@ -468,7 +522,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // pnlBrand
             // 
-            pnlBrand.BackColor = Color.SteelBlue;
+            pnlBrand.BackColor = Color.FromArgb(63, 117, 162);
             pnlBrand.BorderStyle = BorderStyle.Fixed3D;
             pnlBrand.Controls.Add(lblBrandTitle);
             pnlBrand.Controls.Add(lblLogoIcon);
@@ -481,7 +535,7 @@ namespace LibraryManagementSystem.Forms
             // 
             // lblBrandTitle
             // 
-            lblBrandTitle.BackColor = Color.SteelBlue;
+            lblBrandTitle.BackColor = Color.FromArgb(63, 117, 162);
             lblBrandTitle.Font = new Font("Segoe UI Semibold", 13.5F, FontStyle.Bold);
             lblBrandTitle.ForeColor = Color.White;
             lblBrandTitle.Location = new Point(44, 26);
@@ -519,60 +573,6 @@ namespace LibraryManagementSystem.Forms
             pnlTopDivider.Name = "pnlTopDivider";
             pnlTopDivider.Size = new Size(1264, 1);
             pnlTopDivider.TabIndex = 2;
-            // 
-            // pnlNavDivider1
-            // 
-            pnlNavDivider1.BackColor = Color.FromArgb(13, 59, 102);
-            pnlNavDivider1.Dock = DockStyle.Top;
-            pnlNavDivider1.Location = new Point(0, 62);
-            pnlNavDivider1.Name = "pnlNavDivider1";
-            pnlNavDivider1.Size = new Size(220, 1);
-            pnlNavDivider1.TabIndex = 20;
-            // 
-            // pnlNavDivider2
-            // 
-            pnlNavDivider2.BackColor = Color.FromArgb(13, 59, 102);
-            pnlNavDivider2.Dock = DockStyle.Top;
-            pnlNavDivider2.Location = new Point(0, 166);
-            pnlNavDivider2.Name = "pnlNavDivider2";
-            pnlNavDivider2.Size = new Size(220, 1);
-            pnlNavDivider2.TabIndex = 21;
-            // 
-            // pnlNavDivider3
-            // 
-            pnlNavDivider3.BackColor = Color.FromArgb(13, 59, 102);
-            pnlNavDivider3.Dock = DockStyle.Top;
-            pnlNavDivider3.Location = new Point(0, 270);
-            pnlNavDivider3.Name = "pnlNavDivider3";
-            pnlNavDivider3.Size = new Size(220, 1);
-            pnlNavDivider3.TabIndex = 22;
-            // 
-            // pnlNavDivider4
-            // 
-            pnlNavDivider4.BackColor = Color.FromArgb(13, 59, 102);
-            pnlNavDivider4.Dock = DockStyle.Top;
-            pnlNavDivider4.Location = new Point(0, 410);
-            pnlNavDivider4.Name = "pnlNavDivider4";
-            pnlNavDivider4.Size = new Size(220, 1);
-            pnlNavDivider4.TabIndex = 23;
-            // 
-            // pnlNavDivider5
-            // 
-            pnlNavDivider5.BackColor = Color.FromArgb(13, 59, 102);
-            pnlNavDivider5.Dock = DockStyle.Top;
-            pnlNavDivider5.Location = new Point(0, 514);
-            pnlNavDivider5.Name = "pnlNavDivider5";
-            pnlNavDivider5.Size = new Size(220, 1);
-            pnlNavDivider5.TabIndex = 24;
-            // 
-            // pnlBottomSpacer
-            // 
-            pnlBottomSpacer.BackColor = Color.SteelBlue;
-            pnlBottomSpacer.Dock = DockStyle.Bottom;
-            pnlBottomSpacer.Location = new Point(0, 660);
-            pnlBottomSpacer.Name = "pnlBottomSpacer";
-            pnlBottomSpacer.Size = new Size(220, 22);
-            pnlBottomSpacer.TabIndex = 3;
             // 
             // MainShellForm
             // 
