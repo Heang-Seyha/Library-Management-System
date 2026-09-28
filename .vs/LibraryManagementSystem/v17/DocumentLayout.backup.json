@@ -1,44 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|d:\\ooad\\library management system\\librarymanagementsystem\\panels\\dashboardpanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:panels\\dashboardpanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|d:\\ooad\\library management system\\librarymanagementsystem\\panels\\dashboardpanel.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:panels\\dashboardpanel.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|d:\\ooad\\library management system\\librarymanagementsystem\\panels\\dashboardpanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:panels\\dashboardpanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|d:\\ooad\\library management system\\librarymanagementsystem\\panels\\authorspanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:panels\\authorspanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|d:\\ooad\\library management system\\librarymanagementsystem\\forms\\mainshellform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:forms\\mainshellform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|d:\\ooad\\library management system\\librarymanagementsystem\\forms\\mainshellform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:forms\\mainshellform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|d:\\ooad\\library management system\\librarymanagementsystem\\forms\\loginform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:forms\\loginform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|d:\\ooad\\library management system\\librarymanagementsystem\\panels\\memberspanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:panels\\memberspanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|D:\\OOAD\\Library Management System\\LibraryManagementSystem\\panels\\publisherspanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{E4E7692D-7697-29B1-0BCC-078270F13D10}|LibraryManagementSystem.csproj|solutionrelative:panels\\publisherspanel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -46,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -59,116 +22,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "DashboardPanel.cs",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\DashboardPanel.cs",
-              "RelativeDocumentMoniker": "Panels\\DashboardPanel.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\DashboardPanel.cs",
-              "RelativeToolTip": "Panels\\DashboardPanel.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAAAAkAAAA3AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T13:48:45.5Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DashboardPanel.Designer.cs",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\DashboardPanel.Designer.cs",
-              "RelativeDocumentMoniker": "Panels\\DashboardPanel.Designer.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\DashboardPanel.Designer.cs",
-              "RelativeToolTip": "Panels\\DashboardPanel.Designer.cs",
-              "ViewState": "AgIAAP0EAAAAAAAAAAAAAPUEAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T13:48:02.696Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DashboardPanel.cs [Design]",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\DashboardPanel.cs",
-              "RelativeDocumentMoniker": "Panels\\DashboardPanel.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\DashboardPanel.cs [Design]",
-              "RelativeToolTip": "Panels\\DashboardPanel.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T13:32:43.542Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AuthorsPanel.cs [Design]",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\AuthorsPanel.cs",
-              "RelativeDocumentMoniker": "Panels\\AuthorsPanel.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\AuthorsPanel.cs [Design]",
-              "RelativeToolTip": "Panels\\AuthorsPanel.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T13:32:36.991Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MainShellForm.cs [Design]",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Forms\\MainShellForm.cs",
-              "RelativeDocumentMoniker": "Forms\\MainShellForm.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Forms\\MainShellForm.cs [Design]",
-              "RelativeToolTip": "Forms\\MainShellForm.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T12:37:50.732Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MainShellForm.cs",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Forms\\MainShellForm.cs",
-              "RelativeDocumentMoniker": "Forms\\MainShellForm.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Forms\\MainShellForm.cs",
-              "RelativeToolTip": "Forms\\MainShellForm.cs",
-              "ViewState": "AgIAAOsBAAAAAAAAAAAqwPYBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T12:11:29.623Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "LoginForm.Designer.cs",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Forms\\LoginForm.Designer.cs",
-              "RelativeDocumentMoniker": "Forms\\LoginForm.Designer.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Forms\\LoginForm.Designer.cs",
-              "RelativeToolTip": "Forms\\LoginForm.Designer.cs",
-              "ViewState": "AgIAAEsAAAAAAAAAAADgv1QAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T11:56:34.407Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "PublishersPanel.cs [Design]",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\PublishersPanel.cs",
-              "RelativeDocumentMoniker": "Panels\\PublishersPanel.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\PublishersPanel.cs [Design]",
-              "RelativeToolTip": "Panels\\PublishersPanel.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T09:07:44.301Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "MembersPanel.cs",
-              "DocumentMoniker": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\MembersPanel.cs",
-              "RelativeDocumentMoniker": "Panels\\MembersPanel.cs",
-              "ToolTip": "D:\\OOAD\\Library Management System\\LibraryManagementSystem\\Panels\\MembersPanel.cs",
-              "RelativeToolTip": "Panels\\MembersPanel.cs",
-              "ViewState": "AgIAANgAAAAAAAAAAAAAANgAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-28T07:32:31.816Z",
-              "EditorCaption": ""
             }
           ]
         }

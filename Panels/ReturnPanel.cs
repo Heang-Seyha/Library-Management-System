@@ -66,8 +66,14 @@ namespace LibraryManagementSystem.Panels
             int availableWidth = Math.Max(100, pnlDetailsCard.ClientSize.Width - (margin * 2));
             int bottom = pnlDetailsCard.ClientSize.Height;
 
-            btnReturn.SetBounds(margin, bottom - 48, availableWidth, 36);
-            lblDetailFine.SetBounds(margin, bottom - 96, availableWidth, 42);
+            int btnHeight = 36;
+            int btnTop = bottom - btnHeight - margin;
+            btnReturn.SetBounds(margin, btnTop, availableWidth, btnHeight);
+
+            // Expand overdue fine banner height upwards to 74px to cleanly show all 3 text lines
+            int fineHeight = 74;
+            int fineTop = btnTop - 8 - fineHeight;
+            lblDetailFine.SetBounds(margin, fineTop, availableWidth, fineHeight);
 
             int contentWidth = Math.Max(100, pnlDetailsCard.ClientSize.Width - 32);
             lblDetailTitle.Width = contentWidth;
@@ -75,7 +81,7 @@ namespace LibraryManagementSystem.Panels
             lblDetailBorrow.Width = contentWidth;
             lblDetailDue.Width = contentWidth;
             lblDetailStatus.Width = contentWidth;
-            lblDetailBooks.SetBounds(16, 244, contentWidth, Math.Max(40, bottom - 96 - 244 - 8));
+            lblDetailBooks.SetBounds(16, 244, contentWidth, Math.Max(40, fineTop - 244 - 8));
         }
 
         public void LoadActiveBorrows()

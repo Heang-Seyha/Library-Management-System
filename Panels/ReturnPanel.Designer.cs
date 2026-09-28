@@ -304,10 +304,10 @@ namespace LibraryManagementSystem.Panels
             lblDetailFine.BorderStyle = BorderStyle.FixedSingle;
             lblDetailFine.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             lblDetailFine.ForeColor = Color.FromArgb(192, 0, 0);
-            lblDetailFine.Location = new Point(12, 483);
+            lblDetailFine.Location = new Point(12, 451);
             lblDetailFine.Name = "lblDetailFine";
             lblDetailFine.Padding = new Padding(4);
-            lblDetailFine.Size = new Size(286, 42);
+            lblDetailFine.Size = new Size(286, 74);
             lblDetailFine.TabIndex = 11;
             lblDetailFine.Text = "Fine: $0.00";
             lblDetailFine.TextAlign = ContentAlignment.MiddleCenter;
