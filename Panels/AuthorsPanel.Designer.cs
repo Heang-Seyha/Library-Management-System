@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Panels
+namespace LibraryManagementSystem.Panels
 {
     partial class AuthorsPanel
     {
@@ -191,12 +191,13 @@
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgv.BackgroundColor = Color.White;
             dgv.BorderStyle = BorderStyle.Fixed3D;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colBio });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
@@ -214,27 +215,33 @@
             // 
             // colId
             // 
-            colId.FillWeight = 8F;
-            colId.HeaderText = "ID";
-            colId.MinimumWidth = 60;
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.HeaderText = "Author ID";
+            colId.MinimumWidth = 135;
             colId.Name = "colId";
             colId.ReadOnly = true;
+            colId.Resizable = DataGridViewTriState.True;
+            colId.Width = 145;
             // 
             // colName
             // 
-            colName.FillWeight = 32F;
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 40F;
             colName.HeaderText = "Author Name";
-            colName.MinimumWidth = 150;
+            colName.MinimumWidth = 160;
             colName.Name = "colName";
             colName.ReadOnly = true;
+            colName.Resizable = DataGridViewTriState.True;
             // 
             // colBio
             // 
+            colBio.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colBio.FillWeight = 60F;
             colBio.HeaderText = "Biography";
             colBio.MinimumWidth = 200;
             colBio.Name = "colBio";
             colBio.ReadOnly = true;
+            colBio.Resizable = DataGridViewTriState.True;
             // 
             // AuthorsPanel
             // 

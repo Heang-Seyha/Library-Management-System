@@ -16,6 +16,8 @@ namespace LibraryManagementSystem.Panels
         public CategoriesPanel()
         {
             InitializeComponent();
+
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
             this.Load += CategoriesPanel_Load;
         }
 
@@ -24,6 +26,7 @@ namespace LibraryManagementSystem.Panels
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgv);
+            ConfigureGridColumns();
 
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
@@ -190,6 +193,32 @@ namespace LibraryManagementSystem.Panels
             {
                 MessageBox.Show($"Could not delete category.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ConfigureGridColumns()
+        {
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgv.ColumnHeadersHeight = 36;
+
+            colId.HeaderText = "Category ID";
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.Width = 160;
+            colId.MinimumWidth = 150;
+            colId.Resizable = DataGridViewTriState.True;
+
+            colName.HeaderText = "Category Name";
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 40F;
+            colName.MinimumWidth = 160;
+            colName.Resizable = DataGridViewTriState.True;
+
+            colDesc.HeaderText = "Description";
+            colDesc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colDesc.FillWeight = 60F;
+            colDesc.MinimumWidth = 200;
+            colDesc.Resizable = DataGridViewTriState.True;
         }
     }
 }

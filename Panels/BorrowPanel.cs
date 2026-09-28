@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -24,6 +24,8 @@ namespace LibraryManagementSystem.Panels
         {
             InitializeComponent();
 
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
+
             txtMemberSearch.TextChanged += (s, e) => RefreshMemberList(txtMemberSearch.Text);
             lstMembers.SelectedIndexChanged += LstMembers_SelectedIndexChanged;
             txtBookSearch.TextChanged += (s, e) => RefreshBookList(txtBookSearch.Text);
@@ -39,8 +41,7 @@ namespace LibraryManagementSystem.Panels
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgvBorrowItems);
-
-            
+            ConfigureGridColumns();
 
             try
             {
@@ -248,6 +249,45 @@ namespace LibraryManagementSystem.Panels
         private void lblBTitle_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ConfigureGridColumns()
+        {
+            dgvBorrowItems.AllowUserToResizeColumns = true;
+            dgvBorrowItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvBorrowItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgvBorrowItems.ColumnHeadersHeight = 36;
+
+            colBookId.Name = "BookId";
+            colBookId.HeaderText = "Book ID";
+            colBookId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colBookId.Width = 95;
+            colBookId.MinimumWidth = 90;
+            colBookId.Resizable = DataGridViewTriState.True;
+
+            colTitle.HeaderText = "Book Title";
+            colTitle.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTitle.FillWeight = 100F;
+            colTitle.MinimumWidth = 180;
+            colTitle.Resizable = DataGridViewTriState.True;
+
+            colISBN.HeaderText = "ISBN";
+            colISBN.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colISBN.Width = 165;
+            colISBN.MinimumWidth = 155;
+            colISBN.Resizable = DataGridViewTriState.True;
+
+            colAvailable.HeaderText = "Available";
+            colAvailable.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colAvailable.Width = 115;
+            colAvailable.MinimumWidth = 110;
+            colAvailable.Resizable = DataGridViewTriState.True;
+
+            colQty.HeaderText = "Qty to Borrow";
+            colQty.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colQty.Width = 160;
+            colQty.MinimumWidth = 150;
+            colQty.Resizable = DataGridViewTriState.True;
         }
     }
 }

@@ -16,6 +16,8 @@ namespace LibraryManagementSystem.Panels
         public PublishersPanel()
         {
             InitializeComponent();
+
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
             this.Load += PublishersPanel_Load;
         }
 
@@ -24,8 +26,7 @@ namespace LibraryManagementSystem.Panels
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgv);
-
-       
+            ConfigureGridColumns();
 
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
@@ -196,6 +197,38 @@ namespace LibraryManagementSystem.Panels
             {
                 MessageBox.Show($"Could not delete publisher.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ConfigureGridColumns()
+        {
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgv.ColumnHeadersHeight = 36;
+
+            colId.HeaderText = "Publisher ID";
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.Width = 150;
+            colId.MinimumWidth = 140;
+            colId.Resizable = DataGridViewTriState.True;
+
+            colName.HeaderText = "Publisher Name";
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 30F;
+            colName.MinimumWidth = 150;
+            colName.Resizable = DataGridViewTriState.True;
+
+            colAddress.HeaderText = "Address";
+            colAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colAddress.FillWeight = 70F;
+            colAddress.MinimumWidth = 180;
+            colAddress.Resizable = DataGridViewTriState.True;
+
+            colPhone.HeaderText = "Contact Phone";
+            colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colPhone.Width = 180;
+            colPhone.MinimumWidth = 170;
+            colPhone.Resizable = DataGridViewTriState.True;
         }
     }
 }

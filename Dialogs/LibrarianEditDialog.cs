@@ -20,7 +20,8 @@ namespace LibraryManagementSystem.Dialogs
         public LibrarianEditDialog(Librarian? existing)
         {
             _existing = existing;
-            InitializeComponent();
+            InitializeComponent();
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
 
             if (existing != null)
             {
@@ -35,7 +36,7 @@ namespace LibraryManagementSystem.Dialogs
                 lblHeader.Text = "Add New Librarian";
                 lblPasswordLabel.Text = "Account Password *";
                 btnSave.Text = "Save Librarian";
-                cmbRole.SelectedIndex = 0; // Default to Librarian
+                cmbRole.SelectedIndex = -1;
             }
 
             this.Load += LibrarianEditDialog_Load;
@@ -48,6 +49,10 @@ namespace LibraryManagementSystem.Dialogs
             if (_existing != null)
             {
                 PopulateFields(_existing);
+            }
+            else
+            {
+                cmbRole.SelectedIndex = -1;
             }
         }
 

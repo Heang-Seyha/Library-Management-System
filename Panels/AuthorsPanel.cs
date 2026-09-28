@@ -16,6 +16,8 @@ namespace LibraryManagementSystem.Panels
         public AuthorsPanel()
         {
             InitializeComponent();
+
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
             this.Load += AuthorsPanel_Load;
         }
 
@@ -24,6 +26,7 @@ namespace LibraryManagementSystem.Panels
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgv);
+            ConfigureGridColumns();
 
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
@@ -190,6 +193,32 @@ namespace LibraryManagementSystem.Panels
             {
                 MessageBox.Show($"Could not delete author.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ConfigureGridColumns()
+        {
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgv.ColumnHeadersHeight = 36;
+
+            colId.HeaderText = "Author ID";
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.Width = 145;
+            colId.MinimumWidth = 135;
+            colId.Resizable = DataGridViewTriState.True;
+
+            colName.HeaderText = "Author Name";
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 40F;
+            colName.MinimumWidth = 160;
+            colName.Resizable = DataGridViewTriState.True;
+
+            colBio.HeaderText = "Biography";
+            colBio.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colBio.FillWeight = 60F;
+            colBio.MinimumWidth = 200;
+            colBio.Resizable = DataGridViewTriState.True;
         }
     }
 }

@@ -20,7 +20,8 @@ namespace LibraryManagementSystem.Dialogs
         public BookEditDialog(Book? existing)
         {
             _existing = existing;
-            InitializeComponent();
+            InitializeComponent();
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
 
             if (existing != null)
             {
@@ -47,6 +48,12 @@ namespace LibraryManagementSystem.Dialogs
             if (_existing != null)
             {
                 PopulateFields(_existing);
+            }
+            else
+            {
+                cmbCategory.SelectedIndex = -1;
+                cmbAuthor.SelectedIndex = -1;
+                cmbPublisher.SelectedIndex = -1;
             }
         }
 

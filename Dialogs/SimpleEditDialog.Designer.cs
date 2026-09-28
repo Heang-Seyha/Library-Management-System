@@ -39,7 +39,7 @@ namespace LibraryManagementSystem.Dialogs
             pnlContainer.Location = new Point(0, 0);
             pnlContainer.Name = "pnlContainer";
             pnlContainer.Padding = new Padding(20, 16, 20, 16);
-            pnlContainer.Size = new Size(500, 268);
+            pnlContainer.Size = new Size(500, 280);
             pnlContainer.TabIndex = 0;
             // 
             // btnCancel
@@ -51,7 +51,7 @@ namespace LibraryManagementSystem.Dialogs
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(13, 59, 102);
-            btnCancel.Location = new Point(250, 220);
+            btnCancel.Location = new Point(250, 228);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(110, 32);
             btnCancel.TabIndex = 2;
@@ -69,7 +69,7 @@ namespace LibraryManagementSystem.Dialogs
             btnSave.FlatStyle = FlatStyle.Flat;
             btnSave.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(370, 220);
+            btnSave.Location = new Point(370, 228);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(110, 32);
             btnSave.TabIndex = 3;
@@ -82,7 +82,7 @@ namespace LibraryManagementSystem.Dialogs
             pnlFields.BackColor = Color.Transparent;
             pnlFields.Location = new Point(20, 48);
             pnlFields.Name = "pnlFields";
-            pnlFields.Size = new Size(460, 160);
+            pnlFields.Size = new Size(460, 164);
             pnlFields.TabIndex = 1;
             // 
             // lblTitle
@@ -103,13 +103,13 @@ namespace LibraryManagementSystem.Dialogs
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(235, 243, 250);
             CancelButton = btnCancel;
-            ClientSize = new Size(500, 268);
+            ClientSize = new Size(500, 280);
             Controls.Add(pnlContainer);
             Font = new Font("Segoe UI", 9.5F);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(480, 240);
+            MinimumSize = new Size(500, 280);
             Name = "SimpleEditDialog";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Library Management System";

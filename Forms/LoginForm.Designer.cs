@@ -35,13 +35,12 @@ namespace LibraryManagementSystem.Forms
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             pnlLeft = new Panel();
             lblBrandTitle = new Label();
             picLogo = new PictureBox();
             pnlRight = new Panel();
-            lblWelcome = new Label();
             lblGeneralError = new Label();
+            lblWelcome = new Label();
             lblUsername = new Label();
             txtUsername = new TextBox();
             lblUsernameError = new Label();
@@ -83,7 +82,6 @@ namespace LibraryManagementSystem.Forms
             // picLogo
             // 
             picLogo.BackColor = Color.Transparent;
-            picLogo.Image = (Image)resources.GetObject("picLogo.Image");
             picLogo.Location = new Point(0, 184);
             picLogo.Name = "picLogo";
             picLogo.Size = new Size(313, 241);
@@ -94,8 +92,8 @@ namespace LibraryManagementSystem.Forms
             // pnlRight
             // 
             pnlRight.BackColor = Color.White;
-            pnlRight.Controls.Add(lblWelcome);
             pnlRight.Controls.Add(lblGeneralError);
+            pnlRight.Controls.Add(lblWelcome);
             pnlRight.Controls.Add(lblUsername);
             pnlRight.Controls.Add(txtUsername);
             pnlRight.Controls.Add(lblUsernameError);
@@ -113,6 +111,18 @@ namespace LibraryManagementSystem.Forms
             pnlRight.Size = new Size(446, 425);
             pnlRight.TabIndex = 1;
             // 
+            // lblGeneralError
+            // 
+            lblGeneralError.Font = new Font("Segoe UI", 9F);
+            lblGeneralError.ForeColor = Color.FromArgb(220, 38, 38);
+            lblGeneralError.Location = new Point(44, 276);
+            lblGeneralError.Name = "lblGeneralError";
+            lblGeneralError.Size = new Size(361, 23);
+            lblGeneralError.TabIndex = 2;
+            lblGeneralError.Text = "Invalid username or password.";
+            lblGeneralError.TextAlign = ContentAlignment.BottomLeft;
+            lblGeneralError.Visible = false;
+            // 
             // lblWelcome
             // 
             lblWelcome.AutoSize = true;
@@ -123,17 +133,6 @@ namespace LibraryManagementSystem.Forms
             lblWelcome.Size = new Size(226, 41);
             lblWelcome.TabIndex = 0;
             lblWelcome.Text = "Welcome Back!";
-            // 
-            // lblGeneralError
-            // 
-            lblGeneralError.Font = new Font("Segoe UI", 8.5F);
-            lblGeneralError.ForeColor = Color.FromArgb(220, 38, 38);
-            lblGeneralError.Location = new Point(44, 281);
-            lblGeneralError.Name = "lblGeneralError";
-            lblGeneralError.Size = new Size(361, 26);
-            lblGeneralError.TabIndex = 2;
-            lblGeneralError.Text = "Invalid username or password.";
-            lblGeneralError.Visible = false;
             // 
             // lblUsername
             // 
@@ -155,7 +154,7 @@ namespace LibraryManagementSystem.Forms
             txtUsername.Margin = new Padding(3, 4, 3, 4);
             txtUsername.MaxLength = 50;
             txtUsername.Name = "txtUsername";
-            txtUsername.PlaceholderText = " Enter your username";
+            txtUsername.PlaceholderText = "  Enter your username";
             txtUsername.Size = new Size(361, 30);
             txtUsername.TabIndex = 4;
             txtUsername.TextChanged += txtUsername_TextChanged;
@@ -193,7 +192,7 @@ namespace LibraryManagementSystem.Forms
             txtPassword.Margin = new Padding(3, 4, 3, 4);
             txtPassword.MaxLength = 100;
             txtPassword.Name = "txtPassword";
-            txtPassword.PlaceholderText = " Enter your password";
+            txtPassword.PlaceholderText = "  Enter your password";
             txtPassword.Size = new Size(361, 30);
             txtPassword.TabIndex = 7;
             txtPassword.UseSystemPasswordChar = true;
@@ -236,10 +235,10 @@ namespace LibraryManagementSystem.Forms
             btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Microsoft Sans Serif", 10.2F, FontStyle.Bold);
             btnLogin.ForeColor = Color.White;
-            btnLogin.Location = new Point(44, 302);
+            btnLogin.Location = new Point(44, 303);
             btnLogin.Margin = new Padding(3, 4, 3, 4);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(361, 51);
+            btnLogin.Size = new Size(361, 50);
             btnLogin.TabIndex = 10;
             btnLogin.Text = "Sign In";
             btnLogin.UseVisualStyleBackColor = false;

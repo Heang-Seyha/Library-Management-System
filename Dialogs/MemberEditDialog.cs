@@ -20,7 +20,8 @@ namespace LibraryManagementSystem.Dialogs
         public MemberEditDialog(Member? existing)
         {
             _existing = existing;
-            InitializeComponent();
+            InitializeComponent();
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
 
             if (existing != null)
             {

@@ -17,6 +17,8 @@ namespace LibraryManagementSystem.Panels
         public LibrariansPanel()
         {
             InitializeComponent();
+
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
             this.Load += LibrariansPanel_Load;
         }
 
@@ -25,6 +27,7 @@ namespace LibraryManagementSystem.Panels
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgv);
+            ConfigureGridColumns();
 
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
@@ -153,6 +156,50 @@ namespace LibraryManagementSystem.Panels
             {
                 MessageBox.Show($"Could not delete librarian.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ConfigureGridColumns()
+        {
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgv.ColumnHeadersHeight = 36;
+
+            colId.HeaderText = "Librarian ID";
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.Width = 150;
+            colId.MinimumWidth = 140;
+            colId.Resizable = DataGridViewTriState.True;
+
+            colName.HeaderText = "Full Name";
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 26F;
+            colName.MinimumWidth = 140;
+            colName.Resizable = DataGridViewTriState.True;
+
+            colUsername.HeaderText = "Username";
+            colUsername.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colUsername.FillWeight = 34F;
+            colUsername.MinimumWidth = 120;
+            colUsername.Resizable = DataGridViewTriState.True;
+
+            colRole.HeaderText = "Role";
+            colRole.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colRole.Width = 95;
+            colRole.MinimumWidth = 90;
+            colRole.Resizable = DataGridViewTriState.True;
+
+            colPosition.HeaderText = "Position";
+            colPosition.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colPosition.FillWeight = 40F;
+            colPosition.MinimumWidth = 130;
+            colPosition.Resizable = DataGridViewTriState.True;
+
+            colPhone.HeaderText = "Phone";
+            colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colPhone.Width = 160;
+            colPhone.MinimumWidth = 150;
+            colPhone.Resizable = DataGridViewTriState.True;
         }
     }
 }

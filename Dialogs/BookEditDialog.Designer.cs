@@ -113,11 +113,20 @@ namespace LibraryManagementSystem.Dialogs
             pnlContainer.Controls.Add(txtTitle);
             pnlContainer.Controls.Add(lblTitleLabel);
             pnlContainer.Controls.Add(lblHeader);
-            pnlContainer.Dock = DockStyle.Fill;
+            pnlContainer.Dock = DockStyle.Fill;
+            lblTitleErr.BringToFront();
+            lblISBNErr.BringToFront();
+            lblYearErr.BringToFront();
+            lblCategoryErr.BringToFront();
+            lblAuthorErr.BringToFront();
+            lblPublisherErr.BringToFront();
+            lblTotalErr.BringToFront();
+            lblAvailableErr.BringToFront();
+
             pnlContainer.Location = new Point(0, 0);
             pnlContainer.Name = "pnlContainer";
             pnlContainer.Padding = new Padding(20, 16, 20, 16);
-            pnlContainer.Size = new Size(536, 442);
+            pnlContainer.Size = new Size(536, 520);
             pnlContainer.TabIndex = 0;
             // 
             // btnCancel
@@ -129,7 +138,7 @@ namespace LibraryManagementSystem.Dialogs
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnCancel.ForeColor = Color.FromArgb(13, 59, 102);
-            btnCancel.Location = new Point(286, 394);
+            btnCancel.Location = new Point(286, 472);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(110, 32);
             btnCancel.TabIndex = 25;
@@ -147,7 +156,7 @@ namespace LibraryManagementSystem.Dialogs
             btnSave.FlatStyle = FlatStyle.Flat;
             btnSave.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnSave.ForeColor = Color.White;
-            btnSave.Location = new Point(406, 394);
+            btnSave.Location = new Point(406, 472);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(110, 32);
             btnSave.TabIndex = 26;
@@ -159,9 +168,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblAvailableErr.Font = new Font("Segoe UI", 8F);
             lblAvailableErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblAvailableErr.Location = new Point(276, 366);
+            lblAvailableErr.Location = new Point(276, 431);
             lblAvailableErr.Name = "lblAvailableErr";
-            lblAvailableErr.Size = new Size(240, 14);
+            lblAvailableErr.Size = new Size(240, 24);
             lblAvailableErr.TabIndex = 24;
             lblAvailableErr.Visible = false;
             // 
@@ -170,7 +179,7 @@ namespace LibraryManagementSystem.Dialogs
             txtAvailable.BorderStyle = BorderStyle.FixedSingle;
             txtAvailable.Font = new Font("Segoe UI", 9.5F);
             txtAvailable.ForeColor = Color.FromArgb(13, 59, 102);
-            txtAvailable.Location = new Point(276, 336);
+            txtAvailable.Location = new Point(276, 400);
             txtAvailable.Name = "txtAvailable";
             txtAvailable.Size = new Size(240, 29);
             txtAvailable.TabIndex = 23;
@@ -181,7 +190,7 @@ namespace LibraryManagementSystem.Dialogs
             lblAvailableLabel.AutoSize = true;
             lblAvailableLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblAvailableLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblAvailableLabel.Location = new Point(276, 316);
+            lblAvailableLabel.Location = new Point(276, 378);
             lblAvailableLabel.Name = "lblAvailableLabel";
             lblAvailableLabel.Size = new Size(134, 20);
             lblAvailableLabel.TabIndex = 22;
@@ -191,9 +200,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblTotalErr.Font = new Font("Segoe UI", 8F);
             lblTotalErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblTotalErr.Location = new Point(20, 366);
+            lblTotalErr.Location = new Point(20, 431);
             lblTotalErr.Name = "lblTotalErr";
-            lblTotalErr.Size = new Size(240, 14);
+            lblTotalErr.Size = new Size(240, 24);
             lblTotalErr.TabIndex = 21;
             lblTotalErr.Visible = false;
             // 
@@ -202,7 +211,7 @@ namespace LibraryManagementSystem.Dialogs
             txtTotal.BorderStyle = BorderStyle.FixedSingle;
             txtTotal.Font = new Font("Segoe UI", 9.5F);
             txtTotal.ForeColor = Color.FromArgb(13, 59, 102);
-            txtTotal.Location = new Point(20, 336);
+            txtTotal.Location = new Point(20, 400);
             txtTotal.Name = "txtTotal";
             txtTotal.Size = new Size(240, 29);
             txtTotal.TabIndex = 20;
@@ -213,7 +222,7 @@ namespace LibraryManagementSystem.Dialogs
             lblTotalLabel.AutoSize = true;
             lblTotalLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblTotalLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblTotalLabel.Location = new Point(20, 316);
+            lblTotalLabel.Location = new Point(20, 378);
             lblTotalLabel.Name = "lblTotalLabel";
             lblTotalLabel.Size = new Size(105, 20);
             lblTotalLabel.TabIndex = 19;
@@ -223,9 +232,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblPublisherErr.Font = new Font("Segoe UI", 8F);
             lblPublisherErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblPublisherErr.Location = new Point(20, 300);
+            lblPublisherErr.Location = new Point(20, 349);
             lblPublisherErr.Name = "lblPublisherErr";
-            lblPublisherErr.Size = new Size(496, 14);
+            lblPublisherErr.Size = new Size(496, 24);
             lblPublisherErr.TabIndex = 18;
             lblPublisherErr.Visible = false;
             // 
@@ -235,7 +244,7 @@ namespace LibraryManagementSystem.Dialogs
             cmbPublisher.Font = new Font("Segoe UI", 9.5F);
             cmbPublisher.ForeColor = Color.FromArgb(13, 59, 102);
             cmbPublisher.FormattingEnabled = true;
-            cmbPublisher.Location = new Point(20, 270);
+            cmbPublisher.Location = new Point(20, 318);
             cmbPublisher.Name = "cmbPublisher";
             cmbPublisher.Size = new Size(496, 29);
             cmbPublisher.TabIndex = 17;
@@ -246,7 +255,7 @@ namespace LibraryManagementSystem.Dialogs
             lblPublisherLabel.AutoSize = true;
             lblPublisherLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblPublisherLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblPublisherLabel.Location = new Point(20, 250);
+            lblPublisherLabel.Location = new Point(20, 296);
             lblPublisherLabel.Name = "lblPublisherLabel";
             lblPublisherLabel.Size = new Size(85, 20);
             lblPublisherLabel.TabIndex = 16;
@@ -256,9 +265,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblAuthorErr.Font = new Font("Segoe UI", 8F);
             lblAuthorErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblAuthorErr.Location = new Point(276, 234);
+            lblAuthorErr.Location = new Point(276, 267);
             lblAuthorErr.Name = "lblAuthorErr";
-            lblAuthorErr.Size = new Size(240, 14);
+            lblAuthorErr.Size = new Size(240, 24);
             lblAuthorErr.TabIndex = 15;
             lblAuthorErr.Visible = false;
             // 
@@ -268,7 +277,7 @@ namespace LibraryManagementSystem.Dialogs
             cmbAuthor.Font = new Font("Segoe UI", 9.5F);
             cmbAuthor.ForeColor = Color.FromArgb(13, 59, 102);
             cmbAuthor.FormattingEnabled = true;
-            cmbAuthor.Location = new Point(276, 204);
+            cmbAuthor.Location = new Point(276, 236);
             cmbAuthor.Name = "cmbAuthor";
             cmbAuthor.Size = new Size(240, 29);
             cmbAuthor.TabIndex = 14;
@@ -279,7 +288,7 @@ namespace LibraryManagementSystem.Dialogs
             lblAuthorLabel.AutoSize = true;
             lblAuthorLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblAuthorLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblAuthorLabel.Location = new Point(276, 184);
+            lblAuthorLabel.Location = new Point(276, 214);
             lblAuthorLabel.Name = "lblAuthorLabel";
             lblAuthorLabel.Size = new Size(70, 20);
             lblAuthorLabel.TabIndex = 13;
@@ -289,9 +298,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblCategoryErr.Font = new Font("Segoe UI", 8F);
             lblCategoryErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblCategoryErr.Location = new Point(20, 234);
+            lblCategoryErr.Location = new Point(20, 267);
             lblCategoryErr.Name = "lblCategoryErr";
-            lblCategoryErr.Size = new Size(240, 14);
+            lblCategoryErr.Size = new Size(240, 24);
             lblCategoryErr.TabIndex = 12;
             lblCategoryErr.Visible = false;
             // 
@@ -301,7 +310,7 @@ namespace LibraryManagementSystem.Dialogs
             cmbCategory.Font = new Font("Segoe UI", 9.5F);
             cmbCategory.ForeColor = Color.FromArgb(13, 59, 102);
             cmbCategory.FormattingEnabled = true;
-            cmbCategory.Location = new Point(20, 204);
+            cmbCategory.Location = new Point(20, 236);
             cmbCategory.Name = "cmbCategory";
             cmbCategory.Size = new Size(240, 29);
             cmbCategory.TabIndex = 11;
@@ -312,7 +321,7 @@ namespace LibraryManagementSystem.Dialogs
             lblCategoryLabel.AutoSize = true;
             lblCategoryLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblCategoryLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblCategoryLabel.Location = new Point(20, 184);
+            lblCategoryLabel.Location = new Point(20, 214);
             lblCategoryLabel.Name = "lblCategoryLabel";
             lblCategoryLabel.Size = new Size(84, 20);
             lblCategoryLabel.TabIndex = 10;
@@ -322,9 +331,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblYearErr.Font = new Font("Segoe UI", 8F);
             lblYearErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblYearErr.Location = new Point(346, 168);
+            lblYearErr.Location = new Point(346, 185);
             lblYearErr.Name = "lblYearErr";
-            lblYearErr.Size = new Size(170, 14);
+            lblYearErr.Size = new Size(170, 24);
             lblYearErr.TabIndex = 9;
             lblYearErr.Visible = false;
             // 
@@ -333,7 +342,7 @@ namespace LibraryManagementSystem.Dialogs
             txtYear.BorderStyle = BorderStyle.FixedSingle;
             txtYear.Font = new Font("Segoe UI", 9.5F);
             txtYear.ForeColor = Color.FromArgb(13, 59, 102);
-            txtYear.Location = new Point(346, 138);
+            txtYear.Location = new Point(346, 154);
             txtYear.Name = "txtYear";
             txtYear.Size = new Size(170, 29);
             txtYear.TabIndex = 8;
@@ -344,7 +353,7 @@ namespace LibraryManagementSystem.Dialogs
             lblYearLabel.AutoSize = true;
             lblYearLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblYearLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblYearLabel.Location = new Point(346, 118);
+            lblYearLabel.Location = new Point(346, 132);
             lblYearLabel.Name = "lblYearLabel";
             lblYearLabel.Size = new Size(132, 20);
             lblYearLabel.TabIndex = 7;
@@ -354,9 +363,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblISBNErr.Font = new Font("Segoe UI", 8F);
             lblISBNErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblISBNErr.Location = new Point(20, 168);
+            lblISBNErr.Location = new Point(20, 185);
             lblISBNErr.Name = "lblISBNErr";
-            lblISBNErr.Size = new Size(310, 14);
+            lblISBNErr.Size = new Size(310, 24);
             lblISBNErr.TabIndex = 6;
             lblISBNErr.Visible = false;
             // 
@@ -365,7 +374,7 @@ namespace LibraryManagementSystem.Dialogs
             txtISBN.BorderStyle = BorderStyle.FixedSingle;
             txtISBN.Font = new Font("Segoe UI", 9.5F);
             txtISBN.ForeColor = Color.FromArgb(13, 59, 102);
-            txtISBN.Location = new Point(20, 138);
+            txtISBN.Location = new Point(20, 154);
             txtISBN.Name = "txtISBN";
             txtISBN.Size = new Size(310, 29);
             txtISBN.TabIndex = 5;
@@ -376,7 +385,7 @@ namespace LibraryManagementSystem.Dialogs
             lblISBNLabel.AutoSize = true;
             lblISBNLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblISBNLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblISBNLabel.Location = new Point(20, 118);
+            lblISBNLabel.Location = new Point(20, 132);
             lblISBNLabel.Name = "lblISBNLabel";
             lblISBNLabel.Size = new Size(223, 20);
             lblISBNLabel.TabIndex = 4;
@@ -386,9 +395,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblTitleErr.Font = new Font("Segoe UI", 8F);
             lblTitleErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblTitleErr.Location = new Point(20, 102);
+            lblTitleErr.Location = new Point(20, 103);
             lblTitleErr.Name = "lblTitleErr";
-            lblTitleErr.Size = new Size(496, 14);
+            lblTitleErr.Size = new Size(496, 24);
             lblTitleErr.TabIndex = 3;
             lblTitleErr.Visible = false;
             // 
@@ -408,7 +417,7 @@ namespace LibraryManagementSystem.Dialogs
             lblTitleLabel.AutoSize = true;
             lblTitleLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblTitleLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblTitleLabel.Location = new Point(20, 52);
+            lblTitleLabel.Location = new Point(20, 50);
             lblTitleLabel.Name = "lblTitleLabel";
             lblTitleLabel.Size = new Size(91, 20);
             lblTitleLabel.TabIndex = 1;
@@ -432,13 +441,13 @@ namespace LibraryManagementSystem.Dialogs
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(235, 243, 250);
             CancelButton = btnCancel;
-            ClientSize = new Size(536, 442);
+            ClientSize = new Size(536, 520);
             Controls.Add(pnlContainer);
             Font = new Font("Segoe UI", 9.5F);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(536, 442);
+            MinimumSize = new Size(536, 520);
             Name = "BookEditDialog";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Library Management System — Add Book";

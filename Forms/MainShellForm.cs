@@ -19,11 +19,13 @@ namespace LibraryManagementSystem.Forms
         private readonly Dictionary<Button, string> _buttonTitles = new();
         private readonly ToolTip _navToolTip = new();
         private bool _isSidebarCollapsed = false;
+        private bool _isLogoutPressed = false;
 
         public MainShellForm()
         {
             Instance = this;
-            InitializeComponent();
+            InitializeComponent();
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
 
             // Strict dock layout and Z-order enforcement:
             pnlTopDivider.SendToBack();
@@ -31,9 +33,11 @@ namespace LibraryManagementSystem.Forms
             pnlContentHost.BringToFront();
 
             pnlContentHost.BackColor = UIHelper.MainBackground;
+            pnlNavButtons.AutoScroll = false;
 
             this.Load += MainShellForm_Load;
             this.Resize += MainShellForm_Resize;
+            pnlSidebar.Resize += (s, e) => AdjustNavButtonHeights();
             lblLogoIcon.Click += (s, e) => SetSidebarCollapsed(!_isSidebarCollapsed);
             lblBrandTitle.Click += (s, e) => SetSidebarCollapsed(!_isSidebarCollapsed);
         }
@@ -51,6 +55,8 @@ namespace LibraryManagementSystem.Forms
                 SetSidebarCollapsed(true);
             }
 
+            AdjustNavButtonHeights();
+
             NavigateTo("Dashboard");
         }
 
@@ -64,6 +70,8 @@ namespace LibraryManagementSystem.Forms
             {
                 SetSidebarCollapsed(false);
             }
+
+            AdjustNavButtonHeights();
         }
 
         private void SetSidebarCollapsed(bool collapsed)
@@ -71,6 +79,12 @@ namespace LibraryManagementSystem.Forms
             _isSidebarCollapsed = collapsed;
             pnlSidebar.Width = collapsed ? 64 : 220;
             lblBrandTitle.Visible = !collapsed;
+
+            lblGroupMain.Visible = !collapsed;
+            lblGroupOperations.Visible = !collapsed;
+            lblGroupManagement.Visible = !collapsed;
+            lblGroupMetadata.Visible = !collapsed;
+            lblGroupAdmin.Visible = !collapsed;
 
             foreach (var kvp in _buttonTitles)
             {
@@ -92,14 +106,24 @@ namespace LibraryManagementSystem.Forms
                     btn.Padding = new Padding(16, 0, 0, 0);
                 }
 
+                btn.FlatStyle = FlatStyle.Popup;
+                btn.Cursor = Cursors.Hand;
+                btn.Margin = new Padding(4, 2, 4, 2);
+
                 if (btn != btnLogout)
                 {
                     btn.FlatAppearance.BorderSize = 1;
-                    btn.FlatAppearance.BorderColor = Color.FromArgb(55, 105, 145);
+                    btn.FlatAppearance.BorderColor = Color.FromArgb(13, 59, 102);
                     btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(91, 155, 213);
                     btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(55, 105, 150);
                 }
+                else
+                {
+                    btn.FlatAppearance.BorderSize = 0;
+                }
             }
+
+            AdjustNavButtonHeights();
         }
 
         private static Image? LoadWhiteTintedIcon(string relativePath, int width = 18, int height = 18)
@@ -137,52 +161,54 @@ namespace LibraryManagementSystem.Forms
         private void InitNavRegistry()
         {
             _navRegistry["Dashboard"] = (btnNavDashboard, () => new DashboardPanel(NavigateTo), false);
-            _navRegistry["Books"] = (btnNavBooks, () => new BooksPanel(), false);
-            _navRegistry["Members"] = (btnNavMembers, () => new MembersPanel(), false);
             _navRegistry["Borrow"] = (btnNavBorrow, () => new BorrowPanel(), false);
             _navRegistry["Return"] = (btnNavReturn, () => new ReturnPanel(), false);
+            _navRegistry["Books"] = (btnNavBooks, () => new BooksPanel(), false);
+            _navRegistry["Members"] = (btnNavMembers, () => new MembersPanel(), false);
+            _navRegistry["Categories"] = (btnNavCategories, () => new CategoriesPanel(), false);
+            _navRegistry["Authors"] = (btnNavAuthors, () => new AuthorsPanel(), false);
+            _navRegistry["Publishers"] = (btnNavPublishers, () => new PublishersPanel(), false);
             _navRegistry["Reports"] = (btnNavReports, () => new ReportsPanel(), false);
-            _navRegistry["Categories"] = (btnNavCategories, () => new CategoriesPanel(), true);
-            _navRegistry["Authors"] = (btnNavAuthors, () => new AuthorsPanel(), true);
-            _navRegistry["Publishers"] = (btnNavPublishers, () => new PublishersPanel(), true);
             _navRegistry["Librarians"] = (btnNavLibrarians, () => new LibrariansPanel(), true);
 
             // Register Titles for tooltip and collapsed sidebar support
             _buttonTitles[btnNavDashboard] = "Dashboard";
-            _buttonTitles[btnNavBooks] = "Books";
-            _buttonTitles[btnNavMembers] = "Members";
             _buttonTitles[btnNavBorrow] = "Borrow Books";
             _buttonTitles[btnNavReturn] = "Return Books";
-            _buttonTitles[btnNavReports] = "Reports";
+            _buttonTitles[btnNavBooks] = "Books";
+            _buttonTitles[btnNavMembers] = "Members";
             _buttonTitles[btnNavCategories] = "Categories";
             _buttonTitles[btnNavAuthors] = "Authors";
             _buttonTitles[btnNavPublishers] = "Publishers";
+            _buttonTitles[btnNavReports] = "Reports";
             _buttonTitles[btnNavLibrarians] = "Librarians";
             _buttonTitles[btnLogout] = "Sign Out";
 
             // Bind PNG icons from 'icons/' tinted to white
             btnNavDashboard.Image = LoadWhiteTintedIcon("icons/dashborad.png");
-            btnNavBooks.Image = LoadWhiteTintedIcon("icons/book.png");
-            btnNavMembers.Image = LoadWhiteTintedIcon("icons/member.png");
             btnNavBorrow.Image = LoadWhiteTintedIcon("icons/borrow.png");
             btnNavReturn.Image = LoadWhiteTintedIcon("icons/return.png");
-            btnNavReports.Image = LoadWhiteTintedIcon("icons/report.png");
+            btnNavBooks.Image = LoadWhiteTintedIcon("icons/book.png");
+            btnNavMembers.Image = LoadWhiteTintedIcon("icons/member.png");
             btnNavCategories.Image = LoadWhiteTintedIcon("icons/category.png");
             btnNavAuthors.Image = LoadWhiteTintedIcon("icons/author.png");
             btnNavPublishers.Image = LoadWhiteTintedIcon("icons/publisher.png");
+            btnNavReports.Image = LoadWhiteTintedIcon("icons/report.png");
             btnNavLibrarians.Image = LoadWhiteTintedIcon("icons/librarian.png");
             btnLogout.Image = LoadWhiteTintedIcon("icons/logout.png") ?? UIHelper.CreateIconBitmap(UIHelper.Icons.Logout, 18, Color.White);
 
             // Configure navigation buttons styling
             Color defaultNavBg = Color.SteelBlue;
-            Color navBorderColor = Color.FromArgb(55, 105, 145);
+            Color navBorderColor = Color.FromArgb(13, 59, 102);
             Color navHoverColor = Color.FromArgb(91, 155, 213);
             Color navDownColor = Color.FromArgb(55, 105, 150);
 
             foreach (var item in _navRegistry.Values)
             {
                 var btn = item.Button;
-                btn.FlatStyle = FlatStyle.Flat;
+                btn.FlatStyle = FlatStyle.Popup;
+                btn.Cursor = Cursors.Hand;
+                btn.Margin = new Padding(4, 2, 4, 2);
                 btn.BackColor = defaultNavBg;
                 btn.UseVisualStyleBackColor = false;
                 btn.FlatAppearance.BorderSize = 1;
@@ -190,6 +216,68 @@ namespace LibraryManagementSystem.Forms
                 btn.FlatAppearance.MouseOverBackColor = navHoverColor;
                 btn.FlatAppearance.MouseDownBackColor = navDownColor;
             }
+
+            btnLogout.FlatStyle = FlatStyle.Popup;
+            btnLogout.Cursor = Cursors.Hand;
+            btnLogout.Margin = new Padding(4, 2, 4, 2);
+            btnLogout.BackColor = defaultNavBg;
+            btnLogout.UseVisualStyleBackColor = false;
+            btnLogout.FlatAppearance.BorderSize = 0;
+
+            btnLogout.MouseDown += (s, e) => { _isLogoutPressed = true; btnLogout.Invalidate(); };
+            btnLogout.MouseUp += (s, e) => { _isLogoutPressed = false; btnLogout.Invalidate(); };
+            btnLogout.MouseLeave += (s, e) => { _isLogoutPressed = false; btnLogout.Invalidate(); };
+
+            Color logoutDarkOuter = Color.FromArgb(23, 44, 60);
+            Color logoutLightHighlight = Color.FromArgb(162, 193, 219);
+            Color logoutDarkShadow = Color.FromArgb(18, 35, 48);
+
+            btnLogout.Paint += (s, e) =>
+            {
+                var g = e.Graphics;
+                int w = btnLogout.Width;
+                int h = btnLogout.Height;
+
+                // Outer border matching theme
+                using (var pDark = new Pen(logoutDarkOuter))
+                {
+                    g.DrawRectangle(pDark, 0, 0, w - 1, h - 1);
+                }
+
+                if (_isLogoutPressed)
+                {
+                    // Sunken effect when pressed/clicked
+                    using var pShadow = new Pen(logoutDarkShadow);
+                    g.DrawLine(pShadow, 1, 1, w - 2, 1);
+                    g.DrawLine(pShadow, 1, 1, 1, h - 2);
+
+                    using var pLight = new Pen(logoutLightHighlight);
+                    g.DrawLine(pLight, 1, h - 2, w - 2, h - 2);
+                    g.DrawLine(pLight, w - 2, 1, w - 2, h - 2);
+                }
+                else
+                {
+                    // Raised 3D border identical to hover state (no harsh black border when idle)
+                    using var pLight = new Pen(logoutLightHighlight);
+                    g.DrawLine(pLight, 1, 1, w - 2, 1);
+                    g.DrawLine(pLight, 1, 1, 1, h - 2);
+
+                    using var pShadow = new Pen(logoutDarkShadow);
+                    g.DrawLine(pShadow, 1, h - 2, w - 2, h - 2);
+                    g.DrawLine(pShadow, w - 2, 1, w - 2, h - 2);
+                }
+            };
+
+            lblGroupMain.BackColor = Color.Transparent;
+            lblGroupMain.Cursor = Cursors.Default;
+            lblGroupOperations.BackColor = Color.Transparent;
+            lblGroupOperations.Cursor = Cursors.Default;
+            lblGroupManagement.BackColor = Color.Transparent;
+            lblGroupManagement.Cursor = Cursors.Default;
+            lblGroupMetadata.BackColor = Color.Transparent;
+            lblGroupMetadata.Cursor = Cursors.Default;
+            lblGroupAdmin.BackColor = Color.Transparent;
+            lblGroupAdmin.Cursor = Cursors.Default;
 
             foreach (var kvp in _buttonTitles)
             {
@@ -221,11 +309,12 @@ namespace LibraryManagementSystem.Forms
                 lblUserRole.Text = "Librarian";
             }
 
-            bool isAdmin = SessionManager.IsAdmin;
-            btnNavCategories.Visible = isAdmin;
-            btnNavAuthors.Visible = isAdmin;
-            btnNavPublishers.Visible = isAdmin;
-            btnNavLibrarians.Visible = isAdmin;
+            btnNavCategories.Visible = true;
+            btnNavAuthors.Visible = true;
+            btnNavPublishers.Visible = true;
+            btnNavLibrarians.Visible = SessionManager.IsAdmin;
+
+            AdjustNavButtonHeights();
         }
 
         public void InvalidateCache(string? panelName = null)
@@ -286,13 +375,14 @@ namespace LibraryManagementSystem.Forms
         private void SetActiveButton(Button btn)
         {
             Color defaultBg = Color.SteelBlue;
-            Color activeBg = Color.FromArgb(55, 105, 150); // slightly darker SteelBlue
-            Color borderColor = Color.FromArgb(55, 105, 145);
+            Color activeBg = Color.FromArgb(91, 155, 213); // matches hover color (navHoverColor)
+            Color borderColor = Color.FromArgb(13, 59, 102);
 
             // Reset previous active button
             if (_activeNavButton != null && _activeNavButton != btn)
             {
                 _activeNavButton.BackColor = defaultBg;
+                _activeNavButton.FlatStyle = FlatStyle.Popup;
                 _activeNavButton.FlatAppearance.BorderSize = 1;
                 _activeNavButton.FlatAppearance.BorderColor = borderColor;
             }
@@ -300,6 +390,7 @@ namespace LibraryManagementSystem.Forms
             // Apply selected style to current button
             _activeNavButton = btn;
             _activeNavButton.BackColor = activeBg;
+            _activeNavButton.FlatStyle = FlatStyle.Popup;
             _activeNavButton.FlatAppearance.BorderSize = 1;
             _activeNavButton.FlatAppearance.BorderColor = borderColor;
         }
@@ -316,6 +407,97 @@ namespace LibraryManagementSystem.Forms
                 loginForm.FormClosed += (s, args) => this.Close();
                 loginForm.Show();
             }
+        }
+
+
+        private void AdjustNavButtonHeights()
+        {
+            if (pnlSidebar == null || pnlBrand == null || pnlNavButtons == null || btnLogout == null)
+                return;
+
+            var navButtons = new Button[]
+            {
+                btnNavDashboard,
+                btnNavBorrow,
+                btnNavReturn,
+                btnNavBooks,
+                btnNavMembers,
+                btnNavCategories,
+                btnNavAuthors,
+                btnNavPublishers,
+                btnNavReports,
+                btnNavLibrarians
+            };
+
+            var visibleButtons = new List<Button>();
+            foreach (var b in navButtons)
+            {
+                if (b.Visible) visibleButtons.Add(b);
+            }
+
+            int totalCount = visibleButtons.Count + (btnLogout.Visible ? 1 : 0);
+            if (totalCount == 0) return;
+
+            var groupLabels = new Label[]
+            {
+                lblGroupMain,
+                lblGroupOperations,
+                lblGroupManagement,
+                lblGroupMetadata,
+                lblGroupAdmin
+            };
+
+            int totalLabelHeight = 0;
+            foreach (var lbl in groupLabels)
+            {
+                if (lbl != null && lbl.Visible)
+                {
+                    totalLabelHeight += lbl.Height;
+                }
+            }
+
+            var dividers = new Panel[]
+            {
+                pnlNavDivider1,
+                pnlNavDivider2,
+                pnlNavDivider3,
+                pnlNavDivider4,
+                pnlNavDivider5
+            };
+
+            int totalDividersHeight = 0;
+            foreach (var d in dividers)
+            {
+                if (d != null && d.Visible)
+                {
+                    totalDividersHeight += d.Height;
+                }
+            }
+
+            int spacerHeight = (pnlBottomSpacer != null && pnlBottomSpacer.Visible) ? pnlBottomSpacer.Height : 0;
+            int logoutHeight = (pnlLogout != null && pnlLogout.Visible) ? pnlLogout.Height : 40;
+
+            int availableForButtons = pnlSidebar.ClientSize.Height - pnlBrand.Height - logoutHeight - spacerHeight - totalLabelHeight - totalDividersHeight;
+            if (availableForButtons <= 0) return;
+
+            const int minButtonHeight = 32;
+            int baseHeight = Math.Max(minButtonHeight, availableForButtons / visibleButtons.Count);
+            int remainder = availableForButtons - (baseHeight * visibleButtons.Count);
+            if (remainder < 0 || baseHeight == minButtonHeight) remainder = 0;
+
+            pnlSidebar.SuspendLayout();
+            pnlNavButtons.SuspendLayout();
+
+            for (int i = 0; i < visibleButtons.Count; i++)
+            {
+                int h = baseHeight + (i < remainder ? 1 : 0);
+                visibleButtons[i].Height = h;
+            }
+
+            pnlNavButtons.ResumeLayout(true);
+            pnlSidebar.ResumeLayout(true);
+            pnlSidebar.PerformLayout();
+            pnlNavButtons.PerformLayout();
         }
     }
 }

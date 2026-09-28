@@ -9,7 +9,6 @@
         private System.Windows.Forms.Panel pnlHeaderContainer;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubtitle;
 
         private System.Windows.Forms.Panel pnlSummary;
         private System.Windows.Forms.FlowLayoutPanel flpMetrics;
@@ -169,12 +168,13 @@
             // 
             dgvActive.AllowUserToAddRows = false;
             dgvActive.AllowUserToDeleteRows = false;
-            dgvActive.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvActive.AllowUserToResizeColumns = true;
+            dgvActive.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvActive.BackgroundColor = Color.White;
             dgvActive.BorderStyle = BorderStyle.Fixed3D;
             dgvActive.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvActive.ColumnHeadersHeight = 36;
-            dgvActive.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvActive.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvActive.Dock = DockStyle.Fill;
             dgvActive.EnableHeadersVisualStyles = false;
             dgvActive.GridColor = SystemColors.MenuHighlight;
@@ -204,12 +204,13 @@
             // 
             dgvOverdue.AllowUserToAddRows = false;
             dgvOverdue.AllowUserToDeleteRows = false;
-            dgvOverdue.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvOverdue.AllowUserToResizeColumns = true;
+            dgvOverdue.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvOverdue.BackgroundColor = Color.White;
             dgvOverdue.BorderStyle = BorderStyle.Fixed3D;
             dgvOverdue.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvOverdue.ColumnHeadersHeight = 36;
-            dgvOverdue.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvOverdue.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvOverdue.Dock = DockStyle.Fill;
             dgvOverdue.EnableHeadersVisualStyles = false;
             dgvOverdue.GridColor = SystemColors.MenuHighlight;
@@ -239,12 +240,13 @@
             // 
             dgvReturned.AllowUserToAddRows = false;
             dgvReturned.AllowUserToDeleteRows = false;
-            dgvReturned.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvReturned.AllowUserToResizeColumns = true;
+            dgvReturned.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvReturned.BackgroundColor = Color.White;
             dgvReturned.BorderStyle = BorderStyle.Fixed3D;
             dgvReturned.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvReturned.ColumnHeadersHeight = 36;
-            dgvReturned.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvReturned.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvReturned.Dock = DockStyle.Fill;
             dgvReturned.EnableHeadersVisualStyles = false;
             dgvReturned.GridColor = SystemColors.MenuHighlight;
@@ -274,12 +276,13 @@
             // 
             dgvFines.AllowUserToAddRows = false;
             dgvFines.AllowUserToDeleteRows = false;
-            dgvFines.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvFines.AllowUserToResizeColumns = true;
+            dgvFines.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvFines.BackgroundColor = Color.White;
             dgvFines.BorderStyle = BorderStyle.Fixed3D;
             dgvFines.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvFines.ColumnHeadersHeight = 36;
-            dgvFines.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvFines.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvFines.Dock = DockStyle.Fill;
             dgvFines.EnableHeadersVisualStyles = false;
             dgvFines.GridColor = SystemColors.MenuHighlight;
@@ -309,12 +312,13 @@
             // 
             dgvPopular.AllowUserToAddRows = false;
             dgvPopular.AllowUserToDeleteRows = false;
-            dgvPopular.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvPopular.AllowUserToResizeColumns = true;
+            dgvPopular.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvPopular.BackgroundColor = Color.White;
             dgvPopular.BorderStyle = BorderStyle.Fixed3D;
             dgvPopular.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvPopular.ColumnHeadersHeight = 36;
-            dgvPopular.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvPopular.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvPopular.Dock = DockStyle.Fill;
             dgvPopular.EnableHeadersVisualStyles = false;
             dgvPopular.GridColor = SystemColors.MenuHighlight;
@@ -344,12 +348,13 @@
             // 
             dgvMembers.AllowUserToAddRows = false;
             dgvMembers.AllowUserToDeleteRows = false;
-            dgvMembers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvMembers.AllowUserToResizeColumns = true;
+            dgvMembers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvMembers.BackgroundColor = Color.White;
             dgvMembers.BorderStyle = BorderStyle.Fixed3D;
             dgvMembers.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvMembers.ColumnHeadersHeight = 36;
-            dgvMembers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvMembers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvMembers.Dock = DockStyle.Fill;
             dgvMembers.EnableHeadersVisualStyles = false;
             dgvMembers.GridColor = SystemColors.MenuHighlight;
@@ -379,12 +384,13 @@
             // 
             dgvInventory.AllowUserToAddRows = false;
             dgvInventory.AllowUserToDeleteRows = false;
-            dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvInventory.AllowUserToResizeColumns = true;
+            dgvInventory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvInventory.BackgroundColor = Color.White;
             dgvInventory.BorderStyle = BorderStyle.Fixed3D;
             dgvInventory.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvInventory.ColumnHeadersHeight = 36;
-            dgvInventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvInventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvInventory.Dock = DockStyle.Fill;
             dgvInventory.EnableHeadersVisualStyles = false;
             dgvInventory.GridColor = SystemColors.MenuHighlight;

@@ -22,11 +22,14 @@ namespace LibraryManagementSystem.Panels
         {
             InitializeComponent();
 
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
+
             txtSearch.TextChanged += (s, e) => FilterAndBind(txtSearch.Text);
             btnRefresh.Click += (s, e) => { txtSearch.Clear(); LoadActiveBorrows(); };
             dgvActive.SelectionChanged += DgvActive_SelectionChanged;
             btnReturn.Click += BtnReturn_Click;
-            this.SizeChanged += ReturnPanel_SizeChanged;
+            pnlDetailsCard.Resize += (s, e) => LayoutDetailsCard();
+            split.SizeChanged += (s, e) => EnsureSplitterDistance();
 
             this.Load += ReturnPanel_Load;
         }
@@ -36,16 +39,43 @@ namespace LibraryManagementSystem.Panels
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgvActive);
-           
+            ConfigureGridColumns();
+
+            EnsureSplitterDistance();
+            LayoutDetailsCard();
+
             LoadActiveBorrows();
         }
 
-        private void ReturnPanel_SizeChanged(object? sender, EventArgs e)
+        private void EnsureSplitterDistance()
         {
-            if (split.Width > 500)
+            const int targetPanel2Width = 310;
+            if (split.Width > targetPanel2Width + 200)
             {
-                split.SplitterDistance = Math.Max(200, split.Width - 340);
+                int desired = split.Width - targetPanel2Width - split.SplitterWidth;
+                if (desired >= 200 && desired != split.SplitterDistance)
+                {
+                    split.SplitterDistance = desired;
+                }
             }
+        }
+
+        private void LayoutDetailsCard()
+        {
+            int margin = 12;
+            int availableWidth = Math.Max(100, pnlDetailsCard.ClientSize.Width - (margin * 2));
+            int bottom = pnlDetailsCard.ClientSize.Height;
+
+            btnReturn.SetBounds(margin, bottom - 48, availableWidth, 36);
+            lblDetailFine.SetBounds(margin, bottom - 96, availableWidth, 42);
+
+            int contentWidth = Math.Max(100, pnlDetailsCard.ClientSize.Width - 32);
+            lblDetailTitle.Width = contentWidth;
+            lblDetailMember.Width = contentWidth;
+            lblDetailBorrow.Width = contentWidth;
+            lblDetailDue.Width = contentWidth;
+            lblDetailStatus.Width = contentWidth;
+            lblDetailBooks.SetBounds(16, 244, contentWidth, Math.Max(40, bottom - 96 - 244 - 8));
         }
 
         public void LoadActiveBorrows()
@@ -187,6 +217,51 @@ namespace LibraryManagementSystem.Panels
             {
                 MessageBox.Show($"Could not process book return.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void ConfigureGridColumns()
+        {
+            dgvActive.AllowUserToResizeColumns = true;
+            dgvActive.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvActive.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgvActive.ColumnHeadersHeight = 36;
+
+            colId.Name = "Id";
+            colId.HeaderText = "Borrow ID";
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.Width = 120;
+            colId.MinimumWidth = 115;
+            colId.Resizable = DataGridViewTriState.True;
+
+            colMember.HeaderText = "Member Name";
+            colMember.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colMember.FillWeight = 28F;
+            colMember.MinimumWidth = 135;
+            colMember.Resizable = DataGridViewTriState.True;
+
+            colBorrow.HeaderText = "Borrow Date";
+            colBorrow.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colBorrow.Width = 160;
+            colBorrow.MinimumWidth = 150;
+            colBorrow.Resizable = DataGridViewTriState.True;
+
+            colDue.HeaderText = "Due Date";
+            colDue.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colDue.Width = 115;
+            colDue.MinimumWidth = 105;
+            colDue.Resizable = DataGridViewTriState.True;
+
+            colStatus.HeaderText = "Status";
+            colStatus.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colStatus.Width = 95;
+            colStatus.MinimumWidth = 90;
+            colStatus.Resizable = DataGridViewTriState.True;
+
+            colBooks.HeaderText = "Books";
+            colBooks.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colBooks.FillWeight = 72F;
+            colBooks.MinimumWidth = 220;
+            colBooks.Resizable = DataGridViewTriState.True;
         }
     }
 }

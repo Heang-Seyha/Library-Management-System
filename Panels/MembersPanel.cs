@@ -1,3 +1,7 @@
+using System;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
 using LibraryManagementSystem.Dialogs;
 using LibraryManagementSystem.Helpers;
 using LibraryManagementSystem.Models;
@@ -5,17 +9,19 @@ using LibraryManagementSystem.Services;
 
 namespace LibraryManagementSystem.Panels
 {
-    /// <summary>
+    /// 
     /// Member management panel for viewing, searching, adding, editing, and deleting library members.
     /// 100% compatible with the Visual Studio WinForms Designer.
-    /// </summary>
+    /// 
     public partial class MembersPanel : UserControl
     {
-        private List<Member> _members = new();
+        private Member[] _members = Array.Empty<Member>();
 
         public MembersPanel()
         {
             InitializeComponent();
+
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
             this.Load += MembersPanel_Load;
         }
 
@@ -23,7 +29,11 @@ namespace LibraryManagementSystem.Panels
         {
             if (DesignMode) return;
 
+            // 1. Style DataGridView ជាមុនសិន
             UIHelper.StyleDataGridView(dgv);
+
+            // 2. កំណត់ទំហំ Column និង Header បន្ទាប់ពី Style ដើម្បីកុំឱ្យ StyleDataGridView ទៅ override វា
+            ApplyTableLayout();
 
             // Wire events
             txtSearch.TextChanged += (s, ev) => FilterMembers();
@@ -37,13 +47,57 @@ namespace LibraryManagementSystem.Panels
             LoadData();
         }
 
+        private void ApplyTableLayout()
+        {
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgv.ColumnHeadersHeight = 36;
+
+            colId.HeaderText = "Member ID";
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.Width = 120;
+            colId.MinimumWidth = 115;
+            colId.Resizable = DataGridViewTriState.True;
+
+            colName.HeaderText = "Full Name";
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 34F;
+            colName.MinimumWidth = 190;
+            colName.Resizable = DataGridViewTriState.True;
+
+            colPhone.HeaderText = "Phone";
+            colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colPhone.Width = 120;
+            colPhone.MinimumWidth = 110;
+            colPhone.Resizable = DataGridViewTriState.True;
+
+            colEmail.HeaderText = "Email Address";
+            colEmail.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colEmail.FillWeight = 33F;
+            colEmail.MinimumWidth = 160;
+            colEmail.Resizable = DataGridViewTriState.True;
+
+            colAddress.HeaderText = "Address";
+            colAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colAddress.FillWeight = 33F;
+            colAddress.MinimumWidth = 170;
+            colAddress.Resizable = DataGridViewTriState.True;
+
+            colJoinDate.HeaderText = "Join Date";
+            colJoinDate.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colJoinDate.Width = 110;
+            colJoinDate.MinimumWidth = 100;
+            colJoinDate.Resizable = DataGridViewTriState.True;
+        }
+
         public void LoadData()
         {
             try
             {
                 this.Cursor = Cursors.WaitCursor;
                 using var ctx = Program.CreateDbContext();
-                _members = new MemberService(ctx).GetAll();
+                _members = new MemberService(ctx).GetAll().ToArray();
                 BindGrid(_members, false);
             }
             catch (Exception ex)
@@ -72,12 +126,12 @@ namespace LibraryManagementSystem.Panels
             var filtered = _members.Where(m =>
                 m.Name.ToLower().Contains(q) ||
                 m.Phone.ToLower().Contains(q) ||
-                (m.Email != null && m.Email.ToLower().Contains(q))).ToList();
+                (m.Email != null && m.Email.ToLower().Contains(q))).ToArray();
 
             BindGrid(filtered, true, q);
         }
 
-        private void BindGrid(List<Member> members, bool isSearchActive, string? query = null)
+        private void BindGrid(Member[] members, bool isSearchActive, string? query = null)
         {
             dgv.Rows.Clear();
             foreach (var m in members)
@@ -85,7 +139,7 @@ namespace LibraryManagementSystem.Panels
                 dgv.Rows.Add(m.MemberId, m.Name, m.Phone, m.Email, m.Address, m.JoinDate.ToShortDateString());
             }
 
-            UIHelper.UpdateGridState(dgv, members.Count, isSearchActive, "Member", query, () =>
+            UIHelper.UpdateGridState(dgv, members.Length, isSearchActive, "Member", query, () =>
             {
                 txtSearch.Clear();
                 LoadData();

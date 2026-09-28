@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Panels
+namespace LibraryManagementSystem.Panels
 {
     partial class LibrariansPanel
     {
@@ -7,10 +7,7 @@
         private System.Windows.Forms.Panel pnlHeaderContainer;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubtitle;
 
-        private System.Windows.Forms.Panel pnlWarn;
-        private System.Windows.Forms.Label lblWarnText;
 
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.FlowLayoutPanel flpActions;
@@ -201,12 +198,13 @@
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgv.BackgroundColor = Color.White;
             dgv.BorderStyle = BorderStyle.Fixed3D;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colUsername, colRole, colPosition, colPhone });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
@@ -224,51 +222,63 @@
             // 
             // colId
             // 
-            colId.FillWeight = 6F;
-            colId.HeaderText = "ID";
-            colId.MinimumWidth = 60;
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.HeaderText = "Librarian ID";
+            colId.MinimumWidth = 140;
             colId.Name = "colId";
             colId.ReadOnly = true;
+            colId.Resizable = DataGridViewTriState.True;
+            colId.Width = 150;
             // 
             // colName
             // 
-            colName.FillWeight = 28F;
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 26F;
             colName.HeaderText = "Full Name";
             colName.MinimumWidth = 140;
             colName.Name = "colName";
             colName.ReadOnly = true;
+            colName.Resizable = DataGridViewTriState.True;
             // 
             // colUsername
             // 
-            colUsername.FillWeight = 20F;
+            colUsername.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colUsername.FillWeight = 34F;
             colUsername.HeaderText = "Username";
-            colUsername.MinimumWidth = 110;
+            colUsername.MinimumWidth = 120;
             colUsername.Name = "colUsername";
             colUsername.ReadOnly = true;
+            colUsername.Resizable = DataGridViewTriState.True;
             // 
             // colRole
             // 
-            colRole.FillWeight = 16F;
+            colRole.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colRole.HeaderText = "Role";
             colRole.MinimumWidth = 90;
             colRole.Name = "colRole";
             colRole.ReadOnly = true;
+            colRole.Resizable = DataGridViewTriState.True;
+            colRole.Width = 95;
             // 
             // colPosition
             // 
-            colPosition.FillWeight = 20F;
+            colPosition.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colPosition.FillWeight = 40F;
             colPosition.HeaderText = "Position";
-            colPosition.MinimumWidth = 110;
+            colPosition.MinimumWidth = 130;
             colPosition.Name = "colPosition";
             colPosition.ReadOnly = true;
+            colPosition.Resizable = DataGridViewTriState.True;
             // 
             // colPhone
             // 
-            colPhone.FillWeight = 18F;
+            colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colPhone.HeaderText = "Phone";
-            colPhone.MinimumWidth = 110;
+            colPhone.MinimumWidth = 150;
             colPhone.Name = "colPhone";
             colPhone.ReadOnly = true;
+            colPhone.Resizable = DataGridViewTriState.True;
+            colPhone.Width = 160;
             // 
             // LibrariansPanel
             // 

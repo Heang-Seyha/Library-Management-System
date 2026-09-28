@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Panels
+namespace LibraryManagementSystem.Panels
 {
     partial class CategoriesPanel
     {
@@ -7,7 +7,6 @@
         private System.Windows.Forms.Panel pnlHeaderContainer;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubtitle;
 
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.FlowLayoutPanel flpActions;
@@ -192,12 +191,13 @@
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgv.BackgroundColor = Color.White;
             dgv.BorderStyle = BorderStyle.Fixed3D;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colDesc });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
@@ -215,27 +215,33 @@
             // 
             // colId
             // 
-            colId.FillWeight = 8F;
-            colId.HeaderText = "ID";
-            colId.MinimumWidth = 60;
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.HeaderText = "Category ID";
+            colId.MinimumWidth = 150;
             colId.Name = "colId";
             colId.ReadOnly = true;
+            colId.Resizable = DataGridViewTriState.True;
+            colId.Width = 160;
             // 
             // colName
             // 
-            colName.FillWeight = 32F;
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 40F;
             colName.HeaderText = "Category Name";
-            colName.MinimumWidth = 140;
+            colName.MinimumWidth = 160;
             colName.Name = "colName";
             colName.ReadOnly = true;
+            colName.Resizable = DataGridViewTriState.True;
             // 
             // colDesc
             // 
+            colDesc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colDesc.FillWeight = 60F;
             colDesc.HeaderText = "Description";
             colDesc.MinimumWidth = 200;
             colDesc.Name = "colDesc";
             colDesc.ReadOnly = true;
+            colDesc.Resizable = DataGridViewTriState.True;
             // 
             // CategoriesPanel
             // 

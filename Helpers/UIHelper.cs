@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 using System.Drawing.Drawing2D;
 
 namespace LibraryManagementSystem.Helpers
@@ -9,6 +11,52 @@ namespace LibraryManagementSystem.Helpers
     /// </summary>
     public static class UIHelper
     {
+        // ── TextBox Left Padding (EM_SETMARGINS) ────────────────────────────
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+        private const int EM_SETMARGINS = 0xd3;
+        private const int EC_LEFTMARGIN = 0x1;
+
+        /// <summary>
+        /// Sets inner left padding (margin) for a TextBox via Win32 EM_SETMARGINS.
+        /// Handles already created handles and defers if the handle is not yet created.
+        /// </summary>
+        public static void SetTextBoxLeftPadding(TextBox textBox, int leftPaddingPixels = 8)
+        {
+            if (textBox == null) return;
+            if (textBox.IsHandleCreated)
+            {
+                SendMessage(textBox.Handle, EM_SETMARGINS, (IntPtr)EC_LEFTMARGIN, (IntPtr)leftPaddingPixels);
+            }
+            else
+            {
+                textBox.HandleCreated += (s, e) =>
+                {
+                    SendMessage(textBox.Handle, EM_SETMARGINS, (IntPtr)EC_LEFTMARGIN, (IntPtr)leftPaddingPixels);
+                };
+            }
+        }
+
+        /// <summary>
+        /// Helper to apply padding recursively to all TextBoxes inside a control/container.
+        /// </summary>
+        public static void ApplyPaddingToAllTextBoxes(Control parent, int leftPaddingPixels = 8)
+        {
+            if (parent == null) return;
+            foreach (Control c in parent.Controls)
+            {
+                if (c is TextBox tb)
+                {
+                    SetTextBoxLeftPadding(tb, leftPaddingPixels);
+                }
+                else if (c.HasChildren)
+                {
+                    ApplyPaddingToAllTextBoxes(c, leftPaddingPixels);
+                }
+            }
+        }
+
+
         // ── Color Palette — Soft Light Blue (Matches Exit Button #DCEBFC) ─────
         public static readonly Color PrimaryAccent     = Color.FromArgb(220, 235, 252); // #DCEBFC Soft light blue matching exit button
         public static readonly Color PrimaryAccentDark = Color.FromArgb(195, 220, 250); // #C3DCFA Hover / active highlight tint
@@ -148,7 +196,7 @@ namespace LibraryManagementSystem.Helpers
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.GridColor = Color.FromArgb(226, 232, 240); // #E2E8F0 subtle modern divider
             dgv.RowHeadersVisible = false;
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv.ReadOnly = true;
             dgv.AllowUserToAddRows = false;
@@ -166,7 +214,8 @@ namespace LibraryManagementSystem.Helpers
                 SelectionForeColor = TextDark
             };
             dgv.ColumnHeadersHeight = DefaultGridHdrHeight;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgv.AllowUserToResizeColumns = true;
 
             // Compact row style (32px height, 8px/4px padding)
             dgv.DefaultCellStyle = new DataGridViewCellStyle
@@ -398,7 +447,7 @@ namespace LibraryManagementSystem.Helpers
         /// <summary>Creates a styled text search box.</summary>
         public static TextBox CreateSearchBox(int width = 320)
         {
-            return new TextBox
+            var tb = new TextBox
             {
                 Size = new Size(width, DefaultButtonHeight),
                 Font = new Font("Segoe UI", 9.5f),
@@ -407,6 +456,8 @@ namespace LibraryManagementSystem.Helpers
                 ForeColor = TextDark,
                 PlaceholderText = "Search..."
             };
+            SetTextBoxLeftPadding(tb, 8);
+            return tb;
         }
 
         /// <summary>Creates a styled text search box (position-overload for backward compatibility).</summary>

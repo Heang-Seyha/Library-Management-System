@@ -1,75 +1,58 @@
-﻿using LibraryManagementSystem.Helpers;
+using LibraryManagementSystem.Helpers;
 using LibraryManagementSystem.Services;
-using System.Runtime.InteropServices;
 
 namespace LibraryManagementSystem.Forms
 {
     public partial class LoginForm : Form
     {
-        // កូដ Win32 API សម្រាប់រុញគម្លាតខាងឆ្វេងនៃ TextBox (Inner Left Padding)
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-        private const int EM_SETMARGINS = 0xd3;
-        private const int EC_LEFTMARGIN = 0x1;
-
         public LoginForm()
         {
             InitializeComponent();
             LoadAppLogo();
 
-            // កំណត់គម្លាតឆ្វេង 8px លើ TextBox ទាំងពីរឱ្យអក្សរមិនកៀកគែមឆ្វេង
-            SetTextBoxLeftPadding(txtUsername, 8);
-            SetTextBoxLeftPadding(txtPassword, 8);
-        }
-
-        private static void SetTextBoxLeftPadding(TextBox textBox, int leftPaddingPixels)
-        {
-            if (textBox.IsHandleCreated)
-            {
-                SendMessage(textBox.Handle, EM_SETMARGINS, (IntPtr)EC_LEFTMARGIN, (IntPtr)leftPaddingPixels);
-            }
-            else
-            {
-                textBox.HandleCreated += (s, e) =>
-                {
-                    SendMessage(textBox.Handle, EM_SETMARGINS, (IntPtr)EC_LEFTMARGIN, (IntPtr)leftPaddingPixels);
-                };
-            }
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
         }
 
         private void LoadAppLogo()
         {
             try
             {
-                string imagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "libraryLogo.png");
-                if (!File.Exists(imagePath))
+                string[] candidates = new[]
                 {
-                    // ស្វែងរកក្នុង Project Directory ប្រសិនបើរូបភាពនៅទីតាំង Root
-                    imagePath = Path.Combine(Directory.GetCurrentDirectory(), "libraryLogo.png");
-                }
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "libraryLogo.png"),
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icons", "libraryLogo.png"),
+                    Path.Combine(Directory.GetCurrentDirectory(), "libraryLogo.png"),
+                    Path.Combine(Directory.GetCurrentDirectory(), "icons", "libraryLogo.png"),
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "libraryLogo.png"),
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "icons", "libraryLogo.png")
+                };
 
-                if (File.Exists(imagePath))
+                foreach (var path in candidates)
                 {
-                    picLogo.Image = Image.FromFile(imagePath);
+                    if (File.Exists(path))
+                    {
+                        using var stream = new MemoryStream(File.ReadAllBytes(path));
+                        picLogo.Image = Image.FromStream(stream);
+                        break;
+                    }
                 }
             }
             catch
             {
-                // បើមានបញ្ហាផ្លូវ path វានឹងមិនបង្កឱ្យ Error Crash នោះទេ
             }
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        private void btnLogin_Click(object? sender, EventArgs e)
         {
             PerformLogin();
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object? sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        private void txtPassword_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -79,7 +62,7 @@ namespace LibraryManagementSystem.Forms
             }
         }
 
-        private void txtUsername_KeyDown(object sender, KeyEventArgs e)
+        private void txtUsername_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -89,17 +72,17 @@ namespace LibraryManagementSystem.Forms
             }
         }
 
-        private void txtUsername_TextChanged(object sender, EventArgs e)
+        private void txtUsername_TextChanged(object? sender, EventArgs e)
         {
             ClearUsernameError();
         }
 
-        private void txtPassword_TextChanged(object sender, EventArgs e)
+        private void txtPassword_TextChanged(object? sender, EventArgs e)
         {
             ClearPasswordError();
         }
 
-        private void chkShowPassword_CheckedChanged(object sender, EventArgs e)
+        private void chkShowPassword_CheckedChanged(object? sender, EventArgs e)
         {
             txtPassword.UseSystemPasswordChar = !chkShowPassword.Checked;
         }
@@ -145,8 +128,18 @@ namespace LibraryManagementSystem.Forms
 
                 if (librarian == null)
                 {
-                    SetGeneralError("Invalid username or password. Please try again.");
+                    // ១. បង្ហាញសារ Error ពណ៌ក្រហម
+                    SetGeneralError("​​Invalid username or password. Please try again.");
+
+                    // ២. ដោះ Event TextChanged ចេញជាបណ្តោះអាសន្ន ដើម្បីកុំឱ្យវាបិទសារ Error វិញ
+                    txtPassword.TextChanged -= txtPassword_TextChanged;
+
+                    // ៣. សម្អាត Password Textbox
                     txtPassword.Clear();
+
+                    // ៤. ភ្ជាប់ Event TextChanged ត្រឡប់មកវិញ (ពេល user វាយតួអក្សរថ្មី ទើប Error បាត់)
+                    txtPassword.TextChanged += txtPassword_TextChanged;
+
                     txtPassword.Focus();
                     return;
                 }
@@ -173,18 +166,21 @@ namespace LibraryManagementSystem.Forms
         {
             lblUsernameError.Text = message;
             lblUsernameError.Visible = true;
+            lblUsernameError.BringToFront();
         }
 
         private void SetPasswordError(string message)
         {
             lblPasswordError.Text = message;
             lblPasswordError.Visible = true;
+            lblPasswordError.BringToFront();
         }
 
         private void SetGeneralError(string message)
         {
             lblGeneralError.Text = message;
             lblGeneralError.Visible = true;
+            lblGeneralError.BringToFront();
         }
 
         private void ClearUsernameError()

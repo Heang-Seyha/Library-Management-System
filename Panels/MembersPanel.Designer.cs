@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Panels
+namespace LibraryManagementSystem.Panels
 {
     partial class MembersPanel
     {
@@ -7,7 +7,6 @@
         private System.Windows.Forms.Panel pnlHeaderContainer;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubtitle;
 
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.TextBox txtSearch;
@@ -212,12 +211,10 @@
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgv.BackgroundColor = Color.White;
             dgv.BorderStyle = BorderStyle.Fixed3D;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colPhone, colEmail, colAddress, colJoinDate });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
@@ -235,51 +232,63 @@
             // 
             // colId
             // 
-            colId.FillWeight = 8F;
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colId.HeaderText = "Member ID";
-            colId.MinimumWidth = 80;
+            colId.MinimumWidth = 115;
             colId.Name = "colId";
             colId.ReadOnly = true;
+            colId.Resizable = DataGridViewTriState.True;
+            colId.Width = 120;
             // 
             // colName
             // 
-            colName.FillWeight = 24F;
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 34F;
             colName.HeaderText = "Full Name";
-            colName.MinimumWidth = 140;
+            colName.MinimumWidth = 190;
             colName.Name = "colName";
             colName.ReadOnly = true;
+            colName.Resizable = DataGridViewTriState.True;
             // 
             // colPhone
             // 
-            colPhone.FillWeight = 16F;
+            colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colPhone.HeaderText = "Phone";
             colPhone.MinimumWidth = 110;
             colPhone.Name = "colPhone";
             colPhone.ReadOnly = true;
+            colPhone.Resizable = DataGridViewTriState.True;
+            colPhone.Width = 120;
             // 
             // colEmail
             // 
-            colEmail.FillWeight = 22F;
+            colEmail.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colEmail.FillWeight = 33F;
             colEmail.HeaderText = "Email Address";
-            colEmail.MinimumWidth = 130;
+            colEmail.MinimumWidth = 160;
             colEmail.Name = "colEmail";
             colEmail.ReadOnly = true;
+            colEmail.Resizable = DataGridViewTriState.True;
             // 
             // colAddress
             // 
-            colAddress.FillWeight = 26F;
+            colAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colAddress.FillWeight = 33F;
             colAddress.HeaderText = "Address";
-            colAddress.MinimumWidth = 130;
+            colAddress.MinimumWidth = 170;
             colAddress.Name = "colAddress";
             colAddress.ReadOnly = true;
+            colAddress.Resizable = DataGridViewTriState.True;
             // 
             // colJoinDate
             // 
-            colJoinDate.FillWeight = 14F;
+            colJoinDate.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colJoinDate.HeaderText = "Join Date";
-            colJoinDate.MinimumWidth = 90;
+            colJoinDate.MinimumWidth = 100;
             colJoinDate.Name = "colJoinDate";
             colJoinDate.ReadOnly = true;
+            colJoinDate.Resizable = DataGridViewTriState.True;
+            colJoinDate.Width = 110;
             // 
             // MembersPanel
             // 

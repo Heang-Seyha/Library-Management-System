@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Panels
+namespace LibraryManagementSystem.Panels
 {
     partial class BorrowPanel
     {
@@ -9,7 +9,6 @@
         private System.Windows.Forms.Panel pnlHeaderContainer;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubtitle;
 
         private System.Windows.Forms.Panel pnlHost;
         private System.Windows.Forms.TableLayoutPanel tlpTop;
@@ -170,12 +169,13 @@
             // 
             dgvBorrowItems.AllowUserToAddRows = false;
             dgvBorrowItems.AllowUserToDeleteRows = false;
-            dgvBorrowItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvBorrowItems.AllowUserToResizeColumns = true;
+            dgvBorrowItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvBorrowItems.BackgroundColor = Color.White;
             dgvBorrowItems.BorderStyle = BorderStyle.Fixed3D;
             dgvBorrowItems.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvBorrowItems.ColumnHeadersHeight = 36;
-            dgvBorrowItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvBorrowItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvBorrowItems.Columns.AddRange(new DataGridViewColumn[] { colBookId, colTitle, colISBN, colAvailable, colQty });
             dgvBorrowItems.Dock = DockStyle.Fill;
             dgvBorrowItems.EnableHeadersVisualStyles = false;
@@ -193,43 +193,53 @@
             // 
             // colBookId
             // 
-            colBookId.FillWeight = 8F;
-            colBookId.HeaderText = "ID";
-            colBookId.MinimumWidth = 60;
-            colBookId.Name = "colBookId";
+            colBookId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colBookId.HeaderText = "Book ID";
+            colBookId.MinimumWidth = 90;
+            colBookId.Name = "BookId";
             colBookId.ReadOnly = true;
+            colBookId.Resizable = DataGridViewTriState.True;
+            colBookId.Width = 95;
             // 
             // colTitle
             // 
-            colTitle.FillWeight = 50F;
+            colTitle.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTitle.FillWeight = 100F;
             colTitle.HeaderText = "Book Title";
-            colTitle.MinimumWidth = 160;
+            colTitle.MinimumWidth = 180;
             colTitle.Name = "colTitle";
             colTitle.ReadOnly = true;
+            colTitle.Resizable = DataGridViewTriState.True;
             // 
             // colISBN
             // 
-            colISBN.FillWeight = 22F;
+            colISBN.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colISBN.HeaderText = "ISBN";
-            colISBN.MinimumWidth = 130;
+            colISBN.MinimumWidth = 155;
             colISBN.Name = "colISBN";
             colISBN.ReadOnly = true;
+            colISBN.Resizable = DataGridViewTriState.True;
+            colISBN.Width = 165;
             // 
             // colAvailable
             // 
-            colAvailable.FillWeight = 10F;
+            colAvailable.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colAvailable.HeaderText = "Available";
-            colAvailable.MinimumWidth = 80;
+            colAvailable.MinimumWidth = 110;
             colAvailable.Name = "colAvailable";
             colAvailable.ReadOnly = true;
+            colAvailable.Resizable = DataGridViewTriState.True;
+            colAvailable.Width = 115;
             // 
             // colQty
             // 
-            colQty.FillWeight = 10F;
+            colQty.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colQty.HeaderText = "Qty to Borrow";
-            colQty.MinimumWidth = 80;
+            colQty.MinimumWidth = 150;
             colQty.Name = "colQty";
             colQty.ReadOnly = true;
+            colQty.Resizable = DataGridViewTriState.True;
+            colQty.Width = 160;
             // 
             // pnlGridHeader
             // 

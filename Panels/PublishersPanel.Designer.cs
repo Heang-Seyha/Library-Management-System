@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Panels
+namespace LibraryManagementSystem.Panels
 {
     partial class PublishersPanel
     {
@@ -7,7 +7,6 @@
         private System.Windows.Forms.Panel pnlHeaderContainer;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubtitle;
 
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.FlowLayoutPanel flpActions;
@@ -194,12 +193,13 @@
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgv.AllowUserToResizeColumns = true;
+            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgv.BackgroundColor = Color.White;
             dgv.BorderStyle = BorderStyle.Fixed3D;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colAddress, colPhone });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
@@ -217,35 +217,43 @@
             // 
             // colId
             // 
-            colId.FillWeight = 8F;
-            colId.HeaderText = "ID";
-            colId.MinimumWidth = 60;
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.HeaderText = "Publisher ID";
+            colId.MinimumWidth = 140;
             colId.Name = "colId";
             colId.ReadOnly = true;
+            colId.Resizable = DataGridViewTriState.True;
+            colId.Width = 150;
             // 
             // colName
             // 
-            colName.FillWeight = 32F;
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.FillWeight = 30F;
             colName.HeaderText = "Publisher Name";
-            colName.MinimumWidth = 140;
+            colName.MinimumWidth = 150;
             colName.Name = "colName";
             colName.ReadOnly = true;
+            colName.Resizable = DataGridViewTriState.True;
             // 
             // colAddress
             // 
-            colAddress.FillWeight = 42F;
+            colAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colAddress.FillWeight = 70F;
             colAddress.HeaderText = "Address";
             colAddress.MinimumWidth = 180;
             colAddress.Name = "colAddress";
             colAddress.ReadOnly = true;
+            colAddress.Resizable = DataGridViewTriState.True;
             // 
             // colPhone
             // 
-            colPhone.FillWeight = 18F;
+            colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colPhone.HeaderText = "Contact Phone";
-            colPhone.MinimumWidth = 120;
+            colPhone.MinimumWidth = 170;
             colPhone.Name = "colPhone";
             colPhone.ReadOnly = true;
+            colPhone.Resizable = DataGridViewTriState.True;
+            colPhone.Width = 180;
             // 
             // PublishersPanel
             // 

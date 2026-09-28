@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystem.Dialogs;
+using LibraryManagementSystem.Dialogs;
 using LibraryManagementSystem.Helpers;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Services;
@@ -16,6 +16,8 @@ namespace LibraryManagementSystem.Panels
         public BooksPanel()
         {
             InitializeComponent();
+
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
             this.Load += BooksPanel_Load;
         }
 
@@ -24,6 +26,7 @@ namespace LibraryManagementSystem.Panels
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgvBooks);
+            ConfigureGridColumns();
 
             // Wire events
             txtSearch.TextChanged += (s, ev) => SearchBooks();
@@ -195,6 +198,62 @@ namespace LibraryManagementSystem.Panels
         private void pnlHeader_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void ConfigureGridColumns()
+        {
+            dgvBooks.AllowUserToResizeColumns = true;
+            dgvBooks.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvBooks.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgvBooks.ColumnHeadersHeight = 36;
+
+            colId.HeaderText = "Book ID";
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colId.Width = 95;
+            colId.MinimumWidth = 90;
+            colId.Resizable = DataGridViewTriState.True;
+
+            colTitle.HeaderText = "Title";
+            colTitle.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colTitle.FillWeight = 62F;
+            colTitle.MinimumWidth = 180;
+            colTitle.Resizable = DataGridViewTriState.True;
+
+            colISBN.HeaderText = "ISBN";
+            colISBN.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colISBN.Width = 165;
+            colISBN.MinimumWidth = 155;
+            colISBN.Resizable = DataGridViewTriState.True;
+
+            colAuthor.HeaderText = "Author";
+            colAuthor.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colAuthor.FillWeight = 20F;
+            colAuthor.MinimumWidth = 120;
+            colAuthor.Resizable = DataGridViewTriState.True;
+
+            colCategory.HeaderText = "Category";
+            colCategory.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colCategory.FillWeight = 18F;
+            colCategory.MinimumWidth = 110;
+            colCategory.Resizable = DataGridViewTriState.True;
+
+            colYear.HeaderText = "Year";
+            colYear.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colYear.Width = 80;
+            colYear.MinimumWidth = 75;
+            colYear.Resizable = DataGridViewTriState.True;
+
+            colAvailable.HeaderText = "Available";
+            colAvailable.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colAvailable.Width = 115;
+            colAvailable.MinimumWidth = 110;
+            colAvailable.Resizable = DataGridViewTriState.True;
+
+            colTotal.HeaderText = "Total";
+            colTotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colTotal.Width = 85;
+            colTotal.MinimumWidth = 80;
+            colTotal.Resizable = DataGridViewTriState.True;
         }
     }
 }

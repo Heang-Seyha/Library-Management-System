@@ -32,7 +32,8 @@ namespace LibraryManagementSystem.Dialogs
             _textBoxes = new TextBox[fields.Length];
             _errorLabels = new Label[fields.Length];
 
-            InitializeComponent();
+            InitializeComponent();
+            UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
 
             this.Text = $"Library Management System — {title}";
             lblTitle.Text = title;
@@ -42,16 +43,17 @@ namespace LibraryManagementSystem.Dialogs
 
         private void BuildFields()
         {
-            int fieldHeight = 58;
+            int fieldHeight = 82;
             pnlFields.Controls.Clear();
             pnlFields.Height = _fields.Length * fieldHeight;
 
-            int totalHeight = Math.Max(220, _fields.Length * fieldHeight + 110);
+            int totalHeight = Math.Max(280, pnlFields.Bottom + 68);
             this.ClientSize = new Size(500, totalHeight);
+            this.MinimumSize = new Size(500, totalHeight);
 
-            // Re-position buttons at bottom of content
-            btnCancel.Location = new Point(250, pnlFields.Bottom + 12);
-            btnSave.Location = new Point(370, pnlFields.Bottom + 12);
+            // Re-position buttons at bottom of content with comfortable spacing
+            btnCancel.Location = new Point(250, pnlFields.Bottom + 16);
+            btnSave.Location = new Point(370, pnlFields.Bottom + 16);
 
             for (int i = 0; i < _fields.Length; i++)
             {
@@ -64,7 +66,7 @@ namespace LibraryManagementSystem.Dialogs
                     Font = new Font("Segoe UI", 9f, FontStyle.Bold),
                     ForeColor = Color.FromArgb(13, 59, 102),
                     Location = new Point(0, i * fieldHeight),
-                    Size = new Size(460, 18),
+                    Size = new Size(460, 20),
                     AutoSize = false
                 };
 
@@ -73,8 +75,8 @@ namespace LibraryManagementSystem.Dialogs
                     Text = field.value,
                     Font = new Font("Segoe UI", 9.5f),
                     ForeColor = Color.FromArgb(13, 59, 102),
-                    Location = new Point(0, i * fieldHeight + 20),
-                    Size = new Size(460, 26),
+                    Location = new Point(0, i * fieldHeight + 22),
+                    Size = new Size(460, 29),
                     BorderStyle = BorderStyle.FixedSingle,
                     MaxLength = field.maxLength,
                     UseSystemPasswordChar = field.isPassword
@@ -85,11 +87,12 @@ namespace LibraryManagementSystem.Dialogs
                     Text = "",
                     Font = new Font("Segoe UI", 8f),
                     ForeColor = Color.FromArgb(220, 38, 38),
-                    Location = new Point(0, i * fieldHeight + 46),
-                    Size = new Size(460, 14),
+                    Location = new Point(0, i * fieldHeight + 53),
+                    Size = new Size(460, 24),
                     Visible = false
                 };
 
+                UIHelper.SetTextBoxLeftPadding(txt, 8);
                 txt.TextChanged += (s, e) => ValidationHelper.ClearFieldError(txt, err);
 
                 _textBoxes[index] = txt;
@@ -98,6 +101,7 @@ namespace LibraryManagementSystem.Dialogs
                 pnlFields.Controls.Add(lbl);
                 pnlFields.Controls.Add(txt);
                 pnlFields.Controls.Add(err);
+                err.BringToFront();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Panels
+namespace LibraryManagementSystem.Panels
 {
     partial class ReturnPanel
     {
@@ -9,7 +9,6 @@
         private System.Windows.Forms.Panel pnlHeaderContainer;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubtitle;
 
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.TextBox txtSearch;
@@ -155,7 +154,7 @@
             // 
             split.Panel2.Controls.Add(pnlDetailsCard);
             split.Size = new Size(1002, 585);
-            split.SplitterDistance = 524;
+            split.SplitterDistance = 684;
             split.SplitterWidth = 8;
             split.TabIndex = 0;
             // 
@@ -168,19 +167,20 @@
             pnlGridCard.Location = new Point(0, 0);
             pnlGridCard.Name = "pnlGridCard";
             pnlGridCard.Padding = new Padding(10);
-            pnlGridCard.Size = new Size(524, 585);
+            pnlGridCard.Size = new Size(684, 585);
             pnlGridCard.TabIndex = 0;
             // 
             // dgvActive
             // 
             dgvActive.AllowUserToAddRows = false;
             dgvActive.AllowUserToDeleteRows = false;
-            dgvActive.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvActive.AllowUserToResizeColumns = true;
+            dgvActive.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvActive.BackgroundColor = Color.White;
             dgvActive.BorderStyle = BorderStyle.Fixed3D;
             dgvActive.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvActive.ColumnHeadersHeight = 36;
-            dgvActive.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvActive.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvActive.Columns.AddRange(new DataGridViewColumn[] { colId, colMember, colBorrow, colDue, colStatus, colBooks });
             dgvActive.Dock = DockStyle.Fill;
             dgvActive.EnableHeadersVisualStyles = false;
@@ -198,51 +198,63 @@
             // 
             // colId
             // 
-            colId.FillWeight = 10F;
+            colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colId.HeaderText = "Borrow ID";
-            colId.MinimumWidth = 70;
-            colId.Name = "colId";
+            colId.MinimumWidth = 115;
+            colId.Name = "Id";
             colId.ReadOnly = true;
+            colId.Resizable = DataGridViewTriState.True;
+            colId.Width = 120;
             // 
             // colMember
             // 
-            colMember.FillWeight = 30F;
+            colMember.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colMember.FillWeight = 28F;
             colMember.HeaderText = "Member Name";
-            colMember.MinimumWidth = 140;
+            colMember.MinimumWidth = 135;
             colMember.Name = "colMember";
             colMember.ReadOnly = true;
+            colMember.Resizable = DataGridViewTriState.True;
             // 
             // colBorrow
             // 
-            colBorrow.FillWeight = 18F;
+            colBorrow.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colBorrow.HeaderText = "Borrow Date";
-            colBorrow.MinimumWidth = 95;
+            colBorrow.MinimumWidth = 150;
             colBorrow.Name = "colBorrow";
             colBorrow.ReadOnly = true;
+            colBorrow.Resizable = DataGridViewTriState.True;
+            colBorrow.Width = 160;
             // 
             // colDue
             // 
-            colDue.FillWeight = 18F;
+            colDue.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colDue.HeaderText = "Due Date";
-            colDue.MinimumWidth = 95;
+            colDue.MinimumWidth = 105;
             colDue.Name = "colDue";
             colDue.ReadOnly = true;
+            colDue.Resizable = DataGridViewTriState.True;
+            colDue.Width = 115;
             // 
             // colStatus
             // 
-            colStatus.FillWeight = 14F;
+            colStatus.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colStatus.HeaderText = "Status";
-            colStatus.MinimumWidth = 85;
+            colStatus.MinimumWidth = 90;
             colStatus.Name = "colStatus";
             colStatus.ReadOnly = true;
+            colStatus.Resizable = DataGridViewTriState.True;
+            colStatus.Width = 95;
             // 
             // colBooks
             // 
-            colBooks.FillWeight = 10F;
+            colBooks.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colBooks.FillWeight = 72F;
             colBooks.HeaderText = "Books";
-            colBooks.MinimumWidth = 60;
+            colBooks.MinimumWidth = 220;
             colBooks.Name = "colBooks";
             colBooks.ReadOnly = true;
+            colBooks.Resizable = DataGridViewTriState.True;
             // 
             // pnlDetailsCard
             // 
@@ -265,7 +277,7 @@
             pnlDetailsCard.Location = new Point(0, 0);
             pnlDetailsCard.Name = "pnlDetailsCard";
             pnlDetailsCard.Padding = new Padding(12);
-            pnlDetailsCard.Size = new Size(470, 585);
+            pnlDetailsCard.Size = new Size(310, 585);
             pnlDetailsCard.TabIndex = 0;
             // 
             // btnReturn
@@ -280,7 +292,7 @@
             btnReturn.ForeColor = Color.Transparent;
             btnReturn.Location = new Point(12, 533);
             btnReturn.Name = "btnReturn";
-            btnReturn.Size = new Size(444, 36);
+            btnReturn.Size = new Size(286, 36);
             btnReturn.TabIndex = 12;
             btnReturn.Text = "Process Return";
             btnReturn.UseVisualStyleBackColor = false;
@@ -290,12 +302,12 @@
             lblDetailFine.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lblDetailFine.BackColor = Color.FromArgb(254, 242, 242);
             lblDetailFine.BorderStyle = BorderStyle.FixedSingle;
-            lblDetailFine.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            lblDetailFine.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             lblDetailFine.ForeColor = Color.FromArgb(192, 0, 0);
-            lblDetailFine.Location = new Point(12, 485);
+            lblDetailFine.Location = new Point(12, 483);
             lblDetailFine.Name = "lblDetailFine";
-            lblDetailFine.Padding = new Padding(6);
-            lblDetailFine.Size = new Size(444, 38);
+            lblDetailFine.Padding = new Padding(4);
+            lblDetailFine.Size = new Size(286, 42);
             lblDetailFine.TabIndex = 11;
             lblDetailFine.Text = "Fine: $0.00";
             lblDetailFine.TextAlign = ContentAlignment.MiddleCenter;
@@ -307,7 +319,7 @@
             lblDetailBooks.ForeColor = Color.FromArgb(13, 59, 102);
             lblDetailBooks.Location = new Point(16, 244);
             lblDetailBooks.Name = "lblDetailBooks";
-            lblDetailBooks.Size = new Size(436, 208);
+            lblDetailBooks.Size = new Size(278, 225);
             lblDetailBooks.TabIndex = 10;
             lblDetailBooks.Text = "—";
             // 
