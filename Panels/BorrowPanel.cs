@@ -189,7 +189,7 @@ namespace LibraryManagementSystem.Panels
 
             if (dtpDueDate.Value.Date <= DateTime.Today)
             {
-                MessageBox.Show("Due date must be in the future.", "Validation Error",
+                MessageBox.Show("Due date must be at least one day after borrow date.", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -201,7 +201,14 @@ namespace LibraryManagementSystem.Panels
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) != DialogResult.Yes) return;
 
-            var librarianId = SessionManager.CurrentLibrarian?.LibrarianId ?? 1;
+            if (SessionManager.CurrentLibrarian == null)
+            {
+                MessageBox.Show("You must be logged in to record a borrow transaction.", "Authentication Required",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var librarianId = SessionManager.CurrentLibrarian.LibrarianId;
             var items = _borrowItems.Values.Select(i => (i.book.BookId, i.quantity)).ToList();
 
             try

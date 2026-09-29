@@ -49,9 +49,16 @@ namespace LibraryManagementSystem.Services
                 return (false, "Cannot delete: books are assigned to this publisher.");
             var pub = _context.Publishers.Find(publisherId);
             if (pub == null) return (false, "Publisher not found.");
-            _context.Publishers.Remove(pub);
-            _context.SaveChanges();
-            return (true, "Publisher deleted successfully.");
+            try
+            {
+                _context.Publishers.Remove(pub);
+                _context.SaveChanges();
+                return (true, "Publisher deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Cannot delete publisher: {ex.Message}");
+            }
         }
     }
 }

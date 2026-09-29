@@ -250,9 +250,9 @@ namespace LibraryManagementSystem.Panels
             // colTitle
             // 
             colTitle.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colTitle.FillWeight = 62F;
+            colTitle.FillWeight = 42F;
             colTitle.HeaderText = "Title";
-            colTitle.MinimumWidth = 180;
+            colTitle.MinimumWidth = 160;
             colTitle.Name = "colTitle";
             colTitle.ReadOnly = true;
             colTitle.Resizable = DataGridViewTriState.True;
@@ -261,18 +261,18 @@ namespace LibraryManagementSystem.Panels
             // 
             colISBN.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colISBN.HeaderText = "ISBN";
-            colISBN.MinimumWidth = 155;
+            colISBN.MinimumWidth = 195;
             colISBN.Name = "colISBN";
             colISBN.ReadOnly = true;
             colISBN.Resizable = DataGridViewTriState.True;
-            colISBN.Width = 165;
+            colISBN.Width = 205;
             // 
             // colAuthor
             // 
             colAuthor.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colAuthor.FillWeight = 20F;
+            colAuthor.FillWeight = 30F;
             colAuthor.HeaderText = "Author";
-            colAuthor.MinimumWidth = 120;
+            colAuthor.MinimumWidth = 130;
             colAuthor.Name = "colAuthor";
             colAuthor.ReadOnly = true;
             colAuthor.Resizable = DataGridViewTriState.True;
@@ -280,9 +280,9 @@ namespace LibraryManagementSystem.Panels
             // colCategory
             // 
             colCategory.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colCategory.FillWeight = 18F;
+            colCategory.FillWeight = 28F;
             colCategory.HeaderText = "Category";
-            colCategory.MinimumWidth = 110;
+            colCategory.MinimumWidth = 130;
             colCategory.Name = "colCategory";
             colCategory.ReadOnly = true;
             colCategory.Resizable = DataGridViewTriState.True;

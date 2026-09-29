@@ -188,7 +188,8 @@ namespace LibraryManagementSystem.Dialogs
                 AvailableCopies = available,
                 CategoryId = (int)cmbCategory.SelectedValue!,
                 AuthorId = (int)cmbAuthor.SelectedValue!,
-                PublisherId = (int)cmbPublisher.SelectedValue!
+                PublisherId = (int)cmbPublisher.SelectedValue!,
+                RowVersion = _existing?.RowVersion ?? Array.Empty<byte>()
             };
 
             try

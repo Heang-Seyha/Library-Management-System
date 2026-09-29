@@ -11,17 +11,14 @@ namespace LibraryManagementSystem.Helpers
         /// <summary>The currently authenticated librarian. Null if not logged in.</summary>
         public static Librarian? CurrentLibrarian { get; private set; }
 
-        // Backward compatibility alias
-        public static Librarian? CurrentEmployee => CurrentLibrarian;
-
         /// <summary>True if there is an authenticated librarian in the session.</summary>
         public static bool IsLoggedIn => CurrentLibrarian != null;
 
         /// <summary>True if the current librarian has the Admin role.</summary>
-        public static bool IsAdmin => CurrentLibrarian?.Role == "Admin";
+        public static bool IsAdmin => CurrentLibrarian?.Role == AuthorizationHelper.RoleAdmin;
 
         /// <summary>True if the current librarian has the Librarian or Admin role.</summary>
-        public static bool IsLibrarian => CurrentLibrarian?.Role == "Librarian" || IsAdmin;
+        public static bool IsLibrarian => CurrentLibrarian?.Role == AuthorizationHelper.RoleLibrarian || IsAdmin;
 
         /// <summary>
         /// Sets the current session after a successful login.
@@ -38,5 +35,10 @@ namespace LibraryManagementSystem.Helpers
         {
             CurrentLibrarian = null;
         }
+
+        /// <summary>
+        /// Alias for Clear() to end the authenticated session.
+        /// </summary>
+        public static void Logout() => Clear();
     }
 }

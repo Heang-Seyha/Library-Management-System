@@ -48,9 +48,16 @@ namespace LibraryManagementSystem.Services
                 return (false, "Cannot delete: books are assigned to this author.");
             var author = _context.Authors.Find(authorId);
             if (author == null) return (false, "Author not found.");
-            _context.Authors.Remove(author);
-            _context.SaveChanges();
-            return (true, "Author deleted successfully.");
+            try
+            {
+                _context.Authors.Remove(author);
+                _context.SaveChanges();
+                return (true, "Author deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Cannot delete author: {ex.Message}");
+            }
         }
     }
 }

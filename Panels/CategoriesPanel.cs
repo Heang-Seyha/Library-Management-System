@@ -68,12 +68,6 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnAdd_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
-            {
-                MessageBox.Show("Administrator privileges are required to add categories.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             using var dlg = new SimpleEditDialog("Add Category", new (string, string, bool, int, bool)[]
             {
                 ("Category Name", "", false, 100, true),
@@ -104,12 +98,6 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnEdit_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
-            {
-                MessageBox.Show("Administrator privileges are required to edit categories.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             int id = SelectedId();
             if (id == -1)
             {
@@ -157,12 +145,6 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnDelete_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
-            {
-                MessageBox.Show("Administrator privileges are required to delete categories.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             int id = SelectedId();
             if (id == -1)
             {

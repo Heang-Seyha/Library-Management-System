@@ -84,7 +84,7 @@ namespace LibraryManagementSystem.Forms
             lblGroupOperations.Visible = !collapsed;
             lblGroupManagement.Visible = !collapsed;
             lblGroupMetadata.Visible = !collapsed;
-            lblGroupAdmin.Visible = !collapsed;
+            lblGroupAdmin.Visible = !collapsed && SessionManager.IsAdmin;
 
             foreach (var kvp in _buttonTitles)
             {
@@ -161,10 +161,10 @@ namespace LibraryManagementSystem.Forms
         private void InitNavRegistry()
         {
             _navRegistry["Dashboard"] = (btnNavDashboard, () => new DashboardPanel(NavigateTo), false);
-            _navRegistry["Borrow"] = (btnNavBorrow, () => new BorrowPanel(), false);
-            _navRegistry["Return"] = (btnNavReturn, () => new ReturnPanel(), false);
             _navRegistry["Books"] = (btnNavBooks, () => new BooksPanel(), false);
             _navRegistry["Members"] = (btnNavMembers, () => new MembersPanel(), false);
+            _navRegistry["Borrow"] = (btnNavBorrow, () => new BorrowPanel(), false);
+            _navRegistry["Return"] = (btnNavReturn, () => new ReturnPanel(), false);
             _navRegistry["Categories"] = (btnNavCategories, () => new CategoriesPanel(), false);
             _navRegistry["Authors"] = (btnNavAuthors, () => new AuthorsPanel(), false);
             _navRegistry["Publishers"] = (btnNavPublishers, () => new PublishersPanel(), false);
@@ -173,10 +173,10 @@ namespace LibraryManagementSystem.Forms
 
             // Register Titles for tooltip and collapsed sidebar support
             _buttonTitles[btnNavDashboard] = "Dashboard";
-            _buttonTitles[btnNavBorrow] = "Borrow Books";
-            _buttonTitles[btnNavReturn] = "Return Books";
             _buttonTitles[btnNavBooks] = "Books";
             _buttonTitles[btnNavMembers] = "Members";
+            _buttonTitles[btnNavBorrow] = "Borrow Books";
+            _buttonTitles[btnNavReturn] = "Return Books";
             _buttonTitles[btnNavCategories] = "Categories";
             _buttonTitles[btnNavAuthors] = "Authors";
             _buttonTitles[btnNavPublishers] = "Publishers";
@@ -298,21 +298,20 @@ namespace LibraryManagementSystem.Forms
             if (SessionManager.CurrentLibrarian != null)
             {
                 lblUserName.Text = SessionManager.CurrentLibrarian.Name;
-                string roleDisplay = SessionManager.CurrentLibrarian.Role == "Employee"
-                    ? "Librarian"
-                    : SessionManager.CurrentLibrarian.Role;
-                lblUserRole.Text = roleDisplay;
+                lblUserRole.Text = SessionManager.CurrentLibrarian.Role;
             }
             else
             {
                 lblUserName.Text = "Guest User";
-                lblUserRole.Text = "Librarian";
+                lblUserRole.Text = AuthorizationHelper.RoleLibrarian;
             }
 
             btnNavCategories.Visible = true;
             btnNavAuthors.Visible = true;
             btnNavPublishers.Visible = true;
             btnNavLibrarians.Visible = SessionManager.IsAdmin;
+            lblGroupAdmin.Visible = SessionManager.IsAdmin && !_isSidebarCollapsed;
+            pnlNavDivider5.Visible = SessionManager.IsAdmin;
 
             AdjustNavButtonHeights();
         }
@@ -418,10 +417,10 @@ namespace LibraryManagementSystem.Forms
             var navButtons = new Button[]
             {
                 btnNavDashboard,
-                btnNavBorrow,
-                btnNavReturn,
                 btnNavBooks,
                 btnNavMembers,
+                btnNavBorrow,
+                btnNavReturn,
                 btnNavCategories,
                 btnNavAuthors,
                 btnNavPublishers,
@@ -441,8 +440,8 @@ namespace LibraryManagementSystem.Forms
             var groupLabels = new Label[]
             {
                 lblGroupMain,
-                lblGroupOperations,
                 lblGroupManagement,
+                lblGroupOperations,
                 lblGroupMetadata,
                 lblGroupAdmin
             };

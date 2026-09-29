@@ -66,9 +66,17 @@ namespace LibraryManagementSystem.Services
                 return (false, "Cannot delete: this member has borrowing records.");
             var member = _context.Members.Find(memberId);
             if (member == null) return (false, "Member not found.");
-            _context.Members.Remove(member);
-            _context.SaveChanges();
-            return (true, "Member deleted successfully.");
+
+            try
+            {
+                _context.Members.Remove(member);
+                _context.SaveChanges();
+                return (true, "Member deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Cannot delete member: {ex.Message}");
+            }
         }
     }
 }

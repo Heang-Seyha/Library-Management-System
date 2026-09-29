@@ -54,9 +54,16 @@ namespace LibraryManagementSystem.Services
                 return (false, "Cannot delete: books are assigned to this category.");
             var cat = _context.Categories.Find(categoryId);
             if (cat == null) return (false, "Category not found.");
-            _context.Categories.Remove(cat);
-            _context.SaveChanges();
-            return (true, "Category deleted successfully.");
+            try
+            {
+                _context.Categories.Remove(cat);
+                _context.SaveChanges();
+                return (true, "Category deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Cannot delete category: {ex.Message}");
+            }
         }
     }
 }

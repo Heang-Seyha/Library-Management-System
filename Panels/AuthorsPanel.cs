@@ -68,12 +68,6 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnAdd_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
-            {
-                MessageBox.Show("Administrator privileges are required to add authors.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             using var dlg = new SimpleEditDialog("Add Author", new (string, string, bool, int, bool)[]
             {
                 ("Author Name", "", false, 150, true),
@@ -104,12 +98,6 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnEdit_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
-            {
-                MessageBox.Show("Administrator privileges are required to edit authors.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             int id = SelectedId();
             if (id == -1)
             {
@@ -157,12 +145,6 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnDelete_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
-            {
-                MessageBox.Show("Administrator privileges are required to delete authors.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             int id = SelectedId();
             if (id == -1)
             {

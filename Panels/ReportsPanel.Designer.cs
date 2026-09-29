@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystem.Panels
+namespace LibraryManagementSystem.Panels
 {
     partial class ReportsPanel
     {
@@ -12,9 +12,10 @@
 
         private System.Windows.Forms.Panel pnlSummary;
         private System.Windows.Forms.FlowLayoutPanel flpMetrics;
-        private System.Windows.Forms.Label lblTotalFine;
-        private System.Windows.Forms.Label lblOverdueCount;
-        private System.Windows.Forms.Label lblBorrowTotal;
+        private System.Windows.Forms.Label lblTotalBooks;
+        private System.Windows.Forms.Label lblTotalMember;
+        private System.Windows.Forms.Label lblActiveBorrows;
+        private System.Windows.Forms.Label lblOverdueBorrows;
         private System.Windows.Forms.Button btnRefresh;
 
         private System.Windows.Forms.Panel pnlTabsContainer;
@@ -65,9 +66,10 @@
             dgvInventory = new DataGridView();
             pnlSummary = new Panel();
             flpMetrics = new FlowLayoutPanel();
-            lblTotalFine = new Label();
-            lblOverdueCount = new Label();
-            lblBorrowTotal = new Label();
+            lblTotalBooks = new Label();
+            lblTotalMember = new Label();
+            lblActiveBorrows = new Label();
+            lblOverdueBorrows = new Label();
             btnRefresh = new Button();
             pnlHeaderContainer = new Panel();
             pnlHeader = new Panel();
@@ -138,13 +140,13 @@
             // 
             // tabReports
             // 
+            tabReports.Controls.Add(tabInventory);
+            tabReports.Controls.Add(tabMembers);
+            tabReports.Controls.Add(tabPopular);
             tabReports.Controls.Add(tabActive);
             tabReports.Controls.Add(tabOverdue);
             tabReports.Controls.Add(tabReturned);
             tabReports.Controls.Add(tabFines);
-            tabReports.Controls.Add(tabPopular);
-            tabReports.Controls.Add(tabMembers);
-            tabReports.Controls.Add(tabInventory);
             tabReports.Dock = DockStyle.Fill;
             tabReports.Font = new Font("Segoe UI", 9.5F);
             tabReports.Location = new Point(0, 8);
@@ -161,7 +163,7 @@
             tabActive.Name = "tabActive";
             tabActive.Padding = new Padding(8);
             tabActive.Size = new Size(994, 553);
-            tabActive.TabIndex = 0;
+            tabActive.TabIndex = 3;
             tabActive.Text = "Active Borrows";
             // 
             // dgvActive
@@ -197,7 +199,7 @@
             tabOverdue.Name = "tabOverdue";
             tabOverdue.Padding = new Padding(8);
             tabOverdue.Size = new Size(994, 553);
-            tabOverdue.TabIndex = 1;
+            tabOverdue.TabIndex = 4;
             tabOverdue.Text = "Overdue Borrows";
             // 
             // dgvOverdue
@@ -233,7 +235,7 @@
             tabReturned.Name = "tabReturned";
             tabReturned.Padding = new Padding(8);
             tabReturned.Size = new Size(994, 553);
-            tabReturned.TabIndex = 2;
+            tabReturned.TabIndex = 5;
             tabReturned.Text = "Return History";
             // 
             // dgvReturned
@@ -269,7 +271,7 @@
             tabFines.Name = "tabFines";
             tabFines.Padding = new Padding(8);
             tabFines.Size = new Size(994, 553);
-            tabFines.TabIndex = 3;
+            tabFines.TabIndex = 6;
             tabFines.Text = "Fines Analysis";
             // 
             // dgvFines
@@ -305,7 +307,7 @@
             tabPopular.Name = "tabPopular";
             tabPopular.Padding = new Padding(8);
             tabPopular.Size = new Size(994, 553);
-            tabPopular.TabIndex = 4;
+            tabPopular.TabIndex = 2;
             tabPopular.Text = "Popular Books";
             // 
             // dgvPopular
@@ -341,7 +343,7 @@
             tabMembers.Name = "tabMembers";
             tabMembers.Padding = new Padding(8);
             tabMembers.Size = new Size(994, 553);
-            tabMembers.TabIndex = 5;
+            tabMembers.TabIndex = 1;
             tabMembers.Text = "Member Activity";
             // 
             // dgvMembers
@@ -377,7 +379,7 @@
             tabInventory.Name = "tabInventory";
             tabInventory.Padding = new Padding(8);
             tabInventory.Size = new Size(994, 553);
-            tabInventory.TabIndex = 6;
+            tabInventory.TabIndex = 0;
             tabInventory.Text = "Stock Status";
             // 
             // dgvInventory
@@ -420,9 +422,10 @@
             // 
             // flpMetrics
             // 
-            flpMetrics.Controls.Add(lblTotalFine);
-            flpMetrics.Controls.Add(lblOverdueCount);
-            flpMetrics.Controls.Add(lblBorrowTotal);
+            flpMetrics.Controls.Add(lblTotalBooks);
+            flpMetrics.Controls.Add(lblTotalMember);
+            flpMetrics.Controls.Add(lblActiveBorrows);
+            flpMetrics.Controls.Add(lblOverdueBorrows);
             flpMetrics.Dock = DockStyle.Fill;
             flpMetrics.Location = new Point(12, 6);
             flpMetrics.Name = "flpMetrics";
@@ -431,42 +434,53 @@
             flpMetrics.TabIndex = 0;
             flpMetrics.WrapContents = false;
             // 
-            // lblTotalFine
+            // lblTotalBooks
             // 
-            lblTotalFine.AutoSize = true;
-            lblTotalFine.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblTotalFine.ForeColor = Color.FromArgb(13, 59, 102);
-            lblTotalFine.Location = new Point(0, 4);
-            lblTotalFine.Margin = new Padding(0, 0, 20, 0);
-            lblTotalFine.Name = "lblTotalFine";
-            lblTotalFine.Size = new Size(172, 20);
-            lblTotalFine.TabIndex = 0;
-            lblTotalFine.Text = "Total Fines Collected: ...";
+            lblTotalBooks.AutoSize = true;
+            lblTotalBooks.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblTotalBooks.ForeColor = Color.FromArgb(13, 59, 102);
+            lblTotalBooks.Location = new Point(0, 4);
+            lblTotalBooks.Margin = new Padding(0, 0, 20, 0);
+            lblTotalBooks.Name = "lblTotalBooks";
+            lblTotalBooks.Size = new Size(110, 20);
+            lblTotalBooks.TabIndex = 0;
+            lblTotalBooks.Text = "Total Books: ...";
             // 
-            // lblOverdueCount
+            // lblTotalMember
             // 
-            lblOverdueCount.AutoSize = true;
-            lblOverdueCount.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblOverdueCount.ForeColor = Color.FromArgb(13, 59, 102);
-            lblOverdueCount.Location = new Point(192, 4);
-            lblOverdueCount.Margin = new Padding(0, 0, 20, 0);
-            lblOverdueCount.Name = "lblOverdueCount";
-            lblOverdueCount.Size = new Size(151, 20);
-            lblOverdueCount.TabIndex = 1;
-            lblOverdueCount.Text = "Overdue Borrows: ...";
+            lblTotalMember.AutoSize = true;
+            lblTotalMember.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblTotalMember.ForeColor = Color.FromArgb(13, 59, 102);
+            lblTotalMember.Location = new Point(130, 4);
+            lblTotalMember.Margin = new Padding(0, 0, 20, 0);
+            lblTotalMember.Name = "lblTotalMember";
+            lblTotalMember.Size = new Size(125, 20);
+            lblTotalMember.TabIndex = 1;
+            lblTotalMember.Text = "Total Member: ...";
             // 
-            // lblBorrowTotal
+            // lblActiveBorrows
             // 
-            lblBorrowTotal.AutoSize = true;
-            lblBorrowTotal.BackColor = Color.Transparent;
-            lblBorrowTotal.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblBorrowTotal.ForeColor = Color.FromArgb(13, 59, 102);
-            lblBorrowTotal.Location = new Point(363, 4);
-            lblBorrowTotal.Margin = new Padding(0, 0, 20, 0);
-            lblBorrowTotal.Name = "lblBorrowTotal";
-            lblBorrowTotal.Size = new Size(127, 20);
-            lblBorrowTotal.TabIndex = 2;
-            lblBorrowTotal.Text = "Total Borrows: ...";
+            lblActiveBorrows.AutoSize = true;
+            lblActiveBorrows.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblActiveBorrows.ForeColor = Color.FromArgb(13, 59, 102);
+            lblActiveBorrows.Location = new Point(275, 4);
+            lblActiveBorrows.Margin = new Padding(0, 0, 20, 0);
+            lblActiveBorrows.Name = "lblActiveBorrows";
+            lblActiveBorrows.Size = new Size(130, 20);
+            lblActiveBorrows.TabIndex = 2;
+            lblActiveBorrows.Text = "Active Borrows: ...";
+            // 
+            // lblOverdueBorrows
+            // 
+            lblOverdueBorrows.AutoSize = true;
+            lblOverdueBorrows.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblOverdueBorrows.ForeColor = Color.FromArgb(13, 59, 102);
+            lblOverdueBorrows.Location = new Point(425, 4);
+            lblOverdueBorrows.Margin = new Padding(0, 0, 20, 0);
+            lblOverdueBorrows.Name = "lblOverdueBorrows";
+            lblOverdueBorrows.Size = new Size(145, 20);
+            lblOverdueBorrows.TabIndex = 3;
+            lblOverdueBorrows.Text = "Overdue Borrows: ...";
             // 
             // btnRefresh
             // 

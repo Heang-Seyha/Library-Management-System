@@ -351,13 +351,13 @@ namespace LibraryManagementSystem.Panels
 
         private void Grid_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex < 0 || sender is not DataGridView dgv) return;
+            if (e.RowIndex < 0 || sender is not DataGridView dgv || e.CellStyle == null) return;
 
             switch (dgv.Columns[e.ColumnIndex].Name)
             {
                 case "colStatus":
                     e.CellStyle.Font = BoldCellFont;
-                    e.CellStyle.ForeColor = e.Value as string switch
+                    e.CellStyle.ForeColor = (e.Value as string) switch
                     {
                         BorrowStatus.Overdue => UIHelper.DangerRed,
                         BorrowStatus.Returned => UIHelper.SuccessGreen,

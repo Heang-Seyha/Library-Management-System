@@ -50,8 +50,8 @@ namespace LibraryManagementSystem.Validators
                 .WithMessage("Librarian ID must be valid.");
 
             RuleFor(r => r.DueDate.Date)
-                .GreaterThanOrEqualTo(DateTime.Today)
-                .WithMessage("Due date cannot be in the past.");
+                .GreaterThan(DateTime.Today)
+                .WithMessage("Due date must be at least one day after borrow date.");
 
             RuleFor(r => r.Items)
                 .Cascade(CascadeMode.Stop)

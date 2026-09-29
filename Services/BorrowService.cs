@@ -29,9 +29,10 @@ namespace LibraryManagementSystem.Services
         /// - Member must exist
         /// - Librarian must be authenticated
         /// - At least one book must be selected
+        /// - Duplicate books in request are automatically merged
         /// - Each book must have sufficient available copies
-        /// - Due date must be >= borrow date
-        /// - Everything is saved atomically (all or nothing)
+        /// - Due date must be >= borrow date + 1 day (DueDate.Date > BorrowDate.Date)
+        /// - Everything is saved atomically (all or nothing, rollback on failure)
         /// </summary>
         public (bool success, string message) CreateBorrow(
             int memberId,
@@ -39,10 +40,25 @@ namespace LibraryManagementSystem.Services
             DateTime dueDate,
             List<(int bookId, int quantity)> items)
         {
-            var request = new BorrowRequest(memberId, librarianId, dueDate, items);
+            if (items == null || items.Count == 0)
+                return (false, "Please select at least one book.");
+
+            // Requirement 14: Deterministic service-layer duplicate book normalization
+            // If the same Book is selected multiple times (e.g. Book A × 2, Book A × 3),
+            // automatically merge them into (Book A × 5) before executing transaction.
+            var normalizedItems = items
+                .GroupBy(i => i.bookId)
+                .Select(g => (bookId: g.Key, quantity: g.Sum(i => i.quantity)))
+                .ToList();
+
+            var request = new BorrowRequest(memberId, librarianId, dueDate, normalizedItems);
             var validationResult = _validator.Validate(request);
             if (!validationResult.IsValid)
                 return (false, validationResult.Errors.First().ErrorMessage);
+
+            // Requirement 22: DueDate must be at least 1 day after BorrowDate (DateTime.Today)
+            if (dueDate.Date <= DateTime.Today)
+                return (false, "Due date must be at least one day after borrow date.");
 
             // Validate member in database
             var member = _context.Members.Find(memberId);
@@ -52,35 +68,54 @@ namespace LibraryManagementSystem.Services
             var librarian = _context.Librarians.Find(librarianId);
             if (librarian == null) return (false, "Librarian not found.");
 
-            // Pre-validate all books before touching anything
-            foreach (var (bookId, quantity) in items)
-            {
-                var book = _context.Books.Find(bookId);
-                if (book == null)
-                    return (false, $"Book ID {bookId} not found.");
-                if (quantity > book.AvailableCopies)
-                    return (false, $"'{book.Title}' has only {book.AvailableCopies} available copies. Requested: {quantity}.");
-            }
-
-            // All validation passed — use a transaction for atomicity
+            // Atomic transaction for all borrow operations
             using var transaction = _context.Database.BeginTransaction();
             try
             {
+                // Pre-validate all books in live database before making any changes
+                foreach (var (bookId, quantity) in normalizedItems)
+                {
+                    if (quantity <= 0)
+                    {
+                        transaction.Rollback();
+                        return (false, "Quantity must be at least 1.");
+                    }
+
+                    var book = _context.Books.Find(bookId);
+                    if (book == null)
+                    {
+                        transaction.Rollback();
+                        return (false, $"Book ID {bookId} not found.");
+                    }
+
+                    if (quantity > book.AvailableCopies)
+                    {
+                        transaction.Rollback();
+                        return (false, $"'{book.Title}' has only {book.AvailableCopies} available copies. Requested: {quantity}.");
+                    }
+                }
+
                 var borrow = new Borrow
                 {
                     MemberId = memberId,
                     LibrarianId = librarianId,
                     BorrowDate = DateTime.Today,
-                    DueDate = dueDate,
+                    DueDate = dueDate.Date,
                     Status = BorrowStatus.Active
                 };
                 _context.Borrows.Add(borrow);
                 _context.SaveChanges(); // Get BorrowId
 
-                foreach (var (bookId, quantity) in items)
+                foreach (var (bookId, quantity) in normalizedItems)
                 {
                     var book = _context.Books.Find(bookId)!;
                     book.AvailableCopies -= quantity;
+
+                    if (book.AvailableCopies < 0)
+                    {
+                        transaction.Rollback();
+                        return (false, $"Inventory integrity violation: Available copies for '{book.Title}' cannot be negative.");
+                    }
 
                     _context.BorrowDetails.Add(new BorrowDetail
                     {
@@ -114,10 +149,13 @@ namespace LibraryManagementSystem.Services
         /// 
         /// Business rules:
         /// - Borrow must exist and be Active/Overdue
-        /// - Calculates fine based on overdue days × 2000 KHR
+        /// - If already returned: REJECT immediately
+        /// - Calculates fine based on overdue days × 2000 KHR (FinePolicy)
+        /// - If AvailableCopies + ReturnedQuantity > TotalCopies:
+        ///     DO NOT clamp silently. REJECT, ROLLBACK, REPORT DATA INTEGRITY ERROR.
         /// - Restores available copies for each book
-        /// - Sets status to Returned
-        /// - All changes are atomic
+        /// - Sets status to Returned and records ReturnDate and FineAmount
+        /// - All changes are atomic (commit together or rollback)
         /// </summary>
         public (bool success, string message, decimal fine) ProcessReturn(int borrowId)
         {
@@ -139,13 +177,25 @@ namespace LibraryManagementSystem.Services
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                // Restore book copies
+                // Restore book copies with strict data integrity validation
                 foreach (var detail in borrow.BorrowDetails)
                 {
-                    detail.Book!.AvailableCopies += detail.Quantity;
-                    // Safety: never exceed total copies
-                    if (detail.Book.AvailableCopies > detail.Book.TotalCopies)
-                        detail.Book.AvailableCopies = detail.Book.TotalCopies;
+                    if (detail.Book == null)
+                    {
+                        transaction.Rollback();
+                        return (false, $"Data integrity error: Book record #{detail.BookId} is missing.", 0m);
+                    }
+
+                    // Requirement 20: If AvailableCopies + ReturnedQuantity > TotalCopies,
+                    // DO NOT automatically clamp the value! DO NOT silently do AvailableCopies = TotalCopies!
+                    // REJECT, ROLLBACK, and REPORT DATA-INTEGRITY ERROR.
+                    if (detail.Book.AvailableCopies + detail.Quantity > detail.Book.TotalCopies)
+                    {
+                        transaction.Rollback();
+                        return (false, $"Data integrity error: Returning {detail.Quantity} copies of '{detail.Book.Title}' would exceed Total Copies ({detail.Book.TotalCopies}). Available: {detail.Book.AvailableCopies}.", 0m);
+                    }
+
+                    detail.Book.AvailableCopies += detail.Quantity;
                 }
 
                 borrow.ReturnDate = returnDate;

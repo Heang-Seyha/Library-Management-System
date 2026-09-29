@@ -80,6 +80,12 @@ namespace LibraryManagementSystem.Services
             var existing = _context.Books.Find(book.BookId);
             if (existing == null) return (false, "Book not found.");
 
+            // Concurrency handling: If caller provided RowVersion, ensure EF Core compares against it
+            if (book.RowVersion != null && book.RowVersion.Length > 0)
+            {
+                _context.Entry(existing).OriginalValues[nameof(Book.RowVersion)] = book.RowVersion;
+            }
+
             existing.Title = book.Title.Trim();
             existing.ISBN = book.ISBN.Trim();
             existing.Year = book.Year;
@@ -109,9 +115,16 @@ namespace LibraryManagementSystem.Services
             if (hasHistory)
                 return (false, "Cannot delete this book because it has borrowing history. Consider reducing total copies instead.");
 
-            _context.Books.Remove(book);
-            _context.SaveChanges();
-            return (true, "Book deleted successfully.");
+            try
+            {
+                _context.Books.Remove(book);
+                _context.SaveChanges();
+                return (true, "Book deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Cannot delete book: {ex.Message}");
+            }
         }
     }
 }

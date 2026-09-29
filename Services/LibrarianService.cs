@@ -23,6 +23,9 @@ namespace LibraryManagementSystem.Services
 
         public (bool success, string message) Add(Librarian librarian, string plainPassword)
         {
+            if (!Helpers.AuthorizationHelper.CanManageLibrarians())
+                return (false, "Administrator privileges are required to add a librarian account.");
+
             var valResult = _validator.Validate(librarian);
             if (!valResult.IsValid)
                 return (false, valResult.Errors.First().ErrorMessage);
@@ -46,6 +49,9 @@ namespace LibraryManagementSystem.Services
 
         public (bool success, string message) Update(Librarian librarian, string? newPassword)
         {
+            if (!Helpers.AuthorizationHelper.CanManageLibrarians())
+                return (false, "Administrator privileges are required to update a librarian account.");
+
             var existing = _context.Librarians.Find(librarian.LibrarianId);
             if (existing == null) return (false, "Librarian not found.");
 
@@ -78,15 +84,28 @@ namespace LibraryManagementSystem.Services
 
         public (bool success, string message) Delete(int librarianId)
         {
+            if (!Helpers.AuthorizationHelper.CanManageLibrarians())
+                return (false, "Administrator privileges are required to delete a librarian account.");
+
+            if (librarianId == Helpers.SessionManager.CurrentLibrarian?.LibrarianId)
+                return (false, "You cannot delete your own logged-in account.");
+
             if (_context.Borrows.Any(b => b.LibrarianId == librarianId))
                 return (false, "Cannot delete: this librarian has processed borrow transactions.");
 
             var librarian = _context.Librarians.Find(librarianId);
             if (librarian == null) return (false, "Librarian not found.");
 
-            _context.Librarians.Remove(librarian);
-            _context.SaveChanges();
-            return (true, "Librarian deleted successfully.");
+            try
+            {
+                _context.Librarians.Remove(librarian);
+                _context.SaveChanges();
+                return (true, "Librarian deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Cannot delete librarian: {ex.Message}");
+            }
         }
     }
 }

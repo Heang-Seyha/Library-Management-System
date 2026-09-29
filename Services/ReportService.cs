@@ -75,11 +75,26 @@ namespace LibraryManagementSystem.Services
         }
 
         /// <summary>Total fines collected (from returned borrows with fine > 0).</summary>
-        public List<FineReportRow> GetFineReport()
+        public List<FineReportRow> GetFineReport(ReportFilterCriteria? criteria = null)
         {
-            return _context.Borrows
+            var query = _context.Borrows
                 .Include(b => b.Member)
                 .Where(b => b.Status == BorrowStatus.Returned && b.FineAmount > 0)
+                .AsQueryable();
+
+            if (criteria != null)
+            {
+                if (criteria.FromDate.HasValue)
+                    query = query.Where(b => b.BorrowDate >= criteria.FromDate.Value.Date);
+                if (criteria.ToDate.HasValue)
+                    query = query.Where(b => b.BorrowDate <= criteria.ToDate.Value.Date);
+                if (criteria.MemberId.HasValue && criteria.MemberId.Value > 0)
+                    query = query.Where(b => b.MemberId == criteria.MemberId.Value);
+                if (criteria.BookId.HasValue && criteria.BookId.Value > 0)
+                    query = query.Where(b => b.BorrowDetails.Any(bd => bd.BookId == criteria.BookId.Value));
+            }
+
+            return query
                 .OrderByDescending(b => b.ReturnDate)
                 .AsEnumerable()
                 .Select(b => new FineReportRow
@@ -129,11 +144,19 @@ namespace LibraryManagementSystem.Services
         }
 
         /// <summary>Current book inventory.</summary>
-        public List<InventoryRow> GetInventory()
+        public List<InventoryRow> GetInventory(ReportFilterCriteria? criteria = null)
         {
-            return _context.Books
+            var query = _context.Books
                 .Include(b => b.Category)
                 .Include(b => b.Author)
+                .AsQueryable();
+
+            if (criteria != null && criteria.BookId.HasValue && criteria.BookId.Value > 0)
+            {
+                query = query.Where(b => b.BookId == criteria.BookId.Value);
+            }
+
+            return query
                 .OrderBy(b => b.Title)
                 .Select(b => new InventoryRow
                 {
@@ -155,7 +178,104 @@ namespace LibraryManagementSystem.Services
 
         public int GetTotalBorrowCount() => _context.Borrows.Count();
 
-        public int GetOverdueCount() => _context.Borrows.Count(b => b.Status == BorrowStatus.Overdue);
+        public int GetTotalBooksCount() => _context.Books.Count();
+
+        public int GetTotalMembersCount() => _context.Members.Count();
+
+        public int GetActiveBorrowCount()
+        {
+            var today = DateTime.Today;
+            return _context.Borrows.Count(b => b.Status == BorrowStatus.Active && b.DueDate >= today);
+        }
+
+        public int GetOverdueCount()
+        {
+            var today = DateTime.Today;
+            return _context.Borrows.Count(b => b.Status == BorrowStatus.Overdue || (b.Status == BorrowStatus.Active && b.DueDate < today));
+        }
+
+        // ── Filtered Query (Requirement 37) ──────────────────────────────────
+
+        /// <summary>
+        /// Retrieves borrow records dynamically filtered in SQL Server / EF Core by
+        /// date range, status, member, and book without loading unnecessary datasets into memory.
+        /// </summary>
+        public List<BorrowReportRow> GetFilteredBorrows(ReportFilterCriteria criteria)
+        {
+            var query = _context.Borrows
+                .Include(b => b.Member)
+                .Include(b => b.Librarian)
+                .Include(b => b.BorrowDetails).ThenInclude(bd => bd.Book)
+                .AsQueryable();
+
+            if (criteria.FromDate.HasValue)
+            {
+                var from = criteria.FromDate.Value.Date;
+                query = query.Where(b => b.BorrowDate >= from);
+            }
+
+            if (criteria.ToDate.HasValue)
+            {
+                var to = criteria.ToDate.Value.Date;
+                query = query.Where(b => b.BorrowDate <= to);
+            }
+
+            if (!string.IsNullOrWhiteSpace(criteria.Status) && !criteria.Status.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                query = query.Where(b => b.Status == criteria.Status);
+            }
+
+            if (criteria.MemberId.HasValue && criteria.MemberId.Value > 0)
+            {
+                query = query.Where(b => b.MemberId == criteria.MemberId.Value);
+            }
+
+            if (criteria.BookId.HasValue && criteria.BookId.Value > 0)
+            {
+                query = query.Where(b => b.BorrowDetails.Any(bd => bd.BookId == criteria.BookId.Value));
+            }
+
+            return query
+                .OrderByDescending(b => b.BorrowDate)
+                .AsEnumerable()
+                .Select(b => new BorrowReportRow
+                {
+                    BorrowId = b.BorrowId,
+                    MemberName = b.Member?.Name ?? "",
+                    LibrarianName = b.Librarian?.Name ?? "",
+                    Books = string.Join(", ", b.BorrowDetails.Select(bd => $"{bd.Book?.Title} ×{bd.Quantity}")),
+                    BorrowDate = b.BorrowDate,
+                    DueDate = b.DueDate,
+                    ReturnDate = b.ReturnDate,
+                    Status = b.Status,
+                    DaysOverdue = b.ReturnDate.HasValue
+                        ? (b.ReturnDate.Value.Date > b.DueDate.Date ? (b.ReturnDate.Value.Date - b.DueDate.Date).Days : 0)
+                        : (b.DueDate.Date < DateTime.Today ? (DateTime.Today - b.DueDate.Date).Days : 0),
+                    EstimatedFine = b.ReturnDate.HasValue
+                        ? b.FineAmount
+                        : (b.DueDate.Date < DateTime.Today ? FinePolicy.CalculateFine(b.DueDate, DateTime.Today) : 0m),
+                    Fine = b.FineAmount
+                })
+                .ToList();
+        }
+
+        public List<(int MemberId, string Name)> GetMembersList() =>
+            _context.Members.OrderBy(m => m.Name).Select(m => new ValueTuple<int, string>(m.MemberId, m.Name)).ToList();
+
+        public List<(int BookId, string Title)> GetBooksList() =>
+            _context.Books.OrderBy(b => b.Title).Select(b => new ValueTuple<int, string>(b.BookId, b.Title)).ToList();
+    }
+
+    /// <summary>
+    /// Criteria DTO for multi-dimensional report filtering in SQL queries.
+    /// </summary>
+    public class ReportFilterCriteria
+    {
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public string? Status { get; set; } = "All";
+        public int? MemberId { get; set; }
+        public int? BookId { get; set; }
     }
 
     // ── Report DTOs ───────────────────────────────────────────────────────────

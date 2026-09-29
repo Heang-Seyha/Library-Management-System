@@ -47,7 +47,7 @@ namespace LibraryManagementSystem.Panels
                 dgv.Rows.Clear();
                 foreach (var l in _librarians)
                 {
-                    string displayRole = l.Role == "Employee" ? "Librarian" : l.Role;
+                    string displayRole = l.Role;
                     int row = dgv.Rows.Add(l.LibrarianId, l.Name, l.Username, displayRole, l.Position, l.Phone);
                     if (l.Role == "Admin")
                     {
@@ -75,7 +75,7 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnAdd_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
+            if (!AuthorizationHelper.CanManageLibrarians())
             {
                 MessageBox.Show("Administrator privileges are required to add librarians.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -87,7 +87,7 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnEdit_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
+            if (!AuthorizationHelper.CanManageLibrarians())
             {
                 MessageBox.Show("Administrator privileges are required to edit librarians.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -114,7 +114,7 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnDelete_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
+            if (!AuthorizationHelper.CanManageLibrarians())
             {
                 MessageBox.Show("Administrator privileges are required to delete librarians.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

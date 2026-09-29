@@ -35,8 +35,6 @@ namespace LibraryManagementSystem.Panels
             btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
 
-            btnDelete.Visible = SessionManager.IsAdmin;
-
             LoadBooks();
         }
 
@@ -151,12 +149,6 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnDelete_Click(object? sender, EventArgs e)
         {
-            if (!SessionManager.IsAdmin)
-            {
-                MessageBox.Show("Administrator privileges are required to delete books.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             int id = GetSelectedBookId();
             if (id == -1)
             {
