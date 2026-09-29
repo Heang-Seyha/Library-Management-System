@@ -18,20 +18,16 @@ namespace LibraryManagementSystem.Panels
             InitializeComponent();
 
             UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
-            this.Load += AuthorsPanel_Load;
-        }
-
-        private void AuthorsPanel_Load(object? sender, EventArgs e)
-        {
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgv);
             ConfigureGridColumns();
 
+            txtSearch.TextChanged += (s, ev) => SearchAuthors();
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
-            btnRefresh.Click += (s, ev) => LoadData();
+            btnRefresh.Click += (s, ev) => { txtSearch.Clear(); LoadData(); };
 
             LoadData();
         }
@@ -43,12 +39,7 @@ namespace LibraryManagementSystem.Panels
                 this.Cursor = Cursors.WaitCursor;
                 using var ctx = Program.CreateDbContext();
                 _items = new AuthorService(ctx).GetAll();
-                dgv.Rows.Clear();
-                foreach (var a in _items)
-                {
-                    dgv.Rows.Add(a.AuthorId, a.Name, a.Bio);
-                }
-                UIHelper.UpdateGridState(dgv, _items.Count, false, "Author");
+                BindGrid(_items, false);
             }
             catch (Exception ex)
             {
@@ -64,35 +55,47 @@ namespace LibraryManagementSystem.Panels
             }
         }
 
+        private void SearchAuthors()
+        {
+            var q = txtSearch.Text.Trim();
+            if (string.IsNullOrEmpty(q))
+            {
+                BindGrid(_items, false);
+                return;
+            }
+
+            var filtered = _items.Where(a =>
+                a.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                (a.Gender != null && a.Gender.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                (a.DateOfBirth.HasValue && (a.DateOfBirth.Value.ToString("MM/dd/yyyy").Contains(q) || a.DateOfBirth.Value.ToString("yyyy-MM-dd").Contains(q))) ||
+                (a.Bio != null && a.Bio.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                a.AuthorId.ToString() == q).ToList();
+
+            BindGrid(filtered, true, q);
+        }
+
+        private void BindGrid(List<Author> authors, bool isSearchActive, string? query = null)
+        {
+            dgv.Rows.Clear();
+            foreach (var a in authors)
+            {
+                dgv.Rows.Add(a.AuthorId, a.Name, a.Gender, a.DateOfBirth?.ToString("MM/dd/yyyy") ?? "", a.Bio);
+            }
+            UIHelper.UpdateGridState(dgv, authors.Count, isSearchActive, "Author", query, () =>
+            {
+                txtSearch.Clear();
+                LoadData();
+            });
+        }
+
         private int SelectedId() => dgv.SelectedRows.Count == 0 ? -1 : (int)dgv.SelectedRows[0].Cells["colId"].Value;
 
         private void BtnAdd_Click(object? sender, EventArgs e)
         {
-            using var dlg = new SimpleEditDialog("Add Author", new (string, string, bool, int, bool)[]
+            using var dlg = new AuthorEditDialog();
+            if (dlg.ShowDialog() == DialogResult.OK)
             {
-                ("Author Name", "", false, 150, true),
-                ("Biography", "", false, 1000, false)
-            });
-
-            if (dlg.ShowDialog() != DialogResult.OK) return;
-
-            try
-            {
-                using var ctx = Program.CreateDbContext();
-                var (ok, msg) = new AuthorService(ctx).Add(new Author
-                {
-                    Name = dlg.Values[0],
-                    Bio = dlg.Values[1]
-                });
-
-                MessageBox.Show(msg, ok ? "Success" : "Error", MessageBoxButtons.OK,
-                    ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-
-                if (ok) LoadData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Could not save author.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoadData();
             }
         }
 
@@ -114,32 +117,10 @@ namespace LibraryManagementSystem.Panels
                 return;
             }
 
-            using var dlg = new SimpleEditDialog("Edit Author", new (string, string, bool, int, bool)[]
+            using var dlg = new AuthorEditDialog(author);
+            if (dlg.ShowDialog() == DialogResult.OK)
             {
-                ("Author Name", author.Name, false, 150, true),
-                ("Biography", author.Bio, false, 1000, false)
-            });
-
-            if (dlg.ShowDialog() != DialogResult.OK) return;
-
-            try
-            {
-                using var ctx = Program.CreateDbContext();
-                var (ok, msg) = new AuthorService(ctx).Update(new Author
-                {
-                    AuthorId = id,
-                    Name = dlg.Values[0],
-                    Bio = dlg.Values[1]
-                });
-
-                MessageBox.Show(msg, ok ? "Success" : "Error", MessageBoxButtons.OK,
-                    ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-
-                if (ok) LoadData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Could not update author.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoadData();
             }
         }
 
@@ -186,19 +167,31 @@ namespace LibraryManagementSystem.Panels
 
             colId.HeaderText = "Author ID";
             colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colId.Width = 145;
-            colId.MinimumWidth = 135;
+            colId.Width = 135;
+            colId.MinimumWidth = 125;
             colId.Resizable = DataGridViewTriState.True;
 
             colName.HeaderText = "Author Name";
             colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colName.FillWeight = 40F;
-            colName.MinimumWidth = 160;
+            colName.FillWeight = 35F;
+            colName.MinimumWidth = 150;
             colName.Resizable = DataGridViewTriState.True;
+
+            colGender.HeaderText = "Gender";
+            colGender.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colGender.Width = 110;
+            colGender.MinimumWidth = 100;
+            colGender.Resizable = DataGridViewTriState.True;
+
+            colDob.HeaderText = "Date of Birth";
+            colDob.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colDob.Width = 145;
+            colDob.MinimumWidth = 135;
+            colDob.Resizable = DataGridViewTriState.True;
 
             colBio.HeaderText = "Biography";
             colBio.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colBio.FillWeight = 60F;
+            colBio.FillWeight = 65F;
             colBio.MinimumWidth = 200;
             colBio.Resizable = DataGridViewTriState.True;
         }

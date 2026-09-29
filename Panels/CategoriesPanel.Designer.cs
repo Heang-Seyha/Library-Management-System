@@ -14,6 +14,7 @@ namespace LibraryManagementSystem.Panels
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.TextBox txtSearch;
 
         private System.Windows.Forms.Panel pnlGridContainer;
         private System.Windows.Forms.DataGridView dgv;
@@ -36,9 +37,10 @@ namespace LibraryManagementSystem.Panels
             pnlToolbar = new Panel();
             flpActions = new FlowLayoutPanel();
             btnAdd = new Button();
-            btnEdit = new Button();
             btnDelete = new Button();
+            btnEdit = new Button();
             btnRefresh = new Button();
+            txtSearch = new TextBox();
             pnlGridContainer = new Panel();
             dgv = new DataGridView();
             colId = new DataGridViewTextBoxColumn();
@@ -75,7 +77,6 @@ namespace LibraryManagementSystem.Panels
             // 
             // lblTitle
             // 
-            lblTitle.AutoSize = false;
             lblTitle.Dock = DockStyle.Fill;
             lblTitle.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblTitle.ForeColor = Color.White;
@@ -90,6 +91,7 @@ namespace LibraryManagementSystem.Panels
             // 
             pnlToolbar.BackColor = Color.FromArgb(235, 243, 250);
             pnlToolbar.Controls.Add(flpActions);
+            pnlToolbar.Controls.Add(txtSearch);
             pnlToolbar.Dock = DockStyle.Top;
             pnlToolbar.Location = new Point(0, 68);
             pnlToolbar.Name = "pnlToolbar";
@@ -102,11 +104,11 @@ namespace LibraryManagementSystem.Panels
             flpActions.AutoSize = true;
             flpActions.BackColor = Color.Transparent;
             flpActions.Controls.Add(btnAdd);
-            flpActions.Controls.Add(btnDelete);
             flpActions.Controls.Add(btnEdit);
+            flpActions.Controls.Add(btnDelete);
             flpActions.Controls.Add(btnRefresh);
-            flpActions.Dock = DockStyle.Left;
-            flpActions.Location = new Point(16, 7);
+            flpActions.Dock = DockStyle.Right;
+            flpActions.Location = new Point(579, 7);
             flpActions.Name = "flpActions";
             flpActions.Size = new Size(439, 32);
             flpActions.TabIndex = 0;
@@ -136,7 +138,7 @@ namespace LibraryManagementSystem.Panels
             btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnEdit.ForeColor = Color.Transparent;
-            btnEdit.Location = new Point(241, 0);
+            btnEdit.Location = new Point(138, 0);
             btnEdit.Margin = new Padding(0, 0, 8, 0);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(95, 32);
@@ -152,7 +154,7 @@ namespace LibraryManagementSystem.Panels
             btnDelete.FlatStyle = FlatStyle.Flat;
             btnDelete.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnDelete.ForeColor = Color.Transparent;
-            btnDelete.Location = new Point(138, 0);
+            btnDelete.Location = new Point(241, 0);
             btnDelete.Margin = new Padding(0, 0, 8, 0);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(95, 32);
@@ -176,6 +178,18 @@ namespace LibraryManagementSystem.Panels
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = false;
             // 
+            // txtSearch
+            // 
+            txtSearch.BorderStyle = BorderStyle.FixedSingle;
+            txtSearch.Dock = DockStyle.Left;
+            txtSearch.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtSearch.ForeColor = Color.FromArgb(13, 59, 102);
+            txtSearch.Location = new Point(16, 7);
+            txtSearch.Name = "txtSearch";
+            txtSearch.PlaceholderText = "  Search by category name or description...";
+            txtSearch.Size = new Size(380, 29);
+            txtSearch.TabIndex = 0;
+            // 
             // pnlGridContainer
             // 
             pnlGridContainer.BackColor = Color.FromArgb(235, 243, 250);
@@ -191,13 +205,10 @@ namespace LibraryManagementSystem.Panels
             // 
             dgv.AllowUserToAddRows = false;
             dgv.AllowUserToDeleteRows = false;
-            dgv.AllowUserToResizeColumns = true;
-            dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgv.BackgroundColor = Color.White;
             dgv.BorderStyle = BorderStyle.Fixed3D;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colDesc });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
@@ -256,7 +267,6 @@ namespace LibraryManagementSystem.Panels
             Size = new Size(1034, 721);
             pnlHeaderContainer.ResumeLayout(false);
             pnlHeader.ResumeLayout(false);
-            pnlHeader.PerformLayout();
             pnlToolbar.ResumeLayout(false);
             pnlToolbar.PerformLayout();
             flpActions.ResumeLayout(false);

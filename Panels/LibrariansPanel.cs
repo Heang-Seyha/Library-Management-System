@@ -19,20 +19,16 @@ namespace LibraryManagementSystem.Panels
             InitializeComponent();
 
             UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
-            this.Load += LibrariansPanel_Load;
-        }
-
-        private void LibrariansPanel_Load(object? sender, EventArgs e)
-        {
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgv);
             ConfigureGridColumns();
 
+            txtSearch.TextChanged += (s, ev) => SearchLibrarians();
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
-            btnRefresh.Click += (s, ev) => LoadData();
+            btnRefresh.Click += (s, ev) => { txtSearch.Clear(); LoadData(); };
 
             LoadData();
         }
@@ -44,18 +40,7 @@ namespace LibraryManagementSystem.Panels
                 this.Cursor = Cursors.WaitCursor;
                 using var ctx = Program.CreateDbContext();
                 _librarians = new LibrarianService(ctx).GetAll();
-                dgv.Rows.Clear();
-                foreach (var l in _librarians)
-                {
-                    string displayRole = l.Role;
-                    int row = dgv.Rows.Add(l.LibrarianId, l.Name, l.Username, displayRole, l.Position, l.Phone);
-                    if (l.Role == "Admin")
-                    {
-                        dgv.Rows[row].DefaultCellStyle.ForeColor = UIHelper.BrandNavy;
-                        dgv.Rows[row].DefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
-                    }
-                }
-                UIHelper.UpdateGridState(dgv, _librarians.Count, false, "Librarian");
+                BindGrid(_librarians, false);
             }
             catch (Exception ex)
             {
@@ -69,6 +54,48 @@ namespace LibraryManagementSystem.Panels
             {
                 this.Cursor = Cursors.Default;
             }
+        }
+
+        private void SearchLibrarians()
+        {
+            var q = txtSearch.Text.Trim();
+            if (string.IsNullOrEmpty(q))
+            {
+                BindGrid(_librarians, false);
+                return;
+            }
+
+            var filtered = _librarians.Where(l =>
+                l.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                (l.Gender != null && l.Gender.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                (l.DateOfBirth.HasValue && (l.DateOfBirth.Value.ToString("MM/dd/yyyy").Contains(q) || l.DateOfBirth.Value.ToString("yyyy-MM-dd").Contains(q))) ||
+                l.Username.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                (l.Role != null && l.Role.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                (l.Email != null && l.Email.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                (l.Phone != null && l.Phone.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                l.LibrarianId.ToString() == q).ToList();
+
+            BindGrid(filtered, true, q);
+        }
+
+        private void BindGrid(List<Librarian> librarians, bool isSearchActive, string? query = null)
+        {
+            dgv.Rows.Clear();
+            foreach (var l in librarians)
+            {
+                string displayRole = l.Role;
+                int row = dgv.Rows.Add(l.LibrarianId, l.Name, l.Gender, l.DateOfBirth?.ToString("MM/dd/yyyy") ?? "", l.Username, displayRole, l.Email, l.Phone);
+                if (l.Role == "Admin")
+                {
+                    dgv.Rows[row].DefaultCellStyle.ForeColor = UIHelper.BrandNavy;
+                    dgv.Rows[row].DefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+                }
+            }
+            UIHelper.UpdateGridState(dgv, librarians.Count, isSearchActive, "Librarian", query, () =>
+            {
+                txtSearch.Clear();
+                LoadData();
+            });
         }
 
         private int SelectedId() => dgv.SelectedRows.Count == 0 ? -1 : (int)dgv.SelectedRows[0].Cells["colId"].Value;
@@ -177,6 +204,18 @@ namespace LibraryManagementSystem.Panels
             colName.MinimumWidth = 140;
             colName.Resizable = DataGridViewTriState.True;
 
+            colGender.HeaderText = "Gender";
+            colGender.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colGender.Width = 110;
+            colGender.MinimumWidth = 100;
+            colGender.Resizable = DataGridViewTriState.True;
+
+            colDob.HeaderText = "Date of Birth";
+            colDob.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colDob.Width = 145;
+            colDob.MinimumWidth = 135;
+            colDob.Resizable = DataGridViewTriState.True;
+
             colUsername.HeaderText = "Username";
             colUsername.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colUsername.FillWeight = 34F;
@@ -185,15 +224,15 @@ namespace LibraryManagementSystem.Panels
 
             colRole.HeaderText = "Role";
             colRole.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colRole.Width = 95;
-            colRole.MinimumWidth = 90;
+            colRole.Width = 105;
+            colRole.MinimumWidth = 95;
             colRole.Resizable = DataGridViewTriState.True;
 
-            colPosition.HeaderText = "Position";
-            colPosition.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colPosition.FillWeight = 40F;
-            colPosition.MinimumWidth = 130;
-            colPosition.Resizable = DataGridViewTriState.True;
+            colEmail.HeaderText = "Email Address";
+            colEmail.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colEmail.FillWeight = 40F;
+            colEmail.MinimumWidth = 130;
+            colEmail.Resizable = DataGridViewTriState.True;
 
             colPhone.HeaderText = "Phone";
             colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;

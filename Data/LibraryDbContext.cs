@@ -44,7 +44,10 @@ namespace LibraryManagementSystem.Data
             {
                 entity.HasKey(a => a.AuthorId);
                 entity.Property(a => a.Name).IsRequired().HasMaxLength(150);
+                entity.Property(a => a.Gender).IsRequired().HasMaxLength(10).HasDefaultValue("Male");
+                entity.Property(a => a.DateOfBirth);
                 entity.Property(a => a.Bio).HasMaxLength(1000);
+                entity.Ignore(a => a.Phone);
             });
 
             // ── Publisher ─────────────────────────────────────────────────────
@@ -94,6 +97,8 @@ namespace LibraryManagementSystem.Data
             {
                 entity.HasKey(m => m.MemberId);
                 entity.Property(m => m.Name).IsRequired().HasMaxLength(150);
+                entity.Property(m => m.Gender).IsRequired().HasMaxLength(10).HasDefaultValue("Male");
+                entity.Property(m => m.DateOfBirth);
                 entity.Property(m => m.Phone).HasMaxLength(20);
                 entity.Property(m => m.Email).HasMaxLength(200);
                 entity.Property(m => m.Address).HasMaxLength(500);
@@ -106,8 +111,10 @@ namespace LibraryManagementSystem.Data
                 entity.HasKey(e => e.LibrarianId);
                 entity.Property(e => e.LibrarianId).HasColumnName("EmployeeId");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
-                entity.Property(e => e.Phone).HasMaxLength(20);
-                entity.Property(e => e.Position).HasMaxLength(100);
+                entity.Property(e => e.Gender).IsRequired().HasMaxLength(10).HasDefaultValue("Male");
+                entity.Property(e => e.DateOfBirth);
+                entity.Property(e => e.Phone).IsRequired().HasMaxLength(20).HasDefaultValue("");
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(200).HasDefaultValue("");
                 entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
                 entity.HasIndex(e => e.Username).IsUnique();  // Username must be unique
                 entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);

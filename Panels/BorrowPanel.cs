@@ -268,8 +268,8 @@ namespace LibraryManagementSystem.Panels
             colBookId.Name = "BookId";
             colBookId.HeaderText = "Book ID";
             colBookId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colBookId.Width = 95;
-            colBookId.MinimumWidth = 90;
+            colBookId.Width = 110;
+            colBookId.MinimumWidth = 100;
             colBookId.Resizable = DataGridViewTriState.True;
 
             colTitle.HeaderText = "Book Title";
@@ -286,8 +286,8 @@ namespace LibraryManagementSystem.Panels
 
             colAvailable.HeaderText = "Available";
             colAvailable.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colAvailable.Width = 115;
-            colAvailable.MinimumWidth = 110;
+            colAvailable.Width = 125;
+            colAvailable.MinimumWidth = 115;
             colAvailable.Resizable = DataGridViewTriState.True;
 
             colQty.HeaderText = "Qty to Borrow";

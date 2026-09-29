@@ -37,12 +37,86 @@ namespace LibraryManagementSystem.Data
                     {
                         Name = "Demo Librarian",
                         Phone = "012-777-666",
-                        Position = "Staff Librarian",
+                        Email = "librarian@library.gov.kh",
                         Username = "librarian",
                         PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
                         Role = "Librarian"
                     });
                     changed = true;
+                }
+
+                // Normalize/assign realistic Gender, DateOfBirth, Email & Phone for existing librarians/admins
+                var existingLibrarians = context.Librarians.ToList();
+                foreach (var l in existingLibrarians)
+                {
+                    if (string.IsNullOrEmpty(l.Gender))
+                    {
+                        l.Gender = "Male";
+                        changed = true;
+                    }
+                    if (l.DateOfBirth == null)
+                    {
+                        l.DateOfBirth = l.Role == "Admin" ? new DateTime(1985, 5, 12) : new DateTime(1992, 8, 20);
+                        changed = true;
+                    }
+                    if (string.IsNullOrEmpty(l.Email))
+                    {
+                        l.Email = l.Role == "Admin" ? "admin@library.gov.kh" : $"{l.Username.ToLower()}@library.gov.kh";
+                        changed = true;
+                    }
+                    if (string.IsNullOrEmpty(l.Phone))
+                    {
+                        l.Phone = l.Role == "Admin" ? "012-888-999" : "012-777-666";
+                        changed = true;
+                    }
+                }
+
+                // Normalize/assign realistic Gender & DateOfBirth for existing members
+                var existingMembers = context.Members.ToList();
+                for (int i = 0; i < existingMembers.Count; i++)
+                {
+                    var m = existingMembers[i];
+                    if (string.IsNullOrEmpty(m.Gender) || m.Gender == "Male")
+                    {
+                        if (m.Name.Contains("Bopha") || m.Name.Contains("Chenda") || m.Name.Contains("Sreynoch") ||
+                            m.Name.Contains("Kolab") || m.Name.Contains("Chantrea") || m.Name.Contains("Sreymao") ||
+                            m.Name.Contains("Boramey") || m.Name.Contains("Kalyan") || m.Name.Contains("Dany"))
+                        {
+                            m.Gender = "Female";
+                            changed = true;
+                        }
+                        else if (string.IsNullOrEmpty(m.Gender))
+                        {
+                            m.Gender = "Male";
+                            changed = true;
+                        }
+                    }
+                    if (m.DateOfBirth == null)
+                    {
+                        m.DateOfBirth = new DateTime(1998 + (i % 8), 1 + (i % 12), 1 + (i % 25));
+                        changed = true;
+                    }
+                }
+
+                // Normalize/assign realistic Gender & DateOfBirth for existing authors
+                var existingAuthors = context.Authors.ToList();
+                foreach (var a in existingAuthors)
+                {
+                    if (string.IsNullOrEmpty(a.Gender))
+                    {
+                        a.Gender = "Male";
+                        changed = true;
+                    }
+                    if (a.DateOfBirth == null)
+                    {
+                        if (a.Name.Contains("Knuth")) a.DateOfBirth = new DateTime(1938, 1, 10);
+                        else if (a.Name.Contains("Martin")) a.DateOfBirth = new DateTime(1952, 12, 5);
+                        else if (a.Name.Contains("Fowler")) a.DateOfBirth = new DateTime(1963, 12, 18);
+                        else if (a.Name.Contains("Rim Kin")) a.DateOfBirth = new DateTime(1911, 1, 1);
+                        else if (a.Name.Contains("Nou Hach")) a.DateOfBirth = new DateTime(1916, 6, 26);
+                        else a.DateOfBirth = new DateTime(1955, 6, 15);
+                        changed = true;
+                    }
                 }
 
                 if (changed)
@@ -57,8 +131,10 @@ namespace LibraryManagementSystem.Data
             var admin = new Librarian
             {
                 Name = "System Administrator",
+                Gender = "Male",
+                DateOfBirth = new DateTime(1985, 5, 12),
                 Phone = "012-888-999",
-                Position = "Chief Librarian / Administrator",
+                Email = "admin@library.gov.kh",
                 Username = "admin",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
                 Role = "Admin"
@@ -68,8 +144,10 @@ namespace LibraryManagementSystem.Data
             var librarian = new Librarian
             {
                 Name = "Demo Librarian",
+                Gender = "Male",
+                DateOfBirth = new DateTime(1992, 8, 20),
                 Phone = "012-777-666",
-                Position = "Staff Librarian",
+                Email = "librarian@library.gov.kh",
                 Username = "librarian",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
                 Role = "Librarian"
@@ -124,36 +202,50 @@ namespace LibraryManagementSystem.Data
                 new Author
                 {
                     Name = "Rim Kin",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1911, 1, 1),
                     Bio = "Pioneering modern Khmer author and novelist, best known for Sophat (1938), widely recognized as the first modern Khmer novel."
                 },
                 new Author
                 {
                     Name = "Nou Hach",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1916, 6, 26),
                     Bio = "Distinguished Cambodian diplomat and modernist writer, celebrated for the classic romance novel Phka Srapoun (Wilted Flower)."
                 },
                 new Author
                 {
                     Name = "Soth Polin",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1943, 2, 9),
                     Bio = "Influential Cambodian existentialist novelist and philosopher, author of A Meaningless Life and The Dead Heart."
                 },
                 new Author
                 {
                     Name = "Chuth Khay",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1940, 4, 5),
                     Bio = "Cambodian scholar, writer, and jurist, acclaimed for nostalgic memoirs of youth and poignant post-war literature."
                 },
                 new Author
                 {
                     Name = "Pich Tum Kravel",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1943, 6, 2),
                     Bio = "Cambodian performing arts scholar, playwright, and director who dedicated his career to revitalizing Khmer traditional theatre and shadow puppetry."
                 },
                 new Author
                 {
                     Name = "Dr. Hang Chuon Naron",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1962, 1, 16),
                     Bio = "Cambodian scholar, economist, and Minister of Education, Youth and Sport; author of authoritative treatises on Cambodian economy and fiscal history."
                 },
                 new Author
                 {
                     Name = "Vann Molyvann",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1926, 11, 23),
                     Bio = "Visionary Cambodian architect and urban planner, pioneer of New Khmer Architecture, and author of Modern Khmer Cities."
                 },
 
@@ -161,36 +253,50 @@ namespace LibraryManagementSystem.Data
                 new Author
                 {
                     Name = "Robert C. Martin",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1952, 12, 5),
                     Bio = "Software craftsman and author, globally recognized for Clean Code and formulating the SOLID object-oriented principles."
                 },
                 new Author
                 {
                     Name = "Martin Fowler",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1963, 12, 18),
                     Bio = "Chief Scientist at Thoughtworks, author of groundbreaking works on refactoring, enterprise application architecture, and microservices."
                 },
                 new Author
                 {
                     Name = "Donald E. Knuth",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1938, 1, 10),
                     Bio = "Turing Award laureate, Stanford Professor Emeritus, and author of the landmark multi-volume work The Art of Computer Programming."
                 },
                 new Author
                 {
                     Name = "Thomas H. Cormen",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1956, 3, 30),
                     Bio = "Dartmouth Computer Science professor and primary co-author of the premier textbook Introduction to Algorithms (CLRS)."
                 },
                 new Author
                 {
                     Name = "Walter Isaacson",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1952, 5, 20),
                     Bio = "Acclaimed biographer, historian, and former CEO of the Aspen Institute; biographer of Steve Jobs, Albert Einstein, and Leonardo da Vinci."
                 },
                 new Author
                 {
                     Name = "Peter Thiel",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1967, 10, 11),
                     Bio = "Venture capitalist, co-founder of PayPal and Palantir Technologies, and author of Zero to One: Notes on Startups."
                 },
                 new Author
                 {
                     Name = "Andrew Hunt",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1964, 7, 15),
                     Bio = "Pioneer of the Agile software movement, co-author of The Pragmatic Programmer, and co-founder of The Pragmatic Bookshelf."
                 }
             };
@@ -551,6 +657,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Chan Vicheka",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2000, 3, 15),
                     Phone = "012-345-678",
                     Email = "chan.vicheka@cambodia-edu.kh",
                     Address = "Khan Toul Kork, Phnom Penh",
@@ -559,6 +667,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Keo Sarath",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2001, 5, 20),
                     Phone = "011-234-567",
                     Email = "keo.sarath@cambodia-edu.kh",
                     Address = "Khan Daun Penh, Phnom Penh",
@@ -567,6 +677,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Seng Dara",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1999, 8, 11),
                     Phone = "015-678-901",
                     Email = "seng.dara@cambodia-edu.kh",
                     Address = "Khan Sen Sok, Phnom Penh",
@@ -575,6 +687,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Meas Bopha",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(2002, 11, 4),
                     Phone = "078-901-234",
                     Email = "meas.bopha@cambodia-edu.kh",
                     Address = "Krong Siem Reap, Siem Reap",
@@ -583,6 +697,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Kim Heang",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2000, 1, 18),
                     Phone = "096-345-678",
                     Email = "kim.heang@cambodia-edu.kh",
                     Address = "Krong Battambang, Battambang",
@@ -591,6 +707,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Sok Chenda",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(2003, 2, 22),
                     Phone = "085-456-789",
                     Email = "sok.chenda@cambodia-edu.kh",
                     Address = "Khan Chamkarmon, Phnom Penh",
@@ -599,6 +717,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Tep Vanna",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1998, 3, 30),
                     Phone = "077-567-890",
                     Email = "tep.vanna@cambodia-edu.kh",
                     Address = "Krong Ta Khmau, Kandal",
@@ -607,6 +727,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Ouk Panha",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2001, 5, 14),
                     Phone = "093-456-789",
                     Email = "ouk.panha@cambodia-edu.kh",
                     Address = "Khan Chroy Changvar, Phnom Penh",
@@ -615,6 +737,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Rath Sovann",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1997, 7, 9),
                     Phone = "010-889-911",
                     Email = "rath.sovann@cambodia-edu.kh",
                     Address = "Khan Boeng Keng Kang, Phnom Penh",
@@ -623,6 +747,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Chhorn Piseth",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2002, 9, 12),
                     Phone = "012-771-122",
                     Email = "chhorn.piseth@cambodia-edu.kh",
                     Address = "Khan Russey Keo, Phnom Penh",
@@ -631,6 +757,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Ly Sreynoch",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(2004, 11, 5),
                     Phone = "016-554-433",
                     Email = "ly.sreynoch@cambodia-edu.kh",
                     Address = "Krong Kampong Cham, Kampong Cham",
@@ -639,6 +767,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Heng Samnang",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1999, 1, 10),
                     Phone = "069-443-322",
                     Email = "heng.samnang@cambodia-edu.kh",
                     Address = "Khan Pur Senchey, Phnom Penh",
@@ -647,6 +777,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Prak Kolab",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(2003, 3, 15),
                     Phone = "089-332-211",
                     Email = "prak.kolab@cambodia-edu.kh",
                     Address = "Krong Kampot, Kampot",
@@ -655,6 +787,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Nget Makara",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2001, 5, 20),
                     Phone = "070-221-199",
                     Email = "nget.makara@cambodia-edu.kh",
                     Address = "Khan Meanchey, Phnom Penh",
@@ -663,6 +797,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Ros Chantrea",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(2000, 8, 1),
                     Phone = "098-112-233",
                     Email = "ros.chantrea@cambodia-edu.kh",
                     Address = "Krong Sihanoukville, Preah Sihanouk",
@@ -671,6 +807,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Khuon Visal",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2002, 10, 18),
                     Phone = "092-667-788",
                     Email = "khuon.visal@cambodia-edu.kh",
                     Address = "Khan Prek Pnov, Phnom Penh",
@@ -679,6 +817,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Chea Sreymao",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(2003, 1, 12),
                     Phone = "095-778-899",
                     Email = "chea.sreymao@cambodia-edu.kh",
                     Address = "Krong Chbar Mon, Kampong Speu",
@@ -687,6 +827,8 @@ namespace LibraryManagementSystem.Data
                 new Member
                 {
                     Name = "Vannak Boramey",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(2004, 2, 25),
                     Phone = "087-889-900",
                     Email = "vannak.boramey@cambodia-edu.kh",
                     Address = "Khan Toul Kork, Phnom Penh",

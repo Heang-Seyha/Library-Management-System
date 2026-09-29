@@ -137,6 +137,51 @@ namespace LibraryManagementSystem.Helpers
             return bmp;
         }
 
+        /// <summary>
+        /// Renders an icon glyph mathematically centered based on its exact optical bounding box,
+        /// ensuring perfectly equal margins on all sides (no font side-bearing skew).
+        /// </summary>
+        public static Bitmap CreateCenteredIconBitmap(string glyph, int width, int height, Color color, float fontSize = 0f)
+        {
+            var bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.Clear(Color.Transparent);
+
+                if (fontSize <= 0f)
+                {
+                    fontSize = Math.Min(width, height) * 0.52f;
+                }
+
+                try
+                {
+                    using var path = new GraphicsPath();
+                    using var font = new Font(IconFontFamily, fontSize, FontStyle.Regular, GraphicsUnit.Pixel);
+                    path.AddString(glyph, font.FontFamily, (int)font.Style, fontSize, PointF.Empty, StringFormat.GenericTypographic);
+
+                    var bounds = path.GetBounds();
+                    if (bounds.Width > 0 && bounds.Height > 0)
+                    {
+                        float dx = (width / 2f) - (bounds.Left + bounds.Width / 2f);
+                        float dy = (height / 2f) - (bounds.Top + bounds.Height / 2f);
+                        g.TranslateTransform(dx, dy);
+                    }
+                    using var brush = new SolidBrush(color);
+                    g.FillPath(brush, path);
+                }
+                catch
+                {
+                    using var pen = new Pen(color, 2);
+                    int d = (int)(Math.Min(width, height) * 0.5f);
+                    g.DrawEllipse(pen, (width - d) / 2, (height - d) / 2, d, d);
+                }
+            }
+            return bmp;
+        }
+
         // ── Typography ────────────────────────────────────────────────────────
         public static readonly Font FontTitle       = new Font("Segoe UI Semibold", 16f);
         public static readonly Font FontSubtitle    = new Font("Segoe UI", 9.5f);

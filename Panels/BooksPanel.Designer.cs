@@ -41,10 +41,10 @@ namespace LibraryManagementSystem.Panels
             lblTitle = new Label();
             pnlToolbar = new Panel();
             flpActions = new FlowLayoutPanel();
-            btnRefresh = new Button();
             btnAdd = new Button();
             btnEdit = new Button();
             btnDelete = new Button();
+            btnRefresh = new Button();
             txtSearch = new TextBox();
             pnlGridContainer = new Panel();
             dgvBooks = new DataGridView();
@@ -113,32 +113,16 @@ namespace LibraryManagementSystem.Panels
             // 
             flpActions.AutoSize = true;
             flpActions.BackColor = Color.Transparent;
-            flpActions.Controls.Add(btnRefresh);
             flpActions.Controls.Add(btnAdd);
             flpActions.Controls.Add(btnEdit);
             flpActions.Controls.Add(btnDelete);
+            flpActions.Controls.Add(btnRefresh);
             flpActions.Dock = DockStyle.Right;
             flpActions.Location = new Point(593, 7);
             flpActions.Name = "flpActions";
             flpActions.Size = new Size(425, 32);
             flpActions.TabIndex = 1;
             flpActions.WrapContents = false;
-            // 
-            // btnRefresh
-            // 
-            btnRefresh.BackColor = Color.SteelBlue;
-            btnRefresh.Cursor = Cursors.Hand;
-            btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(208, 225, 253);
-            btnRefresh.FlatStyle = FlatStyle.Flat;
-            btnRefresh.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            btnRefresh.ForeColor = Color.Transparent;
-            btnRefresh.Location = new Point(0, 0);
-            btnRefresh.Margin = new Padding(0, 0, 8, 0);
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(95, 32);
-            btnRefresh.TabIndex = 0;
-            btnRefresh.Text = "Refresh";
-            btnRefresh.UseVisualStyleBackColor = false;
             // 
             // btnAdd
             // 
@@ -148,11 +132,11 @@ namespace LibraryManagementSystem.Panels
             btnAdd.FlatStyle = FlatStyle.Flat;
             btnAdd.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnAdd.ForeColor = Color.Transparent;
-            btnAdd.Location = new Point(103, 0);
+            btnAdd.Location = new Point(0, 0);
             btnAdd.Margin = new Padding(0, 0, 8, 0);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(116, 32);
-            btnAdd.TabIndex = 1;
+            btnAdd.TabIndex = 0;
             btnAdd.Text = "Add Book";
             btnAdd.UseVisualStyleBackColor = false;
             // 
@@ -164,11 +148,11 @@ namespace LibraryManagementSystem.Panels
             btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnEdit.ForeColor = Color.Transparent;
-            btnEdit.Location = new Point(227, 0);
+            btnEdit.Location = new Point(124, 0);
             btnEdit.Margin = new Padding(0, 0, 8, 0);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(95, 32);
-            btnEdit.TabIndex = 2;
+            btnEdit.TabIndex = 1;
             btnEdit.Text = "Edit";
             btnEdit.UseVisualStyleBackColor = false;
             // 
@@ -180,13 +164,29 @@ namespace LibraryManagementSystem.Panels
             btnDelete.FlatStyle = FlatStyle.Flat;
             btnDelete.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnDelete.ForeColor = Color.Transparent;
-            btnDelete.Location = new Point(330, 0);
-            btnDelete.Margin = new Padding(0);
+            btnDelete.Location = new Point(227, 0);
+            btnDelete.Margin = new Padding(0, 0, 8, 0);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(95, 32);
-            btnDelete.TabIndex = 3;
+            btnDelete.TabIndex = 2;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = false;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.BackColor = Color.SteelBlue;
+            btnRefresh.Cursor = Cursors.Hand;
+            btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(208, 225, 253);
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnRefresh.ForeColor = Color.Transparent;
+            btnRefresh.Location = new Point(330, 0);
+            btnRefresh.Margin = new Padding(0);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(95, 32);
+            btnRefresh.TabIndex = 3;
+            btnRefresh.Text = "Refresh";
+            btnRefresh.UseVisualStyleBackColor = false;
             // 
             // txtSearch
             // 
@@ -215,13 +215,10 @@ namespace LibraryManagementSystem.Panels
             // 
             dgvBooks.AllowUserToAddRows = false;
             dgvBooks.AllowUserToDeleteRows = false;
-            dgvBooks.AllowUserToResizeColumns = true;
-            dgvBooks.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvBooks.BackgroundColor = Color.White;
             dgvBooks.BorderStyle = BorderStyle.Fixed3D;
             dgvBooks.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvBooks.ColumnHeadersHeight = 36;
-            dgvBooks.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvBooks.Columns.AddRange(new DataGridViewColumn[] { colId, colTitle, colISBN, colAuthor, colCategory, colYear, colAvailable, colTotal });
             dgvBooks.Dock = DockStyle.Fill;
             dgvBooks.EnableHeadersVisualStyles = false;
@@ -241,11 +238,11 @@ namespace LibraryManagementSystem.Panels
             // 
             colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colId.HeaderText = "Book ID";
-            colId.MinimumWidth = 90;
+            colId.MinimumWidth = 110;
             colId.Name = "colId";
             colId.ReadOnly = true;
             colId.Resizable = DataGridViewTriState.True;
-            colId.Width = 95;
+            colId.Width = 120;
             // 
             // colTitle
             // 
@@ -291,31 +288,31 @@ namespace LibraryManagementSystem.Panels
             // 
             colYear.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colYear.HeaderText = "Year";
-            colYear.MinimumWidth = 75;
+            colYear.MinimumWidth = 85;
             colYear.Name = "colYear";
             colYear.ReadOnly = true;
             colYear.Resizable = DataGridViewTriState.True;
-            colYear.Width = 80;
+            colYear.Width = 90;
             // 
             // colAvailable
             // 
             colAvailable.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colAvailable.HeaderText = "Available";
-            colAvailable.MinimumWidth = 110;
+            colAvailable.MinimumWidth = 115;
             colAvailable.Name = "colAvailable";
             colAvailable.ReadOnly = true;
             colAvailable.Resizable = DataGridViewTriState.True;
-            colAvailable.Width = 115;
+            colAvailable.Width = 125;
             // 
             // colTotal
             // 
             colTotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colTotal.HeaderText = "Total";
-            colTotal.MinimumWidth = 80;
+            colTotal.MinimumWidth = 90;
             colTotal.Name = "colTotal";
             colTotal.ReadOnly = true;
             colTotal.Resizable = DataGridViewTriState.True;
-            colTotal.Width = 85;
+            colTotal.Width = 95;
             // 
             // BooksPanel
             // 

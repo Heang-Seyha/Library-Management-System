@@ -15,6 +15,10 @@ namespace LibraryManagementSystem.Dialogs
         private System.Windows.Forms.TextBox txtPhone;
         private System.Windows.Forms.Label lblPhoneErr;
 
+        private System.Windows.Forms.Label lblGenderLabel;
+        private System.Windows.Forms.ComboBox cmbGender;
+        private System.Windows.Forms.Label lblGenderErr;
+
         private System.Windows.Forms.Label lblEmailLabel;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Label lblEmailErr;
@@ -22,6 +26,10 @@ namespace LibraryManagementSystem.Dialogs
         private System.Windows.Forms.Label lblAddressLabel;
         private System.Windows.Forms.TextBox txtAddress;
         private System.Windows.Forms.Label lblAddressErr;
+
+        private System.Windows.Forms.Label lblDobLabel;
+        private System.Windows.Forms.DateTimePicker dtpDob;
+        private System.Windows.Forms.Label lblDobErr;
 
         private System.Windows.Forms.Label lblJoinLabel;
         private System.Windows.Forms.DateTimePicker dtpJoin;
@@ -42,6 +50,9 @@ namespace LibraryManagementSystem.Dialogs
             pnlContainer = new Panel();
             btnCancel = new Button();
             btnSave = new Button();
+            lblDobErr = new Label();
+            dtpDob = new DateTimePicker();
+            lblDobLabel = new Label();
             lblJoinErr = new Label();
             dtpJoin = new DateTimePicker();
             lblJoinLabel = new Label();
@@ -54,6 +65,9 @@ namespace LibraryManagementSystem.Dialogs
             lblPhoneErr = new Label();
             txtPhone = new TextBox();
             lblPhoneLabel = new Label();
+            lblGenderErr = new Label();
+            cmbGender = new ComboBox();
+            lblGenderLabel = new Label();
             lblNameErr = new Label();
             txtName = new TextBox();
             lblNameLabel = new Label();
@@ -70,12 +84,18 @@ namespace LibraryManagementSystem.Dialogs
             pnlContainer.Controls.Add(lblJoinErr);
             pnlContainer.Controls.Add(dtpJoin);
             pnlContainer.Controls.Add(lblJoinLabel);
+            pnlContainer.Controls.Add(lblDobErr);
+            pnlContainer.Controls.Add(dtpDob);
+            pnlContainer.Controls.Add(lblDobLabel);
             pnlContainer.Controls.Add(lblAddressErr);
             pnlContainer.Controls.Add(txtAddress);
             pnlContainer.Controls.Add(lblAddressLabel);
             pnlContainer.Controls.Add(lblEmailErr);
             pnlContainer.Controls.Add(txtEmail);
             pnlContainer.Controls.Add(lblEmailLabel);
+            pnlContainer.Controls.Add(lblGenderErr);
+            pnlContainer.Controls.Add(cmbGender);
+            pnlContainer.Controls.Add(lblGenderLabel);
             pnlContainer.Controls.Add(lblPhoneErr);
             pnlContainer.Controls.Add(txtPhone);
             pnlContainer.Controls.Add(lblPhoneLabel);
@@ -83,11 +103,13 @@ namespace LibraryManagementSystem.Dialogs
             pnlContainer.Controls.Add(txtName);
             pnlContainer.Controls.Add(lblNameLabel);
             pnlContainer.Controls.Add(lblHeader);
-            pnlContainer.Dock = DockStyle.Fill;
+            pnlContainer.Dock = DockStyle.Fill;
             lblNameErr.BringToFront();
             lblPhoneErr.BringToFront();
+            lblGenderErr.BringToFront();
             lblEmailErr.BringToFront();
             lblAddressErr.BringToFront();
+            lblDobErr.BringToFront();
             lblJoinErr.BringToFront();
 
             pnlContainer.Location = new Point(0, 0);
@@ -131,34 +153,66 @@ namespace LibraryManagementSystem.Dialogs
             btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
             // 
+            // lblDobErr
+            // 
+            lblDobErr.Font = new Font("Segoe UI", 8F);
+            lblDobErr.ForeColor = Color.FromArgb(220, 38, 38);
+            lblDobErr.Location = new Point(20, 431);
+            lblDobErr.Name = "lblDobErr";
+            lblDobErr.Size = new Size(232, 24);
+            lblDobErr.TabIndex = 14;
+            lblDobErr.Visible = false;
+            // 
+            // dtpDob
+            // 
+            dtpDob.CustomFormat = " ";
+            dtpDob.Font = new Font("Segoe UI", 9.5F);
+            dtpDob.Format = DateTimePickerFormat.Custom;
+            dtpDob.Location = new Point(20, 400);
+            dtpDob.Name = "dtpDob";
+            dtpDob.Size = new Size(232, 29);
+            dtpDob.TabIndex = 13;
+            // 
+            // lblDobLabel
+            // 
+            lblDobLabel.AutoSize = true;
+            lblDobLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblDobLabel.ForeColor = Color.FromArgb(13, 59, 102);
+            lblDobLabel.Location = new Point(20, 378);
+            lblDobLabel.Name = "lblDobLabel";
+            lblDobLabel.Size = new Size(110, 20);
+            lblDobLabel.TabIndex = 12;
+            lblDobLabel.Text = "Date of Birth *";
+            // 
             // lblJoinErr
             // 
             lblJoinErr.Font = new Font("Segoe UI", 8F);
             lblJoinErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblJoinErr.Location = new Point(20, 431);
+            lblJoinErr.Location = new Point(268, 431);
             lblJoinErr.Name = "lblJoinErr";
-            lblJoinErr.Size = new Size(480, 24);
-            lblJoinErr.TabIndex = 15;
+            lblJoinErr.Size = new Size(232, 24);
+            lblJoinErr.TabIndex = 17;
             lblJoinErr.Visible = false;
             // 
             // dtpJoin
             // 
+            dtpJoin.CustomFormat = "MM/dd/yyyy";
             dtpJoin.Font = new Font("Segoe UI", 9.5F);
-            dtpJoin.Format = DateTimePickerFormat.Short;
-            dtpJoin.Location = new Point(20, 400);
+            dtpJoin.Format = DateTimePickerFormat.Custom;
+            dtpJoin.Location = new Point(268, 400);
             dtpJoin.Name = "dtpJoin";
-            dtpJoin.Size = new Size(480, 29);
-            dtpJoin.TabIndex = 14;
+            dtpJoin.Size = new Size(232, 29);
+            dtpJoin.TabIndex = 16;
             // 
             // lblJoinLabel
             // 
             lblJoinLabel.AutoSize = true;
             lblJoinLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblJoinLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblJoinLabel.Location = new Point(20, 378);
+            lblJoinLabel.Location = new Point(268, 378);
             lblJoinLabel.Name = "lblJoinLabel";
             lblJoinLabel.Size = new Size(86, 20);
-            lblJoinLabel.TabIndex = 13;
+            lblJoinLabel.TabIndex = 15;
             lblJoinLabel.Text = "Join Date *";
             // 
             // lblAddressErr
@@ -231,7 +285,7 @@ namespace LibraryManagementSystem.Dialogs
             lblPhoneErr.ForeColor = Color.FromArgb(220, 38, 38);
             lblPhoneErr.Location = new Point(20, 185);
             lblPhoneErr.Name = "lblPhoneErr";
-            lblPhoneErr.Size = new Size(480, 24);
+            lblPhoneErr.Size = new Size(232, 24);
             lblPhoneErr.TabIndex = 6;
             lblPhoneErr.Visible = false;
             // 
@@ -242,8 +296,8 @@ namespace LibraryManagementSystem.Dialogs
             txtPhone.ForeColor = Color.FromArgb(13, 59, 102);
             txtPhone.Location = new Point(20, 154);
             txtPhone.Name = "txtPhone";
-            txtPhone.Size = new Size(480, 29);
-            txtPhone.TabIndex = 5;
+            txtPhone.Size = new Size(232, 29);
+            txtPhone.TabIndex = 4;
             txtPhone.TextChanged += txtPhone_TextChanged;
             // 
             // lblPhoneLabel
@@ -254,8 +308,42 @@ namespace LibraryManagementSystem.Dialogs
             lblPhoneLabel.Location = new Point(20, 132);
             lblPhoneLabel.Name = "lblPhoneLabel";
             lblPhoneLabel.Size = new Size(126, 20);
-            lblPhoneLabel.TabIndex = 4;
+            lblPhoneLabel.TabIndex = 3;
             lblPhoneLabel.Text = "Phone Number *";
+            // 
+            // lblGenderErr
+            // 
+            lblGenderErr.Font = new Font("Segoe UI", 8F);
+            lblGenderErr.ForeColor = Color.FromArgb(220, 38, 38);
+            lblGenderErr.Location = new Point(268, 185);
+            lblGenderErr.Name = "lblGenderErr";
+            lblGenderErr.Size = new Size(232, 24);
+            lblGenderErr.TabIndex = 9;
+            lblGenderErr.Visible = false;
+            // 
+            // cmbGender
+            // 
+            cmbGender.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbGender.Font = new Font("Segoe UI", 9.5F);
+            cmbGender.ForeColor = Color.FromArgb(13, 59, 102);
+            cmbGender.FormattingEnabled = true;
+            cmbGender.Items.AddRange(new object[] { "Male", "Female" });
+            cmbGender.Location = new Point(268, 154);
+            cmbGender.Name = "cmbGender";
+            cmbGender.Size = new Size(232, 29);
+            cmbGender.TabIndex = 5;
+            cmbGender.SelectedIndexChanged += cmbGender_SelectedIndexChanged;
+            // 
+            // lblGenderLabel
+            // 
+            lblGenderLabel.AutoSize = true;
+            lblGenderLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblGenderLabel.ForeColor = Color.FromArgb(13, 59, 102);
+            lblGenderLabel.Location = new Point(268, 132);
+            lblGenderLabel.Name = "lblGenderLabel";
+            lblGenderLabel.Size = new Size(70, 20);
+            lblGenderLabel.TabIndex = 7;
+            lblGenderLabel.Text = "Gender *";
             // 
             // lblNameErr
             // 
@@ -293,9 +381,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblHeader.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblHeader.ForeColor = Color.FromArgb(13, 59, 102);
-            lblHeader.Location = new Point(20, 14);
+            lblHeader.Location = new Point(20, 8);
             lblHeader.Name = "lblHeader";
-            lblHeader.Size = new Size(480, 28);
+            lblHeader.Size = new Size(480, 40);
             lblHeader.TabIndex = 0;
             lblHeader.Text = "Add New Member";
             lblHeader.TextAlign = ContentAlignment.MiddleCenter;

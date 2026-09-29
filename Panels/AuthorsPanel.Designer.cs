@@ -14,11 +14,14 @@ namespace LibraryManagementSystem.Panels
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.TextBox txtSearch;
 
         private System.Windows.Forms.Panel pnlGridContainer;
         private System.Windows.Forms.DataGridView dgv;
         private System.Windows.Forms.DataGridViewTextBoxColumn colId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colGender;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDob;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBio;
 
         protected override void Dispose(bool disposing)
@@ -39,10 +42,13 @@ namespace LibraryManagementSystem.Panels
             btnEdit = new Button();
             btnDelete = new Button();
             btnRefresh = new Button();
+            txtSearch = new TextBox();
             pnlGridContainer = new Panel();
             dgv = new DataGridView();
             colId = new DataGridViewTextBoxColumn();
             colName = new DataGridViewTextBoxColumn();
+            colGender = new DataGridViewTextBoxColumn();
+            colDob = new DataGridViewTextBoxColumn();
             colBio = new DataGridViewTextBoxColumn();
             pnlHeaderContainer.SuspendLayout();
             pnlHeader.SuspendLayout();
@@ -90,6 +96,7 @@ namespace LibraryManagementSystem.Panels
             // 
             pnlToolbar.BackColor = Color.FromArgb(235, 243, 250);
             pnlToolbar.Controls.Add(flpActions);
+            pnlToolbar.Controls.Add(txtSearch);
             pnlToolbar.Dock = DockStyle.Top;
             pnlToolbar.Location = new Point(0, 68);
             pnlToolbar.Name = "pnlToolbar";
@@ -105,7 +112,7 @@ namespace LibraryManagementSystem.Panels
             flpActions.Controls.Add(btnEdit);
             flpActions.Controls.Add(btnDelete);
             flpActions.Controls.Add(btnRefresh);
-            flpActions.Dock = DockStyle.Left;
+            flpActions.Dock = DockStyle.Right;
             flpActions.Location = new Point(16, 7);
             flpActions.Name = "flpActions";
             flpActions.Size = new Size(435, 32);
@@ -176,6 +183,18 @@ namespace LibraryManagementSystem.Panels
             btnRefresh.Text = "Refresh";
             btnRefresh.UseVisualStyleBackColor = false;
             // 
+            // txtSearch
+            // 
+            txtSearch.BorderStyle = BorderStyle.FixedSingle;
+            txtSearch.Dock = DockStyle.Left;
+            txtSearch.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtSearch.ForeColor = Color.FromArgb(13, 59, 102);
+            txtSearch.Location = new Point(16, 7);
+            txtSearch.Name = "txtSearch";
+            txtSearch.PlaceholderText = "  Search by author name or biography...";
+            txtSearch.Size = new Size(380, 29);
+            txtSearch.TabIndex = 0;
+            // 
             // pnlGridContainer
             // 
             pnlGridContainer.BackColor = Color.FromArgb(235, 243, 250);
@@ -198,7 +217,7 @@ namespace LibraryManagementSystem.Panels
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colBio });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colGender, colDob, colBio });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
             dgv.GridColor = SystemColors.MenuHighlight;
@@ -232,6 +251,26 @@ namespace LibraryManagementSystem.Panels
             colName.Name = "colName";
             colName.ReadOnly = true;
             colName.Resizable = DataGridViewTriState.True;
+            // 
+            // colGender
+            // 
+            colGender.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colGender.HeaderText = "Gender";
+            colGender.MinimumWidth = 100;
+            colGender.Name = "colGender";
+            colGender.ReadOnly = true;
+            colGender.Resizable = DataGridViewTriState.True;
+            colGender.Width = 110;
+            // 
+            // colDob
+            // 
+            colDob.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colDob.HeaderText = "Date of Birth";
+            colDob.MinimumWidth = 135;
+            colDob.Name = "colDob";
+            colDob.ReadOnly = true;
+            colDob.Resizable = DataGridViewTriState.True;
+            colDob.Width = 145;
             // 
             // colBio
             // 

@@ -20,6 +20,8 @@ namespace LibraryManagementSystem.Panels
         private System.Windows.Forms.DataGridView dgv;
         private System.Windows.Forms.DataGridViewTextBoxColumn colId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colGender;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDob;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPhone;
         private System.Windows.Forms.DataGridViewTextBoxColumn colEmail;
         private System.Windows.Forms.DataGridViewTextBoxColumn colAddress;
@@ -48,6 +50,8 @@ namespace LibraryManagementSystem.Panels
             dgv = new DataGridView();
             colId = new DataGridViewTextBoxColumn();
             colName = new DataGridViewTextBoxColumn();
+            colGender = new DataGridViewTextBoxColumn();
+            colDob = new DataGridViewTextBoxColumn();
             colPhone = new DataGridViewTextBoxColumn();
             colEmail = new DataGridViewTextBoxColumn();
             colAddress = new DataGridViewTextBoxColumn();
@@ -109,32 +113,16 @@ namespace LibraryManagementSystem.Panels
             // 
             flpActions.AutoSize = true;
             flpActions.BackColor = Color.Transparent;
-            flpActions.Controls.Add(btnRefresh);
             flpActions.Controls.Add(btnAdd);
             flpActions.Controls.Add(btnEdit);
             flpActions.Controls.Add(btnDelete);
+            flpActions.Controls.Add(btnRefresh);
             flpActions.Dock = DockStyle.Right;
             flpActions.Location = new Point(583, 7);
             flpActions.Name = "flpActions";
             flpActions.Size = new Size(435, 32);
             flpActions.TabIndex = 1;
             flpActions.WrapContents = false;
-            // 
-            // btnRefresh
-            // 
-            btnRefresh.BackColor = Color.SteelBlue;
-            btnRefresh.Cursor = Cursors.Hand;
-            btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(208, 225, 253);
-            btnRefresh.FlatStyle = FlatStyle.Flat;
-            btnRefresh.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            btnRefresh.ForeColor = SystemColors.ButtonHighlight;
-            btnRefresh.Location = new Point(0, 0);
-            btnRefresh.Margin = new Padding(0, 0, 8, 0);
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(95, 32);
-            btnRefresh.TabIndex = 0;
-            btnRefresh.Text = "Refresh";
-            btnRefresh.UseVisualStyleBackColor = false;
             // 
             // btnAdd
             // 
@@ -144,11 +132,11 @@ namespace LibraryManagementSystem.Panels
             btnAdd.FlatStyle = FlatStyle.Flat;
             btnAdd.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnAdd.ForeColor = SystemColors.ButtonHighlight;
-            btnAdd.Location = new Point(103, 0);
+            btnAdd.Location = new Point(0, 0);
             btnAdd.Margin = new Padding(0, 0, 8, 0);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(126, 32);
-            btnAdd.TabIndex = 1;
+            btnAdd.TabIndex = 0;
             btnAdd.Text = "Add Member";
             btnAdd.UseVisualStyleBackColor = false;
             // 
@@ -160,11 +148,11 @@ namespace LibraryManagementSystem.Panels
             btnEdit.FlatStyle = FlatStyle.Flat;
             btnEdit.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnEdit.ForeColor = SystemColors.ButtonHighlight;
-            btnEdit.Location = new Point(237, 0);
+            btnEdit.Location = new Point(134, 0);
             btnEdit.Margin = new Padding(0, 0, 8, 0);
             btnEdit.Name = "btnEdit";
             btnEdit.Size = new Size(95, 32);
-            btnEdit.TabIndex = 2;
+            btnEdit.TabIndex = 1;
             btnEdit.Text = "Edit";
             btnEdit.UseVisualStyleBackColor = false;
             // 
@@ -176,13 +164,29 @@ namespace LibraryManagementSystem.Panels
             btnDelete.FlatStyle = FlatStyle.Flat;
             btnDelete.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnDelete.ForeColor = SystemColors.ButtonHighlight;
-            btnDelete.Location = new Point(340, 0);
-            btnDelete.Margin = new Padding(0);
+            btnDelete.Location = new Point(237, 0);
+            btnDelete.Margin = new Padding(0, 0, 8, 0);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(95, 32);
-            btnDelete.TabIndex = 3;
+            btnDelete.TabIndex = 2;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = false;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.BackColor = Color.SteelBlue;
+            btnRefresh.Cursor = Cursors.Hand;
+            btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(208, 225, 253);
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnRefresh.ForeColor = SystemColors.ButtonHighlight;
+            btnRefresh.Location = new Point(340, 0);
+            btnRefresh.Margin = new Padding(0);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(95, 32);
+            btnRefresh.TabIndex = 3;
+            btnRefresh.Text = "Refresh";
+            btnRefresh.UseVisualStyleBackColor = false;
             // 
             // txtSearch
             // 
@@ -215,7 +219,7 @@ namespace LibraryManagementSystem.Panels
             dgv.BorderStyle = BorderStyle.Fixed3D;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colPhone, colEmail, colAddress, colJoinDate });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colGender, colDob, colPhone, colEmail, colAddress, colJoinDate });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
             dgv.GridColor = SystemColors.MenuHighlight;
@@ -234,31 +238,51 @@ namespace LibraryManagementSystem.Panels
             // 
             colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colId.HeaderText = "Member ID";
-            colId.MinimumWidth = 115;
+            colId.MinimumWidth = 125;
             colId.Name = "colId";
             colId.ReadOnly = true;
             colId.Resizable = DataGridViewTriState.True;
-            colId.Width = 120;
+            colId.Width = 135;
             // 
             // colName
             // 
             colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colName.FillWeight = 34F;
             colName.HeaderText = "Full Name";
-            colName.MinimumWidth = 190;
+            colName.MinimumWidth = 160;
             colName.Name = "colName";
             colName.ReadOnly = true;
             colName.Resizable = DataGridViewTriState.True;
+            // 
+            // colGender
+            // 
+            colGender.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colGender.HeaderText = "Gender";
+            colGender.MinimumWidth = 100;
+            colGender.Name = "colGender";
+            colGender.ReadOnly = true;
+            colGender.Resizable = DataGridViewTriState.True;
+            colGender.Width = 110;
+            // 
+            // colDob
+            // 
+            colDob.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colDob.HeaderText = "Date of Birth";
+            colDob.MinimumWidth = 135;
+            colDob.Name = "colDob";
+            colDob.ReadOnly = true;
+            colDob.Resizable = DataGridViewTriState.True;
+            colDob.Width = 145;
             // 
             // colPhone
             // 
             colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colPhone.HeaderText = "Phone";
-            colPhone.MinimumWidth = 110;
+            colPhone.MinimumWidth = 120;
             colPhone.Name = "colPhone";
             colPhone.ReadOnly = true;
             colPhone.Resizable = DataGridViewTriState.True;
-            colPhone.Width = 120;
+            colPhone.Width = 130;
             // 
             // colEmail
             // 
@@ -275,7 +299,7 @@ namespace LibraryManagementSystem.Panels
             colAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colAddress.FillWeight = 33F;
             colAddress.HeaderText = "Address";
-            colAddress.MinimumWidth = 170;
+            colAddress.MinimumWidth = 160;
             colAddress.Name = "colAddress";
             colAddress.ReadOnly = true;
             colAddress.Resizable = DataGridViewTriState.True;
@@ -284,11 +308,11 @@ namespace LibraryManagementSystem.Panels
             // 
             colJoinDate.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colJoinDate.HeaderText = "Join Date";
-            colJoinDate.MinimumWidth = 100;
+            colJoinDate.MinimumWidth = 120;
             colJoinDate.Name = "colJoinDate";
             colJoinDate.ReadOnly = true;
             colJoinDate.Resizable = DataGridViewTriState.True;
-            colJoinDate.Width = 110;
+            colJoinDate.Width = 130;
             // 
             // MembersPanel
             // 

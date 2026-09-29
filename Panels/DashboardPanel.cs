@@ -220,7 +220,7 @@ namespace LibraryManagementSystem.Panels
             {
                 int daysLate = Math.Max(0, (today - b.DueDate.Date).Days);
                 decimal fine = FinePolicy.CalculateFine(b.DueDate, today);
-                dgvOverdue.Rows.Add(b.Member?.Name ?? "—", daysLate, $"{fine:N0} ៛");
+                dgvOverdue.Rows.Add(b.Member?.Name ?? "—", daysLate, fine);
             }
 
             bool hasRows = rows.Count > 0;
@@ -251,8 +251,8 @@ namespace LibraryManagementSystem.Panels
                     b.BorrowId,
                     b.Member?.Name ?? "—",
                     books,
-                    b.BorrowDate.ToString("dd MMM yyyy"),
-                    b.DueDate.ToString("dd MMM yyyy"),
+                    b.BorrowDate,
+                    b.DueDate,
                     status);
             }
 
@@ -268,9 +268,10 @@ namespace LibraryManagementSystem.Panels
 
         private void ApplyIcons()
         {
-            // Use the same icon font the rest of the app resolves (Fluent / MDL2).
-            foreach (var badge in new[] { lblBooksIcon, lblMembersIcon, lblBorrowIcon, lblOverdueIcon })
-                badge.Font = UIHelper.FontIconLarge;
+            ApplyBadgeIcon(lblBooksIcon, UIHelper.Icons.Books);
+            ApplyBadgeIcon(lblMembersIcon, UIHelper.Icons.Members);
+            ApplyBadgeIcon(lblBorrowIcon, UIHelper.Icons.Borrow);
+            ApplyBadgeIcon(lblOverdueIcon, UIHelper.Icons.Warning);
 
             SetButtonIcon(btnRefresh, UIHelper.Icons.Refresh, 16, ImageAlign.Left);
             SetButtonIcon(btnQuickBorrow, UIHelper.Icons.Borrow, 24, ImageAlign.Center);
@@ -278,6 +279,25 @@ namespace LibraryManagementSystem.Panels
             SetButtonIcon(btnQuickBooks, UIHelper.Icons.Books, 24, ImageAlign.Center);
             SetButtonIcon(btnQuickMembers, UIHelper.Icons.Members, 24, ImageAlign.Center);
             SetButtonIcon(btnQuickReports, UIHelper.Icons.Reports, 24, ImageAlign.Center);
+        }
+
+        private static void ApplyBadgeIcon(Label badge, string glyph)
+        {
+            badge.Text = string.Empty;
+            badge.TextAlign = ContentAlignment.MiddleCenter;
+            badge.ImageAlign = ContentAlignment.MiddleCenter;
+
+            void Render()
+            {
+                int w = badge.Width > 0 ? badge.Width : 40;
+                int h = badge.Height > 0 ? badge.Height : 40;
+                var old = badge.Image;
+                badge.Image = UIHelper.CreateCenteredIconBitmap(glyph, w, h, Color.White, h * 0.52f);
+                old?.Dispose();
+            }
+
+            Render();
+            badge.Resize += (s, e) => Render();
         }
 
         private enum ImageAlign { Left, Center }
@@ -316,10 +336,11 @@ namespace LibraryManagementSystem.Panels
             UIHelper.StyleDataGridView(dgv);
 
             dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgv.AllowUserToResizeColumns = false;
+            dgv.AllowUserToResizeColumns = true;
             dgv.AllowUserToResizeRows = false;
             dgv.AllowUserToOrderColumns = false;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
+            dgv.ColumnHeadersHeight = UIHelper.DefaultGridHdrHeight;
             dgv.RowTemplate.Height = 34;
             dgv.TabStop = false;
 
@@ -338,7 +359,7 @@ namespace LibraryManagementSystem.Panels
                 HeaderText = header,
                 FillWeight = weight,
                 MinimumWidth = minWidth,
-                SortMode = DataGridViewColumnSortMode.NotSortable
+                SortMode = DataGridViewColumnSortMode.Automatic
             };
 
             if (right)
@@ -366,9 +387,27 @@ namespace LibraryManagementSystem.Panels
                     break;
 
                 case "colDaysLate":
+                    e.CellStyle.Font = BoldCellFont;
+                    e.CellStyle.ForeColor = UIHelper.DangerRed;
+                    break;
+
                 case "colFine":
                     e.CellStyle.Font = BoldCellFont;
                     e.CellStyle.ForeColor = UIHelper.DangerRed;
+                    if (e.Value is decimal fineVal)
+                    {
+                        e.Value = $"{fineVal:N0} ៛";
+                        e.FormattingApplied = true;
+                    }
+                    break;
+
+                case "colBorrowed":
+                case "colDue":
+                    if (e.Value is DateTime dt)
+                    {
+                        e.Value = dt.ToString("dd MMM yyyy");
+                        e.FormattingApplied = true;
+                    }
                     break;
             }
         }

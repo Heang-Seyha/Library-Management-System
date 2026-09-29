@@ -40,7 +40,11 @@ namespace LibraryManagementSystem.Services
             if (_context.Librarians.Any(l => l.Username.ToLower() == librarian.Username.Trim().ToLower()))
                 return (false, $"Username '{librarian.Username}' is already taken.");
 
+            librarian.Name = librarian.Name.Trim();
+            librarian.Gender = string.IsNullOrWhiteSpace(librarian.Gender) ? "Male" : librarian.Gender.Trim();
             librarian.Username = librarian.Username.Trim();
+            librarian.Phone = librarian.Phone.Trim();
+            librarian.Email = librarian.Email.Trim();
             librarian.PasswordHash = Helpers.PasswordHasher.Hash(plainPassword);
             _context.Librarians.Add(librarian);
             _context.SaveChanges();
@@ -64,8 +68,10 @@ namespace LibraryManagementSystem.Services
                 return (false, $"Username '{librarian.Username}' is already taken.");
 
             existing.Name = librarian.Name.Trim();
+            existing.Gender = string.IsNullOrWhiteSpace(librarian.Gender) ? "Male" : librarian.Gender.Trim();
+            existing.DateOfBirth = librarian.DateOfBirth;
             existing.Phone = librarian.Phone.Trim();
-            existing.Position = librarian.Position.Trim();
+            existing.Email = librarian.Email.Trim();
             existing.Username = librarian.Username.Trim();
             existing.Role = librarian.Role;
 

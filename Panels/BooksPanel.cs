@@ -201,8 +201,8 @@ namespace LibraryManagementSystem.Panels
 
             colId.HeaderText = "Book ID";
             colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colId.Width = 95;
-            colId.MinimumWidth = 90;
+            colId.Width = 120;
+            colId.MinimumWidth = 110;
             colId.Resizable = DataGridViewTriState.True;
 
             colTitle.HeaderText = "Title";
@@ -231,20 +231,20 @@ namespace LibraryManagementSystem.Panels
 
             colYear.HeaderText = "Year";
             colYear.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colYear.Width = 80;
-            colYear.MinimumWidth = 75;
+            colYear.Width = 90;
+            colYear.MinimumWidth = 85;
             colYear.Resizable = DataGridViewTriState.True;
 
             colAvailable.HeaderText = "Available";
             colAvailable.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colAvailable.Width = 115;
-            colAvailable.MinimumWidth = 110;
+            colAvailable.Width = 125;
+            colAvailable.MinimumWidth = 115;
             colAvailable.Resizable = DataGridViewTriState.True;
 
             colTotal.HeaderText = "Total";
             colTotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colTotal.Width = 85;
-            colTotal.MinimumWidth = 80;
+            colTotal.Width = 95;
+            colTotal.MinimumWidth = 90;
             colTotal.Resizable = DataGridViewTriState.True;
         }
     }

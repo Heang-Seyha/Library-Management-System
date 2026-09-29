@@ -37,6 +37,24 @@ namespace LibraryManagementSystem.Dialogs
             }
 
             this.Load += MemberEditDialog_Load;
+
+            dtpDob.ValueChanged += (s, e) =>
+            {
+                if (dtpDob.CustomFormat == " ")
+                {
+                    dtpDob.CustomFormat = "MM/dd/yyyy";
+                }
+                lblDobErr.Visible = false;
+            };
+
+            dtpDob.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
+                {
+                    dtpDob.CustomFormat = " ";
+                    lblDobErr.Visible = false;
+                }
+            };
         }
 
         private void MemberEditDialog_Load(object? sender, EventArgs e)
@@ -47,14 +65,31 @@ namespace LibraryManagementSystem.Dialogs
             {
                 PopulateFields(_existing);
             }
+            else
+            {
+                cmbGender.SelectedIndex = -1;
+                dtpDob.CustomFormat = " ";
+            }
         }
 
         private void PopulateFields(Member m)
         {
             txtName.Text = m.Name;
+            cmbGender.SelectedItem = m.Gender == "Female" ? "Female" : (m.Gender == "Male" ? "Male" : null);
+            if (m.DateOfBirth.HasValue)
+            {
+                dtpDob.CustomFormat = "MM/dd/yyyy";
+                dtpDob.Value = m.DateOfBirth.Value;
+            }
+            else
+            {
+                dtpDob.CustomFormat = " ";
+            }
             txtPhone.Text = m.Phone;
             txtEmail.Text = m.Email;
             txtAddress.Text = m.Address;
+            dtpJoin.Format = DateTimePickerFormat.Custom;
+            dtpJoin.CustomFormat = "MM/dd/yyyy";
             if (m.JoinDate <= DateTime.Today)
             {
                 dtpJoin.Value = m.JoinDate;
@@ -62,6 +97,7 @@ namespace LibraryManagementSystem.Dialogs
         }
 
         private void txtName_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtName, lblNameErr);
+        private void cmbGender_SelectedIndexChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(cmbGender, lblGenderErr);
         private void txtPhone_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtPhone, lblPhoneErr);
         private void txtEmail_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtEmail, lblEmailErr);
         private void txtAddress_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtAddress, lblAddressErr);
@@ -81,6 +117,31 @@ namespace LibraryManagementSystem.Dialogs
             {
                 ValidationHelper.SetFieldError(txtName, lblNameErr, "Full name is required (max 150 characters).");
                 hasErrors = true;
+            }
+
+            // Validate Gender
+            if (cmbGender.SelectedItem == null || string.IsNullOrWhiteSpace(cmbGender.Text))
+            {
+                ValidationHelper.SetFieldError(cmbGender, lblGenderErr, "Please select a gender.");
+                hasErrors = true;
+            }
+
+            // Validate Date of Birth (required & cannot be in the future)
+            if (string.IsNullOrWhiteSpace(dtpDob.CustomFormat) || dtpDob.CustomFormat == " ")
+            {
+                lblDobErr.Text = "Date of birth is required.";
+                lblDobErr.Visible = true;
+                hasErrors = true;
+            }
+            else if (dtpDob.Value.Date > DateTime.Today)
+            {
+                lblDobErr.Text = "Date of birth cannot be in the future.";
+                lblDobErr.Visible = true;
+                hasErrors = true;
+            }
+            else
+            {
+                lblDobErr.Visible = false;
             }
 
             // Validate Phone
@@ -128,6 +189,8 @@ namespace LibraryManagementSystem.Dialogs
             {
                 MemberId = _existing?.MemberId ?? 0,
                 Name = txtName.Text.Trim(),
+                Gender = cmbGender.SelectedItem?.ToString() ?? "",
+                DateOfBirth = (dtpDob.CustomFormat != " " && !string.IsNullOrWhiteSpace(dtpDob.CustomFormat)) ? dtpDob.Value.Date : (DateTime?)null,
                 Phone = txtPhone.Text.Trim(),
                 Email = txtEmail.Text.Trim(),
                 Address = txtAddress.Text.Trim(),

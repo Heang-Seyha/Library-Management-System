@@ -7,7 +7,7 @@ namespace LibraryManagementSystem.Models
     public class Librarian : Person
     {
         public int LibrarianId { get; set; }
-        public string Position { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
         // Authentication fields — never store plain text password
         public string Username { get; set; } = string.Empty;
@@ -22,7 +22,8 @@ namespace LibraryManagementSystem.Models
         // Demonstrates Polymorphism — overrides Person.GetInfo()
         public override string GetInfo()
         {
-            return $"Librarian: {Name} | Position: {Position} | Role: {Role}";
+            string dobStr = DateOfBirth.HasValue ? DateOfBirth.Value.ToString("MM/dd/yyyy") : "N/A";
+            return $"Librarian: {Name} | Gender: {Gender} | DOB: {dobStr} | Phone: {Phone} | Email: {Email} | Role: {Role}";
         }
 
         public bool IsAdmin => Role == "Admin";

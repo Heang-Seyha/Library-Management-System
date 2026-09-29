@@ -427,9 +427,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblHeader.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblHeader.ForeColor = Color.FromArgb(13, 59, 102);
-            lblHeader.Location = new Point(20, 14);
+            lblHeader.Location = new Point(20, 8);
             lblHeader.Name = "lblHeader";
-            lblHeader.Size = new Size(496, 28);
+            lblHeader.Size = new Size(496, 40);
             lblHeader.TabIndex = 0;
             lblHeader.Text = "Add New Book";
             lblHeader.TextAlign = ContentAlignment.MiddleCenter;

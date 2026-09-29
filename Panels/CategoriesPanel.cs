@@ -18,20 +18,16 @@ namespace LibraryManagementSystem.Panels
             InitializeComponent();
 
             UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
-            this.Load += CategoriesPanel_Load;
-        }
-
-        private void CategoriesPanel_Load(object? sender, EventArgs e)
-        {
             if (DesignMode) return;
 
             UIHelper.StyleDataGridView(dgv);
             ConfigureGridColumns();
 
+            txtSearch.TextChanged += (s, ev) => SearchCategories();
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
-            btnRefresh.Click += (s, ev) => LoadData();
+            btnRefresh.Click += (s, ev) => { txtSearch.Clear(); LoadData(); };
 
             LoadData();
         }
@@ -43,12 +39,7 @@ namespace LibraryManagementSystem.Panels
                 this.Cursor = Cursors.WaitCursor;
                 using var ctx = Program.CreateDbContext();
                 _items = new CategoryService(ctx).GetAll();
-                dgv.Rows.Clear();
-                foreach (var c in _items)
-                {
-                    dgv.Rows.Add(c.CategoryId, c.Name, c.Description);
-                }
-                UIHelper.UpdateGridState(dgv, _items.Count, false, "Category");
+                BindGrid(_items, false);
             }
             catch (Exception ex)
             {
@@ -62,6 +53,37 @@ namespace LibraryManagementSystem.Panels
             {
                 this.Cursor = Cursors.Default;
             }
+        }
+
+        private void SearchCategories()
+        {
+            var q = txtSearch.Text.Trim();
+            if (string.IsNullOrEmpty(q))
+            {
+                BindGrid(_items, false);
+                return;
+            }
+
+            var filtered = _items.Where(c =>
+                c.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                (c.Description != null && c.Description.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                c.CategoryId.ToString() == q).ToList();
+
+            BindGrid(filtered, true, q);
+        }
+
+        private void BindGrid(List<Category> categories, bool isSearchActive, string? query = null)
+        {
+            dgv.Rows.Clear();
+            foreach (var c in categories)
+            {
+                dgv.Rows.Add(c.CategoryId, c.Name, c.Description);
+            }
+            UIHelper.UpdateGridState(dgv, categories.Count, isSearchActive, "Category", query, () =>
+            {
+                txtSearch.Clear();
+                LoadData();
+            });
         }
 
         private int SelectedId() => dgv.SelectedRows.Count == 0 ? -1 : (int)dgv.SelectedRows[0].Cells["colId"].Value;

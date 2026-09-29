@@ -11,17 +11,25 @@ namespace LibraryManagementSystem.Dialogs
         private System.Windows.Forms.TextBox txtName;
         private System.Windows.Forms.Label lblNameErr;
 
+        private System.Windows.Forms.Label lblGenderLabel;
+        private System.Windows.Forms.ComboBox cmbGender;
+        private System.Windows.Forms.Label lblGenderErr;
+
         private System.Windows.Forms.Label lblUsernameLabel;
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Label lblUsernameErr;
+
+        private System.Windows.Forms.Label lblDobLabel;
+        private System.Windows.Forms.DateTimePicker dtpDob;
+        private System.Windows.Forms.Label lblDobErr;
 
         private System.Windows.Forms.Label lblPhoneLabel;
         private System.Windows.Forms.TextBox txtPhone;
         private System.Windows.Forms.Label lblPhoneErr;
 
-        private System.Windows.Forms.Label lblPositionLabel;
-        private System.Windows.Forms.TextBox txtPosition;
-        private System.Windows.Forms.Label lblPositionErr;
+        private System.Windows.Forms.Label lblEmailLabel;
+        private System.Windows.Forms.TextBox txtEmail;
+        private System.Windows.Forms.Label lblEmailErr;
 
         private System.Windows.Forms.Label lblRoleLabel;
         private System.Windows.Forms.ComboBox cmbRole;
@@ -52,15 +60,21 @@ namespace LibraryManagementSystem.Dialogs
             lblRoleErr = new Label();
             cmbRole = new ComboBox();
             lblRoleLabel = new Label();
-            lblPositionErr = new Label();
-            txtPosition = new TextBox();
-            lblPositionLabel = new Label();
+            lblEmailErr = new Label();
+            txtEmail = new TextBox();
+            lblEmailLabel = new Label();
             lblPhoneErr = new Label();
             txtPhone = new TextBox();
             lblPhoneLabel = new Label();
+            lblDobErr = new Label();
+            dtpDob = new DateTimePicker();
+            lblDobLabel = new Label();
             lblUsernameErr = new Label();
             txtUsername = new TextBox();
             lblUsernameLabel = new Label();
+            lblGenderErr = new Label();
+            cmbGender = new ComboBox();
+            lblGenderLabel = new Label();
             lblNameErr = new Label();
             txtName = new TextBox();
             lblNameLabel = new Label();
@@ -80,24 +94,32 @@ namespace LibraryManagementSystem.Dialogs
             pnlContainer.Controls.Add(lblRoleErr);
             pnlContainer.Controls.Add(cmbRole);
             pnlContainer.Controls.Add(lblRoleLabel);
-            pnlContainer.Controls.Add(lblPositionErr);
-            pnlContainer.Controls.Add(txtPosition);
-            pnlContainer.Controls.Add(lblPositionLabel);
+            pnlContainer.Controls.Add(lblEmailErr);
+            pnlContainer.Controls.Add(txtEmail);
+            pnlContainer.Controls.Add(lblEmailLabel);
             pnlContainer.Controls.Add(lblPhoneErr);
             pnlContainer.Controls.Add(txtPhone);
             pnlContainer.Controls.Add(lblPhoneLabel);
+            pnlContainer.Controls.Add(lblDobErr);
+            pnlContainer.Controls.Add(dtpDob);
+            pnlContainer.Controls.Add(lblDobLabel);
             pnlContainer.Controls.Add(lblUsernameErr);
             pnlContainer.Controls.Add(txtUsername);
             pnlContainer.Controls.Add(lblUsernameLabel);
+            pnlContainer.Controls.Add(lblGenderErr);
+            pnlContainer.Controls.Add(cmbGender);
+            pnlContainer.Controls.Add(lblGenderLabel);
             pnlContainer.Controls.Add(lblNameErr);
             pnlContainer.Controls.Add(txtName);
             pnlContainer.Controls.Add(lblNameLabel);
             pnlContainer.Controls.Add(lblHeader);
-            pnlContainer.Dock = DockStyle.Fill;
+            pnlContainer.Dock = DockStyle.Fill;
             lblNameErr.BringToFront();
+            lblGenderErr.BringToFront();
             lblUsernameErr.BringToFront();
+            lblDobErr.BringToFront();
             lblPhoneErr.BringToFront();
-            lblPositionErr.BringToFront();
+            lblEmailErr.BringToFront();
             lblRoleErr.BringToFront();
             lblPasswordErr.BringToFront();
 
@@ -209,37 +231,37 @@ namespace LibraryManagementSystem.Dialogs
             lblRoleLabel.TabIndex = 13;
             lblRoleLabel.Text = "Access Role *";
             // 
-            // lblPositionErr
+            // lblEmailErr
             // 
-            lblPositionErr.Font = new Font("Segoe UI", 8F);
-            lblPositionErr.ForeColor = Color.FromArgb(220, 38, 38);
-            lblPositionErr.Location = new Point(268, 267);
-            lblPositionErr.Name = "lblPositionErr";
-            lblPositionErr.Size = new Size(232, 24);
-            lblPositionErr.TabIndex = 12;
-            lblPositionErr.Visible = false;
+            lblEmailErr.Font = new Font("Segoe UI", 8F);
+            lblEmailErr.ForeColor = Color.FromArgb(220, 38, 38);
+            lblEmailErr.Location = new Point(268, 267);
+            lblEmailErr.Name = "lblEmailErr";
+            lblEmailErr.Size = new Size(232, 24);
+            lblEmailErr.TabIndex = 12;
+            lblEmailErr.Visible = false;
             // 
-            // txtPosition
+            // txtEmail
             // 
-            txtPosition.BorderStyle = BorderStyle.FixedSingle;
-            txtPosition.Font = new Font("Segoe UI", 9.5F);
-            txtPosition.ForeColor = Color.FromArgb(13, 59, 102);
-            txtPosition.Location = new Point(268, 236);
-            txtPosition.Name = "txtPosition";
-            txtPosition.Size = new Size(232, 29);
-            txtPosition.TabIndex = 11;
-            txtPosition.TextChanged += txtPosition_TextChanged;
+            txtEmail.BorderStyle = BorderStyle.FixedSingle;
+            txtEmail.Font = new Font("Segoe UI", 9.5F);
+            txtEmail.ForeColor = Color.FromArgb(13, 59, 102);
+            txtEmail.Location = new Point(268, 236);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(232, 29);
+            txtEmail.TabIndex = 11;
+            txtEmail.TextChanged += txtEmail_TextChanged;
             // 
-            // lblPositionLabel
+            // lblEmailLabel
             // 
-            lblPositionLabel.AutoSize = true;
-            lblPositionLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPositionLabel.ForeColor = Color.FromArgb(13, 59, 102);
-            lblPositionLabel.Location = new Point(268, 214);
-            lblPositionLabel.Name = "lblPositionLabel";
-            lblPositionLabel.Size = new Size(66, 20);
-            lblPositionLabel.TabIndex = 10;
-            lblPositionLabel.Text = "Position";
+            lblEmailLabel.AutoSize = true;
+            lblEmailLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblEmailLabel.ForeColor = Color.FromArgb(13, 59, 102);
+            lblEmailLabel.Location = new Point(268, 214);
+            lblEmailLabel.Name = "lblEmailLabel";
+            lblEmailLabel.Size = new Size(116, 20);
+            lblEmailLabel.TabIndex = 10;
+            lblEmailLabel.Text = "Email Address *";
             // 
             // lblPhoneErr
             // 
@@ -269,9 +291,9 @@ namespace LibraryManagementSystem.Dialogs
             lblPhoneLabel.ForeColor = Color.FromArgb(13, 59, 102);
             lblPhoneLabel.Location = new Point(20, 214);
             lblPhoneLabel.Name = "lblPhoneLabel";
-            lblPhoneLabel.Size = new Size(115, 20);
+            lblPhoneLabel.Size = new Size(125, 20);
             lblPhoneLabel.TabIndex = 7;
-            lblPhoneLabel.Text = "Phone Number";
+            lblPhoneLabel.Text = "Phone Number *";
             // 
             // lblUsernameErr
             // 
@@ -279,7 +301,7 @@ namespace LibraryManagementSystem.Dialogs
             lblUsernameErr.ForeColor = Color.FromArgb(220, 38, 38);
             lblUsernameErr.Location = new Point(20, 185);
             lblUsernameErr.Name = "lblUsernameErr";
-            lblUsernameErr.Size = new Size(480, 24);
+            lblUsernameErr.Size = new Size(232, 24);
             lblUsernameErr.TabIndex = 6;
             lblUsernameErr.Visible = false;
             // 
@@ -290,8 +312,8 @@ namespace LibraryManagementSystem.Dialogs
             txtUsername.ForeColor = Color.FromArgb(13, 59, 102);
             txtUsername.Location = new Point(20, 154);
             txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(480, 29);
-            txtUsername.TabIndex = 5;
+            txtUsername.Size = new Size(232, 29);
+            txtUsername.TabIndex = 4;
             txtUsername.TextChanged += txtUsername_TextChanged;
             // 
             // lblUsernameLabel
@@ -302,8 +324,39 @@ namespace LibraryManagementSystem.Dialogs
             lblUsernameLabel.Location = new Point(20, 132);
             lblUsernameLabel.Name = "lblUsernameLabel";
             lblUsernameLabel.Size = new Size(91, 20);
-            lblUsernameLabel.TabIndex = 4;
+            lblUsernameLabel.TabIndex = 3;
             lblUsernameLabel.Text = "Username *";
+            // 
+            // lblDobErr
+            // 
+            lblDobErr.Font = new Font("Segoe UI", 8F);
+            lblDobErr.ForeColor = Color.FromArgb(220, 38, 38);
+            lblDobErr.Location = new Point(268, 185);
+            lblDobErr.Name = "lblDobErr";
+            lblDobErr.Size = new Size(232, 24);
+            lblDobErr.TabIndex = 22;
+            lblDobErr.Visible = false;
+            // 
+            // dtpDob
+            // 
+            dtpDob.CustomFormat = " ";
+            dtpDob.Font = new Font("Segoe UI", 9.5F);
+            dtpDob.Format = DateTimePickerFormat.Custom;
+            dtpDob.Location = new Point(268, 154);
+            dtpDob.Name = "dtpDob";
+            dtpDob.Size = new Size(232, 29);
+            dtpDob.TabIndex = 5;
+            // 
+            // lblDobLabel
+            // 
+            lblDobLabel.AutoSize = true;
+            lblDobLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblDobLabel.ForeColor = Color.FromArgb(13, 59, 102);
+            lblDobLabel.Location = new Point(268, 132);
+            lblDobLabel.Name = "lblDobLabel";
+            lblDobLabel.Size = new Size(110, 20);
+            lblDobLabel.TabIndex = 21;
+            lblDobLabel.Text = "Date of Birth *";
             // 
             // lblNameErr
             // 
@@ -311,8 +364,8 @@ namespace LibraryManagementSystem.Dialogs
             lblNameErr.ForeColor = Color.FromArgb(220, 38, 38);
             lblNameErr.Location = new Point(20, 103);
             lblNameErr.Name = "lblNameErr";
-            lblNameErr.Size = new Size(480, 24);
-            lblNameErr.TabIndex = 3;
+            lblNameErr.Size = new Size(232, 24);
+            lblNameErr.TabIndex = 20;
             lblNameErr.Visible = false;
             // 
             // txtName
@@ -322,8 +375,8 @@ namespace LibraryManagementSystem.Dialogs
             txtName.ForeColor = Color.FromArgb(13, 59, 102);
             txtName.Location = new Point(20, 72);
             txtName.Name = "txtName";
-            txtName.Size = new Size(480, 29);
-            txtName.TabIndex = 2;
+            txtName.Size = new Size(232, 29);
+            txtName.TabIndex = 1;
             txtName.TextChanged += txtName_TextChanged;
             // 
             // lblNameLabel
@@ -334,16 +387,50 @@ namespace LibraryManagementSystem.Dialogs
             lblNameLabel.Location = new Point(20, 50);
             lblNameLabel.Name = "lblNameLabel";
             lblNameLabel.Size = new Size(91, 20);
-            lblNameLabel.TabIndex = 1;
+            lblNameLabel.TabIndex = 0;
             lblNameLabel.Text = "Full Name *";
+            // 
+            // lblGenderErr
+            // 
+            lblGenderErr.Font = new Font("Segoe UI", 8F);
+            lblGenderErr.ForeColor = Color.FromArgb(220, 38, 38);
+            lblGenderErr.Location = new Point(268, 103);
+            lblGenderErr.Name = "lblGenderErr";
+            lblGenderErr.Size = new Size(232, 24);
+            lblGenderErr.TabIndex = 24;
+            lblGenderErr.Visible = false;
+            // 
+            // cmbGender
+            // 
+            cmbGender.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbGender.Font = new Font("Segoe UI", 9.5F);
+            cmbGender.ForeColor = Color.FromArgb(13, 59, 102);
+            cmbGender.FormattingEnabled = true;
+            cmbGender.Items.AddRange(new object[] { "Male", "Female" });
+            cmbGender.Location = new Point(268, 72);
+            cmbGender.Name = "cmbGender";
+            cmbGender.Size = new Size(232, 29);
+            cmbGender.TabIndex = 2;
+            cmbGender.SelectedIndexChanged += cmbGender_SelectedIndexChanged;
+            // 
+            // lblGenderLabel
+            // 
+            lblGenderLabel.AutoSize = true;
+            lblGenderLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblGenderLabel.ForeColor = Color.FromArgb(13, 59, 102);
+            lblGenderLabel.Location = new Point(268, 50);
+            lblGenderLabel.Name = "lblGenderLabel";
+            lblGenderLabel.Size = new Size(70, 20);
+            lblGenderLabel.TabIndex = 23;
+            lblGenderLabel.Text = "Gender *";
             // 
             // lblHeader
             // 
             lblHeader.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblHeader.ForeColor = Color.FromArgb(13, 59, 102);
-            lblHeader.Location = new Point(20, 14);
+            lblHeader.Location = new Point(20, 8);
             lblHeader.Name = "lblHeader";
-            lblHeader.Size = new Size(480, 28);
+            lblHeader.Size = new Size(480, 40);
             lblHeader.TabIndex = 0;
             lblHeader.Text = "Add New Librarian";
             lblHeader.TextAlign = ContentAlignment.MiddleCenter;

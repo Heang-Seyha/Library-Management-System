@@ -195,11 +195,11 @@ namespace LibraryManagementSystem.Panels
             // 
             colBookId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colBookId.HeaderText = "Book ID";
-            colBookId.MinimumWidth = 90;
+            colBookId.MinimumWidth = 100;
             colBookId.Name = "BookId";
             colBookId.ReadOnly = true;
             colBookId.Resizable = DataGridViewTriState.True;
-            colBookId.Width = 95;
+            colBookId.Width = 110;
             // 
             // colTitle
             // 
@@ -225,11 +225,11 @@ namespace LibraryManagementSystem.Panels
             // 
             colAvailable.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colAvailable.HeaderText = "Available";
-            colAvailable.MinimumWidth = 110;
+            colAvailable.MinimumWidth = 115;
             colAvailable.Name = "colAvailable";
             colAvailable.ReadOnly = true;
             colAvailable.Resizable = DataGridViewTriState.True;
-            colAvailable.Width = 115;
+            colAvailable.Width = 125;
             // 
             // colQty
             // 

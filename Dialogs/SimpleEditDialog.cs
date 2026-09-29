@@ -45,9 +45,10 @@ namespace LibraryManagementSystem.Dialogs
         {
             int fieldHeight = 82;
             pnlFields.Controls.Clear();
+            pnlFields.Location = new Point(20, 56);
             pnlFields.Height = _fields.Length * fieldHeight;
 
-            int totalHeight = Math.Max(280, pnlFields.Bottom + 68);
+            int totalHeight = Math.Max(288, pnlFields.Bottom + 68);
             this.ClientSize = new Size(500, totalHeight);
             this.MinimumSize = new Size(500, totalHeight);
 

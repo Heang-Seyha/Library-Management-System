@@ -13,25 +13,33 @@ namespace LibraryManagementSystem.Panels
     {
         private List<Publisher> _items = new();
 
+        private bool _isLoaded;
+
         public PublishersPanel()
         {
             InitializeComponent();
 
             UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
             this.Load += PublishersPanel_Load;
+            if (!DesignMode)
+            {
+                PublishersPanel_Load(this, EventArgs.Empty);
+            }
         }
 
         private void PublishersPanel_Load(object? sender, EventArgs e)
         {
-            if (DesignMode) return;
+            if (DesignMode || _isLoaded) return;
+            _isLoaded = true;
 
             UIHelper.StyleDataGridView(dgv);
             ConfigureGridColumns();
 
+            txtSearch.TextChanged += (s, ev) => SearchPublishers();
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
-            btnRefresh.Click += (s, ev) => LoadData();
+            btnRefresh.Click += (s, ev) => { txtSearch.Clear(); LoadData(); };
 
             LoadData();
         }
@@ -43,12 +51,7 @@ namespace LibraryManagementSystem.Panels
                 this.Cursor = Cursors.WaitCursor;
                 using var ctx = Program.CreateDbContext();
                 _items = new PublisherService(ctx).GetAll();
-                dgv.Rows.Clear();
-                foreach (var p in _items)
-                {
-                    dgv.Rows.Add(p.PublisherId, p.Name, p.Address, p.Phone);
-                }
-                UIHelper.UpdateGridState(dgv, _items.Count, false, "Publisher");
+                BindGrid(_items, false);
             }
             catch (Exception ex)
             {
@@ -62,6 +65,38 @@ namespace LibraryManagementSystem.Panels
             {
                 this.Cursor = Cursors.Default;
             }
+        }
+
+        private void SearchPublishers()
+        {
+            var q = txtSearch.Text.Trim();
+            if (string.IsNullOrEmpty(q))
+            {
+                BindGrid(_items, false);
+                return;
+            }
+
+            var filtered = _items.Where(p =>
+                p.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                (p.Address != null && p.Address.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                (p.Phone != null && p.Phone.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                p.PublisherId.ToString() == q).ToList();
+
+            BindGrid(filtered, true, q);
+        }
+
+        private void BindGrid(List<Publisher> publishers, bool isSearchActive, string? query = null)
+        {
+            dgv.Rows.Clear();
+            foreach (var p in publishers)
+            {
+                dgv.Rows.Add(p.PublisherId, p.Name, p.Address, p.Phone);
+            }
+            UIHelper.UpdateGridState(dgv, publishers.Count, isSearchActive, "Publisher", query, () =>
+            {
+                txtSearch.Clear();
+                LoadData();
+            });
         }
 
         private int SelectedId() => dgv.SelectedRows.Count == 0 ? -1 : (int)dgv.SelectedRows[0].Cells["colId"].Value;

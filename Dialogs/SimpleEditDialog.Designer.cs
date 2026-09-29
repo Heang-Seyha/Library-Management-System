@@ -80,7 +80,7 @@ namespace LibraryManagementSystem.Dialogs
             // pnlFields
             // 
             pnlFields.BackColor = Color.Transparent;
-            pnlFields.Location = new Point(20, 48);
+            pnlFields.Location = new Point(20, 56);
             pnlFields.Name = "pnlFields";
             pnlFields.Size = new Size(460, 164);
             pnlFields.TabIndex = 1;
@@ -89,9 +89,9 @@ namespace LibraryManagementSystem.Dialogs
             // 
             lblTitle.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(13, 59, 102);
-            lblTitle.Location = new Point(20, 14);
+            lblTitle.Location = new Point(20, 10);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(460, 28);
+            lblTitle.Size = new Size(460, 42);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Edit Item";
             lblTitle.TextAlign = ContentAlignment.MiddleLeft;
@@ -103,13 +103,13 @@ namespace LibraryManagementSystem.Dialogs
             AutoScaleMode = AutoScaleMode.Dpi;
             BackColor = Color.FromArgb(235, 243, 250);
             CancelButton = btnCancel;
-            ClientSize = new Size(500, 280);
+            ClientSize = new Size(500, 288);
             Controls.Add(pnlContainer);
             Font = new Font("Segoe UI", 9.5F);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            MinimumSize = new Size(500, 280);
+            MinimumSize = new Size(500, 288);
             Name = "SimpleEditDialog";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Library Management System";

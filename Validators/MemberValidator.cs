@@ -16,6 +16,15 @@ namespace LibraryManagementSystem.Validators
                 .NotEmpty().WithMessage("Member name is required.")
                 .MaximumLength(150).WithMessage("Name cannot exceed 150 characters.");
 
+            RuleFor(m => m.Gender)
+                .NotEmpty().WithMessage("Gender is required.")
+                .Must(g => g == "Male" || g == "Female").WithMessage("Gender must be either 'Male' or 'Female'.");
+
+            RuleFor(m => m.DateOfBirth)
+                .NotNull().WithMessage("Date of birth is required.")
+                .Must(dob => !dob.HasValue || dob.Value.Date <= DateTime.Today)
+                .WithMessage("Date of birth cannot be in the future.");
+
             RuleFor(m => m.Phone)
                 .NotEmpty().WithMessage("Phone number is required.")
                 .Must(ValidationHelper.IsValidPhone).WithMessage("Phone number is not valid.")

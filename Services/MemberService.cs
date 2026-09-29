@@ -21,8 +21,10 @@ namespace LibraryManagementSystem.Services
             var q = query.Trim().ToLower();
             return _context.Members
                 .Where(m => m.Name.ToLower().Contains(q)
+                         || m.Gender.ToLower().Contains(q)
                          || m.Phone.ToLower().Contains(q)
-                         || m.Email.ToLower().Contains(q))
+                         || m.Email.ToLower().Contains(q)
+                         || (m.DateOfBirth.HasValue && m.DateOfBirth.Value.ToString().Contains(q)))
                 .OrderBy(m => m.Name)
                 .ToList();
         }
@@ -34,6 +36,7 @@ namespace LibraryManagementSystem.Services
                 return (false, result.Errors.First().ErrorMessage);
 
             member.Name = member.Name.Trim();
+            member.Gender = string.IsNullOrWhiteSpace(member.Gender) ? "Male" : member.Gender.Trim();
             member.Phone = member.Phone.Trim();
             member.Email = member.Email.Trim();
             member.Address = member.Address.Trim();
@@ -52,6 +55,8 @@ namespace LibraryManagementSystem.Services
                 return (false, result.Errors.First().ErrorMessage);
 
             existing.Name = member.Name.Trim();
+            existing.Gender = string.IsNullOrWhiteSpace(member.Gender) ? "Male" : member.Gender.Trim();
+            existing.DateOfBirth = member.DateOfBirth;
             existing.Phone = member.Phone.Trim();
             existing.Email = member.Email.Trim();
             existing.Address = member.Address.Trim();

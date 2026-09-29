@@ -40,6 +40,24 @@ namespace LibraryManagementSystem.Dialogs
             }
 
             this.Load += LibrarianEditDialog_Load;
+
+            dtpDob.ValueChanged += (s, e) =>
+            {
+                if (dtpDob.CustomFormat == " ")
+                {
+                    dtpDob.CustomFormat = "MM/dd/yyyy";
+                }
+                lblDobErr.Visible = false;
+            };
+
+            dtpDob.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
+                {
+                    dtpDob.CustomFormat = " ";
+                    lblDobErr.Visible = false;
+                }
+            };
         }
 
         private void LibrarianEditDialog_Load(object? sender, EventArgs e)
@@ -52,6 +70,8 @@ namespace LibraryManagementSystem.Dialogs
             }
             else
             {
+                cmbGender.SelectedIndex = -1;
+                dtpDob.CustomFormat = " ";
                 cmbRole.SelectedIndex = -1;
             }
         }
@@ -59,16 +79,27 @@ namespace LibraryManagementSystem.Dialogs
         private void PopulateFields(Librarian lib)
         {
             txtName.Text = lib.Name;
+            cmbGender.SelectedItem = lib.Gender == "Female" ? "Female" : (lib.Gender == "Male" ? "Male" : null);
+            if (lib.DateOfBirth.HasValue)
+            {
+                dtpDob.CustomFormat = "MM/dd/yyyy";
+                dtpDob.Value = lib.DateOfBirth.Value;
+            }
+            else
+            {
+                dtpDob.CustomFormat = " ";
+            }
             txtUsername.Text = lib.Username;
             txtPhone.Text = lib.Phone;
-            txtPosition.Text = string.IsNullOrWhiteSpace(lib.Position) ? "Librarian" : lib.Position;
+            txtEmail.Text = lib.Email;
             cmbRole.SelectedItem = (lib.Role == "Admin") ? "Admin" : "Librarian";
         }
 
         private void txtName_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtName, lblNameErr);
+        private void cmbGender_SelectedIndexChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(cmbGender, lblGenderErr);
         private void txtUsername_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtUsername, lblUsernameErr);
         private void txtPhone_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtPhone, lblPhoneErr);
-        private void txtPosition_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtPosition, lblPositionErr);
+        private void txtEmail_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtEmail, lblEmailErr);
         private void cmbRole_SelectedIndexChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(cmbRole, lblRoleErr);
         private void txtPassword_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtPassword, lblPasswordErr);
 
@@ -89,6 +120,31 @@ namespace LibraryManagementSystem.Dialogs
                 hasErrors = true;
             }
 
+            // Validate Gender
+            if (cmbGender.SelectedItem == null || string.IsNullOrWhiteSpace(cmbGender.Text))
+            {
+                ValidationHelper.SetFieldError(cmbGender, lblGenderErr, "Please select a gender.");
+                hasErrors = true;
+            }
+
+            // Validate Date of Birth (required & cannot be in the future)
+            if (string.IsNullOrWhiteSpace(dtpDob.CustomFormat) || dtpDob.CustomFormat == " ")
+            {
+                lblDobErr.Text = "Date of birth is required.";
+                lblDobErr.Visible = true;
+                hasErrors = true;
+            }
+            else if (dtpDob.Value.Date > DateTime.Today)
+            {
+                lblDobErr.Text = "Date of birth cannot be in the future.";
+                lblDobErr.Visible = true;
+                hasErrors = true;
+            }
+            else
+            {
+                lblDobErr.Visible = false;
+            }
+
             // Validate Username
             if (!ValidationHelper.IsValidUsername(txtUsername.Text, 3, 50))
             {
@@ -103,10 +159,27 @@ namespace LibraryManagementSystem.Dialogs
                 hasErrors = true;
             }
 
-            // Validate Phone (optional, but if present must be valid)
-            if (!string.IsNullOrWhiteSpace(txtPhone.Text) && !ValidationHelper.IsValidPhone(txtPhone.Text))
+            // Validate Phone (required & valid format)
+            if (string.IsNullOrWhiteSpace(txtPhone.Text))
+            {
+                ValidationHelper.SetFieldError(txtPhone, lblPhoneErr, "Phone number is required.");
+                hasErrors = true;
+            }
+            else if (!ValidationHelper.IsValidPhone(txtPhone.Text))
             {
                 ValidationHelper.SetFieldError(txtPhone, lblPhoneErr, "Invalid phone number (must start with 0, 9-10 digits).");
+                hasErrors = true;
+            }
+
+            // Validate Email (required & valid format)
+            if (string.IsNullOrWhiteSpace(txtEmail.Text))
+            {
+                ValidationHelper.SetFieldError(txtEmail, lblEmailErr, "Email address is required.");
+                hasErrors = true;
+            }
+            else if (!ValidationHelper.IsValidEmail(txtEmail.Text))
+            {
+                ValidationHelper.SetFieldError(txtEmail, lblEmailErr, "Please enter a valid email address (e.g. name@domain.com).");
                 hasErrors = true;
             }
 
@@ -141,9 +214,11 @@ namespace LibraryManagementSystem.Dialogs
             {
                 LibrarianId = _existing?.LibrarianId ?? 0,
                 Name = txtName.Text.Trim(),
+                Gender = cmbGender.SelectedItem?.ToString() ?? "",
+                DateOfBirth = (dtpDob.CustomFormat != " " && !string.IsNullOrWhiteSpace(dtpDob.CustomFormat)) ? dtpDob.Value.Date : (DateTime?)null,
                 Username = txtUsername.Text.Trim(),
                 Phone = txtPhone.Text.Trim(),
-                Position = string.IsNullOrWhiteSpace(txtPosition.Text) ? "Librarian" : txtPosition.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
                 Role = selectedRole
             };
 

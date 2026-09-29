@@ -23,6 +23,7 @@ namespace LibraryManagementSystem.Services
                 return (false, result.Errors.First().ErrorMessage);
 
             author.Name = author.Name.Trim();
+            author.Gender = string.IsNullOrWhiteSpace(author.Gender) ? "Male" : author.Gender.Trim();
             _context.Authors.Add(author);
             _context.SaveChanges();
             return (true, "Author added successfully.");
@@ -37,6 +38,8 @@ namespace LibraryManagementSystem.Services
             var existing = _context.Authors.Find(author.AuthorId);
             if (existing == null) return (false, "Author not found.");
             existing.Name = author.Name.Trim();
+            existing.Gender = string.IsNullOrWhiteSpace(author.Gender) ? "Male" : author.Gender.Trim();
+            existing.DateOfBirth = author.DateOfBirth;
             existing.Bio = author.Bio?.Trim() ?? "";
             _context.SaveChanges();
             return (true, "Author updated successfully.");

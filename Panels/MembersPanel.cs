@@ -54,20 +54,32 @@ namespace LibraryManagementSystem.Panels
 
             colId.HeaderText = "Member ID";
             colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colId.Width = 120;
-            colId.MinimumWidth = 115;
+            colId.Width = 135;
+            colId.MinimumWidth = 125;
             colId.Resizable = DataGridViewTriState.True;
 
             colName.HeaderText = "Full Name";
             colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colName.FillWeight = 34F;
-            colName.MinimumWidth = 190;
+            colName.MinimumWidth = 160;
             colName.Resizable = DataGridViewTriState.True;
+
+            colGender.HeaderText = "Gender";
+            colGender.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colGender.Width = 110;
+            colGender.MinimumWidth = 100;
+            colGender.Resizable = DataGridViewTriState.True;
+
+            colDob.HeaderText = "Date of Birth";
+            colDob.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colDob.Width = 145;
+            colDob.MinimumWidth = 135;
+            colDob.Resizable = DataGridViewTriState.True;
 
             colPhone.HeaderText = "Phone";
             colPhone.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colPhone.Width = 120;
-            colPhone.MinimumWidth = 110;
+            colPhone.Width = 130;
+            colPhone.MinimumWidth = 120;
             colPhone.Resizable = DataGridViewTriState.True;
 
             colEmail.HeaderText = "Email Address";
@@ -79,13 +91,13 @@ namespace LibraryManagementSystem.Panels
             colAddress.HeaderText = "Address";
             colAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colAddress.FillWeight = 33F;
-            colAddress.MinimumWidth = 170;
+            colAddress.MinimumWidth = 160;
             colAddress.Resizable = DataGridViewTriState.True;
 
             colJoinDate.HeaderText = "Join Date";
             colJoinDate.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colJoinDate.Width = 110;
-            colJoinDate.MinimumWidth = 100;
+            colJoinDate.Width = 130;
+            colJoinDate.MinimumWidth = 120;
             colJoinDate.Resizable = DataGridViewTriState.True;
         }
 
@@ -123,8 +135,14 @@ namespace LibraryManagementSystem.Panels
 
             var filtered = _members.Where(m =>
                 m.Name.ToLower().Contains(q) ||
+                (m.Gender != null && m.Gender.ToLower().Contains(q)) ||
+                (m.DateOfBirth.HasValue && (m.DateOfBirth.Value.ToString("MM/dd/yyyy").Contains(q) || m.DateOfBirth.Value.ToString("yyyy-MM-dd").Contains(q))) ||
                 m.Phone.ToLower().Contains(q) ||
-                (m.Email != null && m.Email.ToLower().Contains(q))).ToArray();
+                (m.Email != null && m.Email.ToLower().Contains(q)) ||
+                (m.Address != null && m.Address.ToLower().Contains(q)) ||
+                m.JoinDate.ToString("MM/dd/yyyy").Contains(q) ||
+                m.JoinDate.ToString("yyyy-MM-dd").Contains(q) ||
+                m.MemberId.ToString() == q).ToArray();
 
             BindGrid(filtered, true, q);
         }
@@ -134,7 +152,7 @@ namespace LibraryManagementSystem.Panels
             dgv.Rows.Clear();
             foreach (var m in members)
             {
-                dgv.Rows.Add(m.MemberId, m.Name, m.Phone, m.Email, m.Address, m.JoinDate.ToShortDateString());
+                dgv.Rows.Add(m.MemberId, m.Name, m.Gender, m.DateOfBirth?.ToString("MM/dd/yyyy") ?? "", m.Phone, m.Email, m.Address, m.JoinDate.ToString("MM/dd/yyyy"));
             }
 
             UIHelper.UpdateGridState(dgv, members.Length, isSearchActive, "Member", query, () =>

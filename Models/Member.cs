@@ -17,7 +17,8 @@ namespace LibraryManagementSystem.Models
         // Demonstrates Polymorphism — overrides Person.GetInfo()
         public override string GetInfo()
         {
-            return $"Member: {Name} | Phone: {Phone} | Email: {Email}";
+            string dobStr = DateOfBirth.HasValue ? DateOfBirth.Value.ToString("MM/dd/yyyy") : "N/A";
+            return $"Member: {Name} | Gender: {Gender} | DOB: {dobStr} | Phone: {Phone} | Email: {Email} | Join Date: {JoinDate:MM/dd/yyyy}";
         }
 
         public override string ToString() => Name;

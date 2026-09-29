@@ -1,9 +1,11 @@
 using LibraryManagementSystem.Data;
+using LibraryManagementSystem.Dialogs;
 using LibraryManagementSystem.Forms;
 using LibraryManagementSystem.Helpers;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Panels;
 using LibraryManagementSystem.Services;
+using LibraryManagementSystem.Validators;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing;
 
@@ -70,6 +72,12 @@ namespace LibraryManagementSystem.Tests
             RunTest("28. Reporting — Filtered Queries & Export Formats (Excel, PDF)", Test_Reporting_FilteredQueriesAndExports);
             RunTest("29. Reporting — Analytics & Summary Queries", Test_ReportingQueries);
             RunTest("30. Responsive Layout Matrix (1024x600, 1280x720, 1366x768, 1920x1080)", Test_ResponsiveMatrix);
+            RunTest("31. Grid Header Sorting — Dashboard & Reports Columns Automatic Sort", Test_GridHeaderSorting_DashboardAndReports);
+            RunTest("32. Live Search — Categories, Authors, Publishers, Librarians, Reports Panels", Test_SearchOnFivePanels);
+            RunTest("33. Dashboard Stat Cards — Icon Optical Centering Verification", Test_DashboardStatCardIconsCentering);
+            RunTest("34. Action Buttons Layout — Books and Members Refresh Button at Far Right", Test_RefreshButtonPositionOnBooksAndMembersPanels);
+            RunTest("35. Person & Member Gender — Base Class Encapsulation, UI & DB Persistence", Test_MemberGenderFieldAndPersistence);
+            RunTest("36. Gender & Date of Birth — All Entities (Member, Author, Admin, Librarian)", Test_GenderAndDateOfBirthAcrossAllEntities);
 
             Console.WriteLine("================================================================================");
             Console.WriteLine($"  TEST RUN RESULTS: {_passed} PASSED, {_failed} FAILED (TOTAL: {_passed + _failed})");
@@ -169,7 +177,7 @@ namespace LibraryManagementSystem.Tests
             SessionManager.Login(libUser!);
             try
             {
-                var target = new Librarian { Name = "Unauthorized Test", Username = "unauth_lib_test", Role = "Librarian" };
+                var target = new Librarian { Name = "Unauthorized Test", Username = "unauth_lib_test", Role = "Librarian", Gender = "Male", DateOfBirth = new DateTime(1990, 1, 1) };
                 var (addSuccess, addMsg) = svc.Add(target, "ValidPass123!");
                 Assert(!addSuccess, "Librarian role must not be allowed to add librarians.");
                 Assert(addMsg.Contains("privileges", StringComparison.OrdinalIgnoreCase) || addMsg.Contains("admin", StringComparison.OrdinalIgnoreCase),
@@ -195,9 +203,11 @@ namespace LibraryManagementSystem.Tests
                 {
                     Name = "Admin Auth Test",
                     Username = tempUsername,
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1990, 1, 1),
                     Role = "Librarian",
                     Phone = "012000111",
-                    Position = "Staff"
+                    Email = "admin_auth_test@library.gov.kh"
                 };
 
                 var (addSuccess, addMsg) = svc.Add(newLib, "Pass1234!");
@@ -296,7 +306,11 @@ namespace LibraryManagementSystem.Tests
                 var dupLibrarian = new Librarian
                 {
                     Name = "Duplicate User Test",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1990, 1, 1),
                     Username = existingLibrarian.Username,
+                    Phone = "012345678",
+                    Email = "dup_test@library.gov.kh",
                     Role = "Librarian"
                 };
 
@@ -618,7 +632,7 @@ namespace LibraryManagementSystem.Tests
                     Username = $"temp_adm_{DateTime.Now.Ticks % 100000}",
                     Role = "Admin",
                     Phone = "012333444",
-                    Position = "Admin"
+                    Email = "sec_admin@library.gov.kh"
                 };
                 ctx.Librarians.Add(tempAdmin);
                 ctx.SaveChanges();
@@ -889,5 +903,482 @@ namespace LibraryManagementSystem.Tests
                 rep.PerformLayout();
             }
         }
+
+        // ── 31. GRID HEADER SORTING ────────────────────────────────────────────────
+        private static void Test_GridHeaderSorting_DashboardAndReports()
+        {
+            // 1. Test SortableBindingList directly
+            var testList = new List<BorrowReportRow>
+            {
+                new() { BorrowId = 2, MemberName = "Charlie", EstimatedFine = 4000m, DueDate = DateTime.Today.AddDays(5) },
+                new() { BorrowId = 1, MemberName = "Alice", EstimatedFine = 2000m, DueDate = DateTime.Today.AddDays(1) },
+                new() { BorrowId = 3, MemberName = "Bob", EstimatedFine = 6000m, DueDate = DateTime.Today.AddDays(10) }
+            };
+
+            var sortable = new SortableBindingList<BorrowReportRow>(testList);
+            var dgvTest = new DataGridView();
+            dgvTest.BindingContext = new BindingContext();
+            dgvTest.AutoGenerateColumns = false;
+            var colId = new DataGridViewTextBoxColumn { Name = "BorrowId", DataPropertyName = "BorrowId", SortMode = DataGridViewColumnSortMode.Automatic };
+            var colMember = new DataGridViewTextBoxColumn { Name = "MemberName", DataPropertyName = "MemberName", SortMode = DataGridViewColumnSortMode.Automatic };
+            var colFine = new DataGridViewTextBoxColumn { Name = "EstimatedFine", DataPropertyName = "EstimatedFine", SortMode = DataGridViewColumnSortMode.Automatic };
+            dgvTest.Columns.AddRange(colId, colMember, colFine);
+            dgvTest.DataSource = sortable;
+
+            // Sort by BorrowId Ascending
+            dgvTest.Sort(colId, System.ComponentModel.ListSortDirection.Ascending);
+            Assert(sortable[0].BorrowId == 1 && sortable[1].BorrowId == 2 && sortable[2].BorrowId == 3, "SortableBindingList failed to sort BorrowId ascending.");
+
+            // Sort by BorrowId Descending
+            dgvTest.Sort(colId, System.ComponentModel.ListSortDirection.Descending);
+            Assert(sortable[0].BorrowId == 3 && sortable[1].BorrowId == 2 && sortable[2].BorrowId == 1, "SortableBindingList failed to sort BorrowId descending.");
+
+            // Sort by MemberName Ascending
+            dgvTest.Sort(colMember, System.ComponentModel.ListSortDirection.Ascending);
+            Assert(sortable[0].MemberName == "Alice" && sortable[2].MemberName == "Charlie", "SortableBindingList failed to sort MemberName ascending.");
+
+            // Sort by EstimatedFine Descending
+            dgvTest.Sort(colFine, System.ComponentModel.ListSortDirection.Descending);
+            Assert(sortable[0].EstimatedFine == 6000m && sortable[2].EstimatedFine == 2000m, "SortableBindingList failed to sort EstimatedFine descending.");
+
+            // 2. Test DashboardPanel grid columns sort mode
+            using var db = new DashboardPanel();
+            var overdueGrid = db.Controls.Find("dgvOverdue", true).OfType<DataGridView>().FirstOrDefault();
+            var recentGrid = db.Controls.Find("dgvRecent", true).OfType<DataGridView>().FirstOrDefault();
+
+            Assert(overdueGrid != null, "DashboardPanel dgvOverdue grid not found.");
+            Assert(recentGrid != null, "DashboardPanel dgvRecent grid not found.");
+
+            foreach (DataGridViewColumn col in overdueGrid!.Columns)
+            {
+                Assert(col.SortMode == DataGridViewColumnSortMode.Automatic, $"Dashboard dgvOverdue column '{col.HeaderText}' SortMode is not Automatic.");
+            }
+
+            foreach (DataGridViewColumn col in recentGrid!.Columns)
+            {
+                Assert(col.SortMode == DataGridViewColumnSortMode.Automatic, $"Dashboard dgvRecent column '{col.HeaderText}' SortMode is not Automatic.");
+            }
+
+            // 3. Test ReportsPanel grid columns sort mode
+            using var rep = new ReportsPanel();
+            rep.LoadAllReports();
+
+            var activeGrid = rep.Controls.Find("dgvActive", true).OfType<DataGridView>().FirstOrDefault();
+            var invGrid = rep.Controls.Find("dgvInventory", true).OfType<DataGridView>().FirstOrDefault();
+
+            Assert(activeGrid != null, "ReportsPanel dgvActive grid not found.");
+            Assert(invGrid != null, "ReportsPanel dgvInventory grid not found.");
+
+            foreach (DataGridViewColumn col in activeGrid!.Columns)
+            {
+                Assert(col.SortMode == DataGridViewColumnSortMode.Automatic, $"Reports dgvActive column '{col.HeaderText}' SortMode is not Automatic.");
+            }
+
+            foreach (DataGridViewColumn col in invGrid!.Columns)
+            {
+                Assert(col.SortMode == DataGridViewColumnSortMode.Automatic, $"Reports dgvInventory column '{col.HeaderText}' SortMode is not Automatic.");
+            }
+        }
+
+        private static void Test_SearchOnFivePanels()
+        {
+            // 1. CategoriesPanel
+            using (var catPanel = new CategoriesPanel())
+            {
+                catPanel.LoadData();
+                var txtSearch = catPanel.Controls.Find("txtSearch", true).OfType<TextBox>().FirstOrDefault();
+                var dgv = catPanel.Controls.Find("dgv", true).OfType<DataGridView>().FirstOrDefault();
+                Assert(txtSearch != null, "CategoriesPanel txtSearch not found.");
+                Assert(dgv != null, "CategoriesPanel dgv not found.");
+
+                txtSearch!.Text = "NonExistentCategoryQuery999";
+                Assert(dgv!.Rows.Count == 0, "CategoriesPanel should filter to 0 rows for non-matching query.");
+
+                txtSearch.Text = "";
+                Assert(dgv.Rows.Count > 0, "CategoriesPanel should restore rows when search text is cleared.");
+            }
+
+            // 2. AuthorsPanel
+            using (var authPanel = new AuthorsPanel())
+            {
+                authPanel.LoadData();
+                var txtSearch = authPanel.Controls.Find("txtSearch", true).OfType<TextBox>().FirstOrDefault();
+                var dgv = authPanel.Controls.Find("dgv", true).OfType<DataGridView>().FirstOrDefault();
+                Assert(txtSearch != null, "AuthorsPanel txtSearch not found.");
+                Assert(dgv != null, "AuthorsPanel dgv not found.");
+
+                txtSearch!.Text = "NonExistentAuthorQuery999";
+                Assert(dgv!.Rows.Count == 0, "AuthorsPanel should filter to 0 rows for non-matching query.");
+
+                txtSearch.Text = "";
+                Assert(dgv.Rows.Count > 0, "AuthorsPanel should restore rows when search text is cleared.");
+            }
+
+            // 3. PublishersPanel
+            using (var pubPanel = new PublishersPanel())
+            {
+                pubPanel.LoadData();
+                var txtSearch = pubPanel.Controls.Find("txtSearch", true).OfType<TextBox>().FirstOrDefault();
+                var dgv = pubPanel.Controls.Find("dgv", true).OfType<DataGridView>().FirstOrDefault();
+                Assert(txtSearch != null, "PublishersPanel txtSearch not found.");
+                Assert(dgv != null, "PublishersPanel dgv not found.");
+
+                txtSearch!.Text = "NonExistentPublisherQuery999";
+                Assert(dgv!.Rows.Count == 0, "PublishersPanel should filter to 0 rows for non-matching query.");
+
+                txtSearch.Text = "";
+                Assert(dgv.Rows.Count > 0, "PublishersPanel should restore rows when search text is cleared.");
+            }
+
+            // 4. LibrariansPanel
+            using (var libPanel = new LibrariansPanel())
+            {
+                libPanel.LoadData();
+                var txtSearch = libPanel.Controls.Find("txtSearch", true).OfType<TextBox>().FirstOrDefault();
+                var dgv = libPanel.Controls.Find("dgv", true).OfType<DataGridView>().FirstOrDefault();
+                Assert(txtSearch != null, "LibrariansPanel txtSearch not found.");
+                Assert(dgv != null, "LibrariansPanel dgv not found.");
+
+                txtSearch!.Text = "NonExistentLibrarianQuery999";
+                Assert(dgv!.Rows.Count == 0, "LibrariansPanel should filter to 0 rows for non-matching query.");
+
+                txtSearch.Text = "";
+                Assert(dgv.Rows.Count > 0, "LibrariansPanel should restore rows when search text is cleared.");
+            }
+
+            // 5. ReportsPanel
+            using (var repPanel = new ReportsPanel())
+            {
+                // Force load reports
+                repPanel.LoadAllReports();
+                var txtSearch = repPanel.Controls.Find("txtSearch", true).OfType<TextBox>().FirstOrDefault();
+                var dgvInv = repPanel.Controls.Find("dgvInventory", true).OfType<DataGridView>().FirstOrDefault();
+                Assert(txtSearch != null, "ReportsPanel txtSearch not found.");
+                Assert(dgvInv != null, "ReportsPanel dgvInventory not found.");
+
+                txtSearch!.Text = "NonExistentReportQuery999";
+                Assert(dgvInv!.Rows.Count == 0, "ReportsPanel inventory should filter to 0 rows for non-matching query.");
+
+                txtSearch.Text = "";
+                Assert(dgvInv.Rows.Count > 0, "ReportsPanel inventory should restore rows when search text is cleared.");
+            }
+        }
+
+        private static void Test_DashboardStatCardIconsCentering()
+        {
+            using var db = new DashboardPanel();
+            var iconNames = new[] { "lblBooksIcon", "lblMembersIcon", "lblBorrowIcon", "lblOverdueIcon" };
+
+            foreach (var name in iconNames)
+            {
+                var lbl = db.Controls.Find(name, true).OfType<Label>().FirstOrDefault();
+                Assert(lbl != null, $"Dashboard icon badge '{name}' not found.");
+                Assert(lbl!.Image != null, $"Dashboard icon badge '{name}' must have an Image assigned.");
+
+                var bmp = (Bitmap)lbl.Image!;
+                int minX = bmp.Width, maxX = -1;
+                int minY = bmp.Height, maxY = -1;
+
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    for (int x = 0; x < bmp.Width; x++)
+                    {
+                        var px = bmp.GetPixel(x, y);
+                        if (px.A > 20)
+                        {
+                            if (x < minX) minX = x;
+                            if (x > maxX) maxX = x;
+                            if (y < minY) minY = y;
+                            if (y > maxY) maxY = y;
+                        }
+                    }
+                }
+
+                Assert(maxX >= minX, $"Dashboard icon '{name}' does not contain rendered pixels.");
+
+                int leftGap = minX;
+                int rightGap = (bmp.Width - 1) - maxX;
+                int diffX = Math.Abs(leftGap - rightGap);
+
+                Assert(diffX <= 1, $"Dashboard icon '{name}' is not centered horizontally (leftGap={leftGap}, rightGap={rightGap}, diff={diffX}).");
+            }
+        }
+
+        private static void Test_RefreshButtonPositionOnBooksAndMembersPanels()
+        {
+            using (var booksPanel = new BooksPanel())
+            {
+                var flp = booksPanel.Controls.Find("flpActions", true).OfType<FlowLayoutPanel>().FirstOrDefault();
+                Assert(flp != null, "BooksPanel flpActions not found.");
+                var lastControl = flp!.Controls[flp.Controls.Count - 1];
+                Assert(lastControl.Name == "btnRefresh", $"BooksPanel last action button should be btnRefresh, but was '{lastControl.Name}'.");
+            }
+
+            using (var membersPanel = new MembersPanel())
+            {
+                var flp = membersPanel.Controls.Find("flpActions", true).OfType<FlowLayoutPanel>().FirstOrDefault();
+                Assert(flp != null, "MembersPanel flpActions not found.");
+                var lastControl = flp!.Controls[flp.Controls.Count - 1];
+                Assert(lastControl.Name == "btnRefresh", $"MembersPanel last action button should be btnRefresh, but was '{lastControl.Name}'.");
+            }
+        }
+
+        private static void Test_MemberGenderFieldAndPersistence()
+        {
+            // 1. Person OOP Base Class Encapsulation
+            var testMember = new Member
+            {
+                Name = "Test Person",
+                Gender = "Female",
+                Phone = "012-333-444",
+                Email = "test.person@test.com",
+                Address = "Phnom Penh"
+            };
+            Assert(testMember.Gender == "Female", "Member Gender property encapsulation failed.");
+            string info = testMember.GetInfo();
+            Assert(info.Contains("Gender: Female"), $"GetInfo() polymorphic override should contain Gender, but returned '{info}'.");
+
+            // 2. MemberEditDialog Gender Controls & Defaults
+            using (var dialog = new MemberEditDialog())
+            {
+                var cmbGender = dialog.Controls.Find("cmbGender", true).OfType<ComboBox>().FirstOrDefault();
+                Assert(cmbGender != null, "MemberEditDialog cmbGender control not found.");
+                Assert(cmbGender!.Items.Contains("Male"), "cmbGender should contain 'Male'.");
+                Assert(cmbGender.Items.Contains("Female"), "cmbGender should contain 'Female'.");
+                Assert(cmbGender.DropDownStyle == ComboBoxStyle.DropDownList, "cmbGender should be DropDownList.");
+            }
+
+            // 3. MembersPanel DataGridView colGender
+            using (var membersPanel = new MembersPanel())
+            {
+                var dgv = membersPanel.Controls.Find("dgv", true).OfType<DataGridView>().FirstOrDefault();
+                Assert(dgv != null, "MembersPanel dgv not found.");
+                Assert(dgv!.Columns.Contains("colGender"), "MembersPanel dgv does not contain colGender.");
+                var colGender = dgv.Columns["colGender"]!;
+                Assert(colGender.HeaderText == "Gender", $"colGender HeaderText should be 'Gender', got '{colGender.HeaderText}'.");
+            }
+
+            // 4. Database Persistence & Querying with Gender
+            using (var ctx = Program.CreateDbContext())
+            {
+                var svc = new MemberService(ctx);
+
+                // Add test member with Female gender
+                string uniqueEmail = $"gender.test.{Guid.NewGuid():N}@test.com";
+                var newMember = new Member
+                {
+                    Name = "Gender Test User",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(1995, 5, 20),
+                    Phone = "012-999-888",
+                    Email = uniqueEmail,
+                    Address = "Siem Reap",
+                    JoinDate = DateTime.Today
+                };
+
+                var (addOk, addMsg) = svc.Add(newMember);
+                Assert(addOk, $"Adding member with Gender failed: {addMsg}");
+                Assert(newMember.MemberId > 0, "Saved member should have generated MemberId.");
+
+                // Re-fetch from fresh context
+                using (var queryCtx = Program.CreateDbContext())
+                {
+                    var fetched = queryCtx.Members.Find(newMember.MemberId);
+                    Assert(fetched != null, "Could not find newly added member.");
+                    Assert(fetched!.Gender == "Female", $"Saved member Gender should be 'Female', but was '{fetched.Gender}'.");
+
+                    // Test search by Gender
+                    var querySvc = new MemberService(queryCtx);
+                    var femaleMembers = querySvc.Search("Female");
+                    Assert(femaleMembers.Any(m => m.MemberId == newMember.MemberId), "MemberService.Search should match by Gender.");
+
+                    // Clean up test record
+                    querySvc.Delete(newMember.MemberId);
+                }
+            }
+        }
+
+        private static void Test_GenderAndDateOfBirthAcrossAllEntities()
+        {
+            // 1. OOP Polymorphism & Inheritance: Person Base Class
+            Person authorPerson = new Author { Name = "Polymorphic Author", Gender = "Female", DateOfBirth = new DateTime(1985, 4, 12), Bio = "Author bio" };
+            Person memberPerson = new Member { Name = "Polymorphic Member", Gender = "Male", DateOfBirth = new DateTime(1998, 7, 24), Phone = "012345678" };
+            Person librarianPerson = new Librarian { Name = "Polymorphic Librarian", Gender = "Female", DateOfBirth = new DateTime(1990, 11, 3), Username = "poly_lib", Role = "Librarian" };
+            Person adminPerson = new Librarian { Name = "Polymorphic Admin", Gender = "Male", DateOfBirth = new DateTime(1988, 2, 14), Username = "poly_admin", Role = "Admin" };
+
+            Assert(authorPerson.Gender == "Female" && authorPerson.DateOfBirth == new DateTime(1985, 4, 12), "Author Person inheritance failed.");
+            Assert(memberPerson.Gender == "Male" && memberPerson.DateOfBirth == new DateTime(1998, 7, 24), "Member Person inheritance failed.");
+            Assert(librarianPerson.Gender == "Female" && librarianPerson.DateOfBirth == new DateTime(1990, 11, 3), "Librarian Person inheritance failed.");
+            Assert(adminPerson.Gender == "Male" && adminPerson.DateOfBirth == new DateTime(1988, 2, 14), "Admin Person inheritance failed.");
+
+            Assert(authorPerson.GetInfo().Contains("Gender: Female") && authorPerson.GetInfo().Contains("04/12/1985"), "Author GetInfo() override failed.");
+            Assert(memberPerson.GetInfo().Contains("Gender: Male") && memberPerson.GetInfo().Contains("07/24/1998") && memberPerson.GetInfo().Contains("Join Date:"), "Member GetInfo() override failed.");
+            Assert(librarianPerson.GetInfo().Contains("Gender: Female") && librarianPerson.GetInfo().Contains("11/03/1990"), "Librarian GetInfo() override failed.");
+            Assert(adminPerson.GetInfo().Contains("Gender: Male") && adminPerson.GetInfo().Contains("02/14/1988"), "Admin GetInfo() override failed.");
+
+            // 2. UI Dialogs Verification (Defaults must be blank/unselected & required)
+            using (var dlgMember = new MemberEditDialog())
+            {
+                var cmb = dlgMember.Controls.Find("cmbGender", true).OfType<ComboBox>().FirstOrDefault();
+                var dtp = dlgMember.Controls.Find("dtpDob", true).OfType<DateTimePicker>().FirstOrDefault();
+                var dtpJoin = dlgMember.Controls.Find("dtpJoin", true).OfType<DateTimePicker>().FirstOrDefault();
+                Assert(cmb != null && cmb.SelectedIndex == -1, "MemberEditDialog cmbGender should default to unselected (-1).");
+                Assert(dtp != null && dtp.CustomFormat == " ", "MemberEditDialog dtpDob should default to blank (' ').");
+                Assert(dtpJoin != null && dtpJoin.CustomFormat == "MM/dd/yyyy", "MemberEditDialog dtpJoin should format as MM/dd/yyyy with leading zero.");
+            }
+            using (var dlgAuthor = new AuthorEditDialog())
+            {
+                var cmb = dlgAuthor.Controls.Find("cmbGender", true).OfType<ComboBox>().FirstOrDefault();
+                var dtp = dlgAuthor.Controls.Find("dtpDob", true).OfType<DateTimePicker>().FirstOrDefault();
+                Assert(cmb != null && cmb.SelectedIndex == -1, "AuthorEditDialog cmbGender should default to unselected (-1).");
+                Assert(dtp != null && dtp.CustomFormat == " ", "AuthorEditDialog dtpDob should default to blank (' ').");
+            }
+            using (var dlgLibrarian = new LibrarianEditDialog())
+            {
+                var cmb = dlgLibrarian.Controls.Find("cmbGender", true).OfType<ComboBox>().FirstOrDefault();
+                var dtp = dlgLibrarian.Controls.Find("dtpDob", true).OfType<DateTimePicker>().FirstOrDefault();
+                var txtEmail = dlgLibrarian.Controls.Find("txtEmail", true).OfType<TextBox>().FirstOrDefault();
+                var lblEmail = dlgLibrarian.Controls.Find("lblEmailLabel", true).OfType<Label>().FirstOrDefault();
+                var lblPhone = dlgLibrarian.Controls.Find("lblPhoneLabel", true).OfType<Label>().FirstOrDefault();
+                Assert(cmb != null && cmb.SelectedIndex == -1, "LibrarianEditDialog cmbGender should default to unselected (-1).");
+                Assert(dtp != null && dtp.CustomFormat == " ", "LibrarianEditDialog dtpDob should default to blank (' ').");
+                Assert(txtEmail != null, "LibrarianEditDialog txtEmail not found.");
+                Assert(lblEmail != null && lblEmail.Text.Contains("*"), "LibrarianEditDialog Email must be marked required (*).");
+                Assert(lblPhone != null && lblPhone.Text.Contains("*"), "LibrarianEditDialog Phone must be marked required (*).");
+            }
+
+            // 2b. Strict Validation Rules: Gender, Date of Birth, Phone, and Email are REQUIRED
+            Assert(!new MemberValidator().Validate(new Member { Name = "Test", Phone = "012345678", Email = "m@t.com" }).IsValid,
+                "MemberValidator must reject missing Gender and DateOfBirth.");
+            Assert(!new AuthorValidator().Validate(new Author { Name = "Test" }).IsValid,
+                "AuthorValidator must reject missing Gender and DateOfBirth.");
+            Assert(!new LibrarianValidator().Validate(new Librarian { Name = "Test", Username = "user", Role = "Librarian", Phone = "012345678", Email = "test@library.gov.kh" }).IsValid,
+                "LibrarianValidator must reject missing Gender and DateOfBirth.");
+            Assert(!new LibrarianValidator().Validate(new Librarian { Name = "Test", Username = "user", Role = "Librarian", Gender = "Male", DateOfBirth = new DateTime(1990, 1, 1), Phone = "", Email = "test@library.gov.kh" }).IsValid,
+                "LibrarianValidator must reject missing Phone.");
+            Assert(!new LibrarianValidator().Validate(new Librarian { Name = "Test", Username = "user", Role = "Librarian", Gender = "Male", DateOfBirth = new DateTime(1990, 1, 1), Phone = "012345678", Email = "" }).IsValid,
+                "LibrarianValidator must reject missing Email.");
+            Assert(!new LibrarianValidator().Validate(new Librarian { Name = "Test", Username = "user", Role = "Librarian", Gender = "Male", DateOfBirth = new DateTime(1990, 1, 1), Phone = "invalid-phone", Email = "test@library.gov.kh" }).IsValid,
+                "LibrarianValidator must reject invalid Phone format.");
+            Assert(!new LibrarianValidator().Validate(new Librarian { Name = "Test", Username = "user", Role = "Librarian", Gender = "Male", DateOfBirth = new DateTime(1990, 1, 1), Phone = "012345678", Email = "invalid-email" }).IsValid,
+                "LibrarianValidator must reject invalid Email format.");
+            Assert(new LibrarianValidator().Validate(new Librarian { Name = "Test", Username = "valid_user", Role = "Librarian", Gender = "Male", DateOfBirth = new DateTime(1990, 1, 1), Phone = "012345678", Email = "test@library.gov.kh" }).IsValid,
+                "LibrarianValidator must accept valid Librarian with Phone and Email.");
+
+            // 3. UI Panels DataGridView Columns Verification
+            using (var membersPanel = new MembersPanel())
+            {
+                var dgv = membersPanel.Controls.Find("dgv", true).OfType<DataGridView>().First();
+                Assert(dgv.Columns.Contains("colGender") && dgv.Columns.Contains("colDob") && dgv.Columns.Contains("colJoinDate"),
+                    "MembersPanel missing colGender, colDob, or colJoinDate.");
+                membersPanel.LoadData();
+                if (dgv.Rows.Count > 0)
+                {
+                    string joinVal = dgv.Rows[0].Cells["colJoinDate"].Value?.ToString() ?? "";
+                    if (!string.IsNullOrEmpty(joinVal))
+                    {
+                        Assert(System.Text.RegularExpressions.Regex.IsMatch(joinVal, @"^\d{2}/\d{2}/\d{4}$"),
+                            $"MembersPanel Join Date '{joinVal}' must have leading zeros in MM/dd/yyyy format.");
+                    }
+                }
+            }
+            using (var authorsPanel = new AuthorsPanel())
+            {
+                var dgv = authorsPanel.Controls.Find("dgv", true).OfType<DataGridView>().First();
+                Assert(dgv.Columns.Contains("colGender") && dgv.Columns.Contains("colDob"), "AuthorsPanel missing colGender or colDob.");
+            }
+            using (var librariansPanel = new LibrariansPanel())
+            {
+                var dgv = librariansPanel.Controls.Find("dgv", true).OfType<DataGridView>().First();
+                Assert(dgv.Columns.Contains("colGender") && dgv.Columns.Contains("colDob"), "LibrariansPanel missing colGender or colDob.");
+                Assert(dgv.Columns.Contains("colEmail") && !dgv.Columns.Contains("colPosition"), "LibrariansPanel must have colEmail and not colPosition.");
+            }
+
+            // 4. Database Persistence & Services Verification
+            var prevUser = SessionManager.CurrentLibrarian;
+            try
+            {
+                using var ctx = Program.CreateDbContext();
+
+                // D. Admin persistence verification from seeded accounts
+                var seededAdmin = ctx.Librarians.FirstOrDefault(l => l.Role == "Admin");
+                Assert(seededAdmin != null, "Seeded Admin not found.");
+                Assert(!string.IsNullOrEmpty(seededAdmin!.Gender), "Admin Gender should not be empty.");
+                Assert(seededAdmin.DateOfBirth.HasValue, "Admin DateOfBirth should not be null.");
+
+                SessionManager.Login(seededAdmin);
+
+                // A. Member persistence
+                var memberSvc = new MemberService(ctx);
+                var testMember = new Member
+                {
+                    Name = "Test Member DOB",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(1996, 6, 18),
+                    Phone = "012888777",
+                    Email = $"testdob.{Guid.NewGuid():N}@test.com",
+                    Address = "Phnom Penh",
+                    JoinDate = DateTime.Today
+                };
+                var (mOk, mMsg) = memberSvc.Add(testMember);
+                Assert(mOk, $"Add Member with DOB failed: {mMsg}");
+
+                // B. Author persistence
+                var authorSvc = new AuthorService(ctx);
+                var testAuthor = new Author
+                {
+                    Name = $"Test Author DOB {Guid.NewGuid():N}",
+                    Gender = "Female",
+                    DateOfBirth = new DateTime(1975, 9, 25),
+                    Bio = "Author biography with DOB."
+                };
+                var (aOk, aMsg) = authorSvc.Add(testAuthor);
+                Assert(aOk, $"Add Author with DOB failed: {aMsg}");
+
+                // C. Librarian persistence
+                var libSvc = new LibrarianService(ctx);
+                string uniqueLibUser = $"lib_{Guid.NewGuid():N}".Substring(0, 15);
+                var testLibrarian = new Librarian
+                {
+                    Name = "Test Librarian Staff",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1993, 12, 5),
+                    Username = uniqueLibUser,
+                    PasswordHash = "hashedpassword",
+                    Role = "Librarian",
+                    Email = $"{uniqueLibUser}@library.gov.kh",
+                    Phone = "012777666"
+                };
+                var (lOk, lMsg) = libSvc.Add(testLibrarian, "password123");
+                Assert(lOk, $"Add Librarian with DOB failed: {lMsg}");
+
+                // Re-fetch everything from a new DbContext to guarantee database roundtrip
+                using (var queryCtx = Program.CreateDbContext())
+                {
+                    var fetchedMember = queryCtx.Members.Find(testMember.MemberId);
+                    Assert(fetchedMember != null && fetchedMember.Gender == "Female" && fetchedMember.DateOfBirth == new DateTime(1996, 6, 18),
+                        "Persisted Member Gender/DOB verification failed.");
+
+                    var fetchedAuthor = queryCtx.Authors.Find(testAuthor.AuthorId);
+                    Assert(fetchedAuthor != null && fetchedAuthor.Gender == "Female" && fetchedAuthor.DateOfBirth == new DateTime(1975, 9, 25),
+                        "Persisted Author Gender/DOB verification failed.");
+
+                    var fetchedLib = queryCtx.Librarians.Find(testLibrarian.LibrarianId);
+                    Assert(fetchedLib != null && fetchedLib.Gender == "Male" && fetchedLib.DateOfBirth == new DateTime(1993, 12, 5) && fetchedLib.Email == $"{uniqueLibUser}@library.gov.kh",
+                        "Persisted Librarian Gender/DOB/Email verification failed.");
+
+                    // Clean up test data
+                    new MemberService(queryCtx).Delete(testMember.MemberId);
+                    new AuthorService(queryCtx).Delete(testAuthor.AuthorId);
+                    new LibrarianService(queryCtx).Delete(testLibrarian.LibrarianId);
+                }
+            }
+            finally
+            {
+                if (prevUser != null) SessionManager.Login(prevUser);
+                else SessionManager.Clear();
+            }
+        }
     }
 }
+

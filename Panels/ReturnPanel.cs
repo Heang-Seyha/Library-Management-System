@@ -235,8 +235,8 @@ namespace LibraryManagementSystem.Panels
             colId.Name = "Id";
             colId.HeaderText = "Borrow ID";
             colId.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colId.Width = 120;
-            colId.MinimumWidth = 115;
+            colId.Width = 135;
+            colId.MinimumWidth = 125;
             colId.Resizable = DataGridViewTriState.True;
 
             colMember.HeaderText = "Member Name";
@@ -253,14 +253,14 @@ namespace LibraryManagementSystem.Panels
 
             colDue.HeaderText = "Due Date";
             colDue.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colDue.Width = 115;
-            colDue.MinimumWidth = 105;
+            colDue.Width = 125;
+            colDue.MinimumWidth = 115;
             colDue.Resizable = DataGridViewTriState.True;
 
             colStatus.HeaderText = "Status";
             colStatus.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colStatus.Width = 95;
-            colStatus.MinimumWidth = 90;
+            colStatus.Width = 105;
+            colStatus.MinimumWidth = 95;
             colStatus.Resizable = DataGridViewTriState.True;
 
             colBooks.HeaderText = "Books";

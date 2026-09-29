@@ -6,7 +6,7 @@ namespace LibraryManagementSystem.Validators
 {
     /// <summary>
     /// Validator for Librarian entity shape and format rules.
-    /// Strictly validates Name, Username, Role ('Admin' or 'Librarian'), Position, and Phone.
+    /// Strictly validates Name, Username, Role ('Admin' or 'Librarian'), Phone, and Email.
     /// </summary>
     public class LibrarianValidator : AbstractValidator<Librarian>
     {
@@ -23,19 +23,29 @@ namespace LibraryManagementSystem.Validators
                 .Must(u => ValidationHelper.IsValidUsername(u, 3, 50))
                 .WithMessage("Username must be 3-50 alphanumeric characters or underscores.");
 
+            RuleFor(l => l.Gender)
+                .NotEmpty().WithMessage("Gender is required.")
+                .Must(g => g == "Male" || g == "Female").WithMessage("Gender must be 'Male' or 'Female'.");
+
+            RuleFor(l => l.DateOfBirth)
+                .NotNull().WithMessage("Date of birth is required.")
+                .Must(dob => !dob.HasValue || dob.Value.Date <= DateTime.Today)
+                .WithMessage("Date of birth cannot be in the future.");
+
             RuleFor(l => l.Role)
                 .NotEmpty().WithMessage("Role is required.")
                 .Must(r => r == "Admin" || r == "Librarian")
                 .WithMessage("Role must be 'Admin' or 'Librarian'.");
 
-            RuleFor(l => l.Position)
-                .MaximumLength(100).WithMessage("Position cannot exceed 100 characters.");
-
             RuleFor(l => l.Phone)
-                .MaximumLength(20).WithMessage("Phone cannot exceed 20 characters.")
-                .Must(ValidationHelper.IsValidPhone)
-                .When(l => !string.IsNullOrWhiteSpace(l.Phone))
-                .WithMessage("Phone number is not valid.");
+                .NotEmpty().WithMessage("Phone number is required.")
+                .Must(ValidationHelper.IsValidPhone).WithMessage("Phone number is not valid.")
+                .MaximumLength(20).WithMessage("Phone cannot exceed 20 characters.");
+
+            RuleFor(l => l.Email)
+                .NotEmpty().WithMessage("Email address is required.")
+                .Must(ValidationHelper.IsValidEmail).WithMessage("Email address is not valid.")
+                .MaximumLength(200).WithMessage("Email cannot exceed 200 characters.");
         }
 
         /// <summary>
