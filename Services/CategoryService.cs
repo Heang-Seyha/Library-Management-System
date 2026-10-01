@@ -1,6 +1,7 @@
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Validators;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Services
 {
@@ -22,10 +23,11 @@ namespace LibraryManagementSystem.Services
             if (!result.IsValid)
                 return (false, result.Errors.First().ErrorMessage);
 
-            if (_context.Categories.Any(c => c.Name.ToLower() == category.Name.Trim().ToLower()))
+            var name = category.Name.Trim();
+            if (_context.Categories.Any(c => c.Name == name))
                 return (false, "A category with this name already exists.");
 
-            category.Name = category.Name.Trim();
+            category.Name = name;
             _context.Categories.Add(category);
             _context.SaveChanges();
             return (true, "Category added successfully.");
@@ -37,12 +39,13 @@ namespace LibraryManagementSystem.Services
             if (!result.IsValid)
                 return (false, result.Errors.First().ErrorMessage);
 
-            if (_context.Categories.Any(c => c.Name.ToLower() == category.Name.Trim().ToLower() && c.CategoryId != category.CategoryId))
+            var name = category.Name.Trim();
+            if (_context.Categories.Any(c => c.Name == name && c.CategoryId != category.CategoryId))
                 return (false, "A category with this name already exists.");
 
             var existing = _context.Categories.Find(category.CategoryId);
             if (existing == null) return (false, "Category not found.");
-            existing.Name = category.Name.Trim();
+            existing.Name = name;
             existing.Description = category.Description?.Trim() ?? "";
             _context.SaveChanges();
             return (true, "Category updated successfully.");
@@ -60,9 +63,14 @@ namespace LibraryManagementSystem.Services
                 _context.SaveChanges();
                 return (true, "Category deleted successfully.");
             }
+            catch (DbUpdateException)
+            {
+                return (false, "Cannot delete this category because it is referenced by existing books.");
+            }
             catch (Exception ex)
             {
-                return (false, $"Cannot delete category: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[CategoryService.Delete] {ex}");
+                return (false, "An error occurred while deleting the category. Please try again.");
             }
         }
     }

@@ -16,7 +16,6 @@ namespace LibraryManagementSystem.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Librarian> Librarians { get; set; }
-        public DbSet<Librarian> Employees => Librarians;
         public DbSet<Borrow> Borrows { get; set; }
         public DbSet<BorrowDetail> BorrowDetails { get; set; }
 
@@ -62,6 +61,13 @@ namespace LibraryManagementSystem.Data
             // ── Book ──────────────────────────────────────────────────────────
             modelBuilder.Entity<Book>(entity =>
             {
+                entity.ToTable("Books", t =>
+                {
+                    t.HasCheckConstraint("CK_Books_AvailableCopies_NonNegative", "[AvailableCopies] >= 0");
+                    t.HasCheckConstraint("CK_Books_AvailableCopies_Lte_TotalCopies", "[AvailableCopies] <= [TotalCopies]");
+                    t.HasCheckConstraint("CK_Books_TotalCopies_Positive", "[TotalCopies] >= 1");
+                });
+
                 entity.HasKey(b => b.BookId);
                 entity.Property(b => b.Title).IsRequired().HasMaxLength(300);
                 entity.Property(b => b.ISBN).IsRequired().HasMaxLength(20);
@@ -107,9 +113,8 @@ namespace LibraryManagementSystem.Data
             // ── Librarian ─────────────────────────────────────────────────────
             modelBuilder.Entity<Librarian>(entity =>
             {
-                entity.ToTable("Employees"); // Map Librarian entity cleanly to existing database table
+                entity.ToTable("Librarians");
                 entity.HasKey(e => e.LibrarianId);
-                entity.Property(e => e.LibrarianId).HasColumnName("EmployeeId");
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.Gender).IsRequired().HasMaxLength(10).HasDefaultValue("Male");
                 entity.Property(e => e.DateOfBirth);
@@ -119,7 +124,6 @@ namespace LibraryManagementSystem.Data
                 entity.HasIndex(e => e.Username).IsUnique();  // Username must be unique
                 entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(255);
                 entity.Property(e => e.Role).IsRequired().HasMaxLength(20).HasDefaultValue("Librarian");
-                entity.Ignore(e => e.EmployeeId);
             });
 
             // ── Borrow ────────────────────────────────────────────────────────
@@ -128,7 +132,12 @@ namespace LibraryManagementSystem.Data
                 entity.HasKey(b => b.BorrowId);
                 entity.Property(b => b.Status).IsRequired().HasMaxLength(20).HasDefaultValue("Active");
                 entity.Property(b => b.FineAmount).HasPrecision(18, 2);
-                entity.Property(b => b.LibrarianId).HasColumnName("EmployeeId");
+                entity.Property(b => b.RowVersion).IsRowVersion();
+
+                if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+                {
+                    entity.Property(b => b.RowVersion).HasDefaultValueSql("randomblob(8)");
+                }
 
                 // Borrow → Member (restrict: don't delete members with borrow history)
                 entity.HasOne(b => b.Member)
@@ -141,14 +150,16 @@ namespace LibraryManagementSystem.Data
                       .WithMany(e => e.Borrows)
                       .HasForeignKey(b => b.LibrarianId)
                       .OnDelete(DeleteBehavior.Restrict);
-
-                entity.Ignore(b => b.EmployeeId);
-                entity.Ignore(b => b.Employee);
             });
 
             // ── BorrowDetail ──────────────────────────────────────────────────
             modelBuilder.Entity<BorrowDetail>(entity =>
             {
+                entity.ToTable("BorrowDetails", t =>
+                {
+                    t.HasCheckConstraint("CK_BorrowDetails_Quantity_Positive", "[Quantity] >= 1");
+                });
+
                 entity.HasKey(bd => bd.BorrowDetailId);
 
                 // BorrowDetail → Borrow (cascade: delete details when borrow is deleted)

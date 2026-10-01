@@ -96,7 +96,8 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Unable to load active borrows.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[ReturnPanel.LoadActiveBorrows] {ex}");
+                MessageBox.Show("Unable to load active borrows. Please check database connectivity and try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -221,7 +222,8 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not process book return.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[ReturnPanel.BtnProcessReturn_Click] {ex}");
+                MessageBox.Show("Could not process book return. Please try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

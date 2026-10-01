@@ -211,7 +211,7 @@ namespace LibraryManagementSystem.Panels
             dgv.BorderStyle = BorderStyle.Fixed3D;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersHeight = 36;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colAddress, colPhone });
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colId, colName, colPhone, colAddress });
             dgv.Dock = DockStyle.Fill;
             dgv.EnableHeadersVisualStyles = false;
             dgv.GridColor = SystemColors.MenuHighlight;

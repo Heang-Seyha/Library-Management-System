@@ -12,9 +12,29 @@ namespace LibraryManagementSystem.Helpers
         public const string RoleLibrarian = "Librarian";
 
         /// <summary>
-        /// Only Admins can manage librarian accounts (Add, Edit, Delete).
+        /// Converts UserRole enum to its canonical database string representation.
+        /// </summary>
+        public static string ToRoleString(this UserRole role) =>
+            role == UserRole.Admin ? RoleAdmin : RoleLibrarian;
+
+        /// <summary>
+        /// Converts a role string into a UserRole enum safely.
+        /// </summary>
+        public static UserRole ToUserRole(string? role) =>
+            string.Equals(role, RoleAdmin, StringComparison.OrdinalIgnoreCase) ? UserRole.Admin : UserRole.Librarian;
+
+        /// <summary>
+        /// Only Admins can manage librarian accounts (Add, Edit).
         /// </summary>
         public static bool CanManageLibrarians(string? role = null) =>
+            role != null ? role == RoleAdmin : SessionManager.IsAdmin;
+
+        /// <summary>
+        /// Admin can delete librarian accounts provided business constraints in LibrarianService are satisfied
+        /// (must have no borrowing history, must not be the Administrator account).
+        /// Non-admin librarians cannot delete librarian accounts.
+        /// </summary>
+        public static bool CanDeleteLibrarians(string? role = null) =>
             role != null ? role == RoleAdmin : SessionManager.IsAdmin;
 
         /// <summary>

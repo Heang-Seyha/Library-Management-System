@@ -32,9 +32,9 @@ namespace LibraryManagementSystem.Models
     }
 
     /// <summary>
-    /// Represents a single borrow transaction made by a Member, processed by an Employee.
+    /// Represents a single borrow transaction made by a Member, processed by a Librarian.
     /// One Borrow contains one or more BorrowDetails (one per book).
-    /// Demonstrates: Association (Member, Employee, BorrowDetail)
+    /// Demonstrates: Association (Member, Librarian, BorrowDetail)
     /// </summary>
     public class Borrow
     {
@@ -58,17 +58,8 @@ namespace LibraryManagementSystem.Models
         public Member? Member { get; set; }
         public Librarian? Librarian { get; set; }
 
-        // Backward compatibility
-        public int EmployeeId
-        {
-            get => LibrarianId;
-            set => LibrarianId = value;
-        }
-        public Librarian? Employee
-        {
-            get => Librarian;
-            set => Librarian = value;
-        }
+        // Concurrency token — prevents double-returns and concurrent race conditions
+        public byte[]? RowVersion { get; set; }
 
         // One Borrow has many BorrowDetails (one per book type borrowed)
         public ICollection<BorrowDetail> BorrowDetails { get; set; } = new List<BorrowDetail>();

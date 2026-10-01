@@ -35,39 +35,49 @@ namespace LibraryManagementSystem.Dialogs
             InitializeComponent();
             UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
 
-            this.Text = $"Library Management System — {title}";
+            this.Text = $"  Library Management System — {title}";
             lblTitle.Text = title;
+            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
+            lblTitle.Location = new Point(20, 12);
+            lblTitle.Size = new Size(500, 36);
 
             BuildFields();
         }
-
         private void BuildFields()
         {
-            int fieldHeight = 82;
+            int fieldHeight = 88;
+            int contentWidth = 500;
             pnlFields.Controls.Clear();
-            pnlFields.Location = new Point(20, 56);
+            pnlFields.Location = new Point(20, 64);
+            pnlFields.Width = contentWidth;
             pnlFields.Height = _fields.Length * fieldHeight;
 
             int totalHeight = Math.Max(288, pnlFields.Bottom + 68);
-            this.ClientSize = new Size(500, totalHeight);
-            this.MinimumSize = new Size(500, totalHeight);
+            this.ClientSize = new Size(540, totalHeight);
+            this.MinimumSize = new Size(540, totalHeight);
 
             // Re-position buttons at bottom of content with comfortable spacing
-            btnCancel.Location = new Point(250, pnlFields.Bottom + 16);
-            btnSave.Location = new Point(370, pnlFields.Bottom + 16);
+            btnCancel.Location = new Point(290, pnlFields.Bottom + 16);
+            btnSave.Location = new Point(410, pnlFields.Bottom + 16);
 
             for (int i = 0; i < _fields.Length; i++)
             {
                 int index = i;
                 var field = _fields[i];
 
+                string displayLabel = field.label.Trim();
+                if (field.isRequired && !displayLabel.EndsWith("*"))
+                {
+                    displayLabel += " *";
+                }
+
                 var lbl = new Label
                 {
-                    Text = field.label,
+                    Text = displayLabel,
                     Font = new Font("Segoe UI", 9f, FontStyle.Bold),
                     ForeColor = Color.FromArgb(13, 59, 102),
                     Location = new Point(0, i * fieldHeight),
-                    Size = new Size(460, 20),
+                    Size = new Size(contentWidth, 20),
                     AutoSize = false
                 };
 
@@ -77,7 +87,7 @@ namespace LibraryManagementSystem.Dialogs
                     Font = new Font("Segoe UI", 9.5f),
                     ForeColor = Color.FromArgb(13, 59, 102),
                     Location = new Point(0, i * fieldHeight + 22),
-                    Size = new Size(460, 29),
+                    Size = new Size(contentWidth, 29),
                     BorderStyle = BorderStyle.FixedSingle,
                     MaxLength = field.maxLength,
                     UseSystemPasswordChar = field.isPassword
@@ -88,12 +98,13 @@ namespace LibraryManagementSystem.Dialogs
                     Text = "",
                     Font = new Font("Segoe UI", 8f),
                     ForeColor = Color.FromArgb(220, 38, 38),
-                    Location = new Point(0, i * fieldHeight + 53),
-                    Size = new Size(460, 24),
+                    Location = new Point(0, i * fieldHeight + 54),
+                    Size = new Size(contentWidth, 28),
+                    UseMnemonic = false,
                     Visible = false
                 };
 
-                UIHelper.SetTextBoxLeftPadding(txt, 8);
+                UIHelper.SetTextBoxLeftPadding(txt, 8);
                 txt.TextChanged += (s, e) => ValidationHelper.ClearFieldError(txt, err);
 
                 _textBoxes[index] = txt;
@@ -121,15 +132,26 @@ namespace LibraryManagementSystem.Dialogs
                 var tb = _textBoxes[i];
                 var errLbl = _errorLabels[i];
                 string val = tb.Text.Trim();
+                string cleanName = field.label.Trim().TrimEnd('*').Trim();
 
                 if (field.isRequired && string.IsNullOrWhiteSpace(val))
                 {
-                    ValidationHelper.SetFieldError(tb, errLbl, $"{field.label} is required.");
+                    ValidationHelper.SetFieldError(tb, errLbl, $"{cleanName} is required.");
                     hasErrors = true;
                 }
                 else if (val.Length > field.maxLength)
                 {
-                    ValidationHelper.SetFieldError(tb, errLbl, $"{field.label} cannot exceed {field.maxLength} characters.");
+                    ValidationHelper.SetFieldError(tb, errLbl, $"{cleanName} cannot exceed {field.maxLength} characters.");
+                    hasErrors = true;
+                }
+                else if (!string.IsNullOrWhiteSpace(val) && cleanName.Contains("Phone", StringComparison.OrdinalIgnoreCase) && !ValidationHelper.IsValidPhone(val))
+                {
+                    ValidationHelper.SetFieldError(tb, errLbl, "Invalid phone (must start with 0, 9-10 digits).");
+                    hasErrors = true;
+                }
+                else if (!string.IsNullOrWhiteSpace(val) && cleanName.Contains("Email", StringComparison.OrdinalIgnoreCase) && !ValidationHelper.IsValidEmail(val))
+                {
+                    ValidationHelper.SetFieldError(tb, errLbl, "Invalid email address format.");
                     hasErrors = true;
                 }
                 else

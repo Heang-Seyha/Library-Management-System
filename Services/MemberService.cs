@@ -1,6 +1,7 @@
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Validators;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Services
 {
@@ -18,13 +19,16 @@ namespace LibraryManagementSystem.Services
 
         public List<Member> Search(string query)
         {
-            var q = query.Trim().ToLower();
+            if (string.IsNullOrWhiteSpace(query))
+                return GetAll();
+
+            var q = query.Trim();
             return _context.Members
-                .Where(m => m.Name.ToLower().Contains(q)
-                         || m.Gender.ToLower().Contains(q)
-                         || m.Phone.ToLower().Contains(q)
-                         || m.Email.ToLower().Contains(q)
-                         || (m.DateOfBirth.HasValue && m.DateOfBirth.Value.ToString().Contains(q)))
+                .Where(m => m.Name.Contains(q)
+                         || (m.Gender != null && m.Gender.Contains(q))
+                         || m.Phone.Contains(q)
+                         || (m.Email != null && m.Email.Contains(q))
+                         || (m.Address != null && m.Address.Contains(q)))
                 .OrderBy(m => m.Name)
                 .ToList();
         }
@@ -35,11 +39,19 @@ namespace LibraryManagementSystem.Services
             if (!result.IsValid)
                 return (false, result.Errors.First().ErrorMessage);
 
+            var trimmedEmail = member.Email.Trim();
+            if (!string.IsNullOrEmpty(trimmedEmail) && _context.Members.Any(m => m.Email == trimmedEmail))
+                return (false, $"A member with email '{member.Email}' already exists.");
+
+            var trimmedPhone = member.Phone.Trim();
+            if (!string.IsNullOrEmpty(trimmedPhone) && _context.Members.Any(m => m.Phone == trimmedPhone))
+                return (false, $"A member with phone '{member.Phone}' already exists.");
+
             member.Name = member.Name.Trim();
             member.Gender = string.IsNullOrWhiteSpace(member.Gender) ? "Male" : member.Gender.Trim();
-            member.Phone = member.Phone.Trim();
-            member.Email = member.Email.Trim();
-            member.Address = member.Address.Trim();
+            member.Phone = trimmedPhone;
+            member.Email = trimmedEmail;
+            member.Address = member.Address?.Trim() ?? "";
             _context.Members.Add(member);
             _context.SaveChanges();
             return (true, "Member added successfully.");
@@ -54,12 +66,20 @@ namespace LibraryManagementSystem.Services
             if (!result.IsValid)
                 return (false, result.Errors.First().ErrorMessage);
 
+            var trimmedEmail = member.Email.Trim();
+            if (!string.IsNullOrEmpty(trimmedEmail) && _context.Members.Any(m => m.Email == trimmedEmail && m.MemberId != member.MemberId))
+                return (false, $"A member with email '{member.Email}' already exists.");
+
+            var trimmedPhone = member.Phone.Trim();
+            if (!string.IsNullOrEmpty(trimmedPhone) && _context.Members.Any(m => m.Phone == trimmedPhone && m.MemberId != member.MemberId))
+                return (false, $"A member with phone '{member.Phone}' already exists.");
+
             existing.Name = member.Name.Trim();
             existing.Gender = string.IsNullOrWhiteSpace(member.Gender) ? "Male" : member.Gender.Trim();
             existing.DateOfBirth = member.DateOfBirth;
-            existing.Phone = member.Phone.Trim();
-            existing.Email = member.Email.Trim();
-            existing.Address = member.Address.Trim();
+            existing.Phone = trimmedPhone;
+            existing.Email = trimmedEmail;
+            existing.Address = member.Address?.Trim() ?? "";
             existing.JoinDate = member.JoinDate;
             _context.SaveChanges();
             return (true, "Member updated successfully.");
@@ -78,9 +98,14 @@ namespace LibraryManagementSystem.Services
                 _context.SaveChanges();
                 return (true, "Member deleted successfully.");
             }
+            catch (DbUpdateException)
+            {
+                return (false, "Cannot delete this member because they are referenced by existing library transactions.");
+            }
             catch (Exception ex)
             {
-                return (false, $"Cannot delete member: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[MemberService.Delete] {ex}");
+                return (false, "An error occurred while deleting the member. Please try again.");
             }
         }
     }

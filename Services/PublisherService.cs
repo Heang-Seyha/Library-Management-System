@@ -1,6 +1,7 @@
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Validators;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Services
 {
@@ -55,9 +56,14 @@ namespace LibraryManagementSystem.Services
                 _context.SaveChanges();
                 return (true, "Publisher deleted successfully.");
             }
+            catch (DbUpdateException)
+            {
+                return (false, "Cannot delete this publisher because books are assigned to them.");
+            }
             catch (Exception ex)
             {
-                return (false, $"Cannot delete publisher: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[PublisherService.Delete] {ex}");
+                return (false, "An error occurred while deleting the publisher. Please try again.");
             }
         }
     }

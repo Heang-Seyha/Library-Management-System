@@ -12,12 +12,6 @@ namespace LibraryManagementSystem.Validators
         public DateTime DueDate { get; set; }
         public List<(int bookId, int quantity)> Items { get; set; } = new();
 
-        public int EmployeeId
-        {
-            get => LibrarianId;
-            set => LibrarianId = value;
-        }
-
         public BorrowRequest() { }
 
         public BorrowRequest(int memberId, int librarianId, DateTime dueDate, List<(int bookId, int quantity)> items)

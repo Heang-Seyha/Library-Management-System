@@ -9,33 +9,18 @@ namespace LibraryManagementSystem.Forms
         {
             InitializeComponent();
             LoadAppLogo();
+            this.Icon = UIHelper.AppIcon;
 
             UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
         }
 
         private void LoadAppLogo()
         {
+            if (picLogo.Image != null) return;
+
             try
             {
-                string[] candidates = new[]
-                {
-                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "libraryLogo.png"),
-                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icons", "libraryLogo.png"),
-                    Path.Combine(Directory.GetCurrentDirectory(), "libraryLogo.png"),
-                    Path.Combine(Directory.GetCurrentDirectory(), "icons", "libraryLogo.png"),
-                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "libraryLogo.png"),
-                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "icons", "libraryLogo.png")
-                };
-
-                foreach (var path in candidates)
-                {
-                    if (File.Exists(path))
-                    {
-                        using var stream = new MemoryStream(File.ReadAllBytes(path));
-                        picLogo.Image = Image.FromStream(stream);
-                        break;
-                    }
-                }
+                picLogo.Image = Properties.Resources.libraryLogo;
             }
             catch
             {
@@ -47,9 +32,16 @@ namespace LibraryManagementSystem.Forms
             PerformLogin();
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            txtUsername.Focus();
+        }
+
         private void btnCancel_Click(object? sender, EventArgs e)
         {
-            Application.Exit();
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
 
         private void txtPassword_KeyDown(object? sender, KeyEventArgs e)
@@ -60,6 +52,16 @@ namespace LibraryManagementSystem.Forms
                 e.SuppressKeyPress = true;
                 PerformLogin();
             }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter && txtUsername.Focused)
+            {
+                txtPassword.Focus();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void txtUsername_KeyDown(object? sender, KeyEventArgs e)
@@ -146,14 +148,13 @@ namespace LibraryManagementSystem.Forms
 
                 SessionManager.Login(librarian);
 
-                this.Hide();
-                var mainShell = new MainShellForm();
-                mainShell.FormClosed += (s, args) => this.Close();
-                mainShell.Show();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (Exception ex)
             {
-                SetGeneralError($"An unexpected error occurred: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[LoginForm.btnLogin_Click] {ex}");
+                SetGeneralError("An unexpected error occurred during sign in. Please try again.");
             }
             finally
             {

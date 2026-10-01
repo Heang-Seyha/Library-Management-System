@@ -25,18 +25,17 @@ namespace LibraryManagementSystem.Dialogs
 
             if (existing != null)
             {
-                this.Text = "Library Management System — Edit Librarian";
+                this.Text = "  Library Management System — Edit Librarian";
                 lblHeader.Text = "Edit Librarian Information";
                 lblPasswordLabel.Text = "Password (leave blank to keep current)";
                 btnSave.Text = "Save Changes";
             }
             else
             {
-                this.Text = "Library Management System — Add Librarian";
+                this.Text = "  Library Management System — Add Librarian";
                 lblHeader.Text = "Add New Librarian";
                 lblPasswordLabel.Text = "Account Password *";
                 btnSave.Text = "Save Librarian";
-                cmbRole.SelectedIndex = -1;
             }
 
             this.Load += LibrarianEditDialog_Load;
@@ -62,6 +61,11 @@ namespace LibraryManagementSystem.Dialogs
 
         private void LibrarianEditDialog_Load(object? sender, EventArgs e)
         {
+            btnCancel.Location = new Point(300, 428);
+            btnSave.Location = new Point(420, 428);
+            btnCancel.BringToFront();
+            btnSave.BringToFront();
+
             if (DesignMode) return;
 
             if (_existing != null)
@@ -72,7 +76,6 @@ namespace LibraryManagementSystem.Dialogs
             {
                 cmbGender.SelectedIndex = -1;
                 dtpDob.CustomFormat = " ";
-                cmbRole.SelectedIndex = -1;
             }
         }
 
@@ -92,7 +95,6 @@ namespace LibraryManagementSystem.Dialogs
             txtUsername.Text = lib.Username;
             txtPhone.Text = lib.Phone;
             txtEmail.Text = lib.Email;
-            cmbRole.SelectedItem = (lib.Role == "Admin") ? "Admin" : "Librarian";
         }
 
         private void txtName_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtName, lblNameErr);
@@ -100,7 +102,6 @@ namespace LibraryManagementSystem.Dialogs
         private void txtUsername_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtUsername, lblUsernameErr);
         private void txtPhone_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtPhone, lblPhoneErr);
         private void txtEmail_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtEmail, lblEmailErr);
-        private void cmbRole_SelectedIndexChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(cmbRole, lblRoleErr);
         private void txtPassword_TextChanged(object? sender, EventArgs e) => ValidationHelper.ClearFieldError(txtPassword, lblPasswordErr);
 
         private void btnCancel_Click(object? sender, EventArgs e)
@@ -130,32 +131,23 @@ namespace LibraryManagementSystem.Dialogs
             // Validate Date of Birth (required & cannot be in the future)
             if (string.IsNullOrWhiteSpace(dtpDob.CustomFormat) || dtpDob.CustomFormat == " ")
             {
-                lblDobErr.Text = "Date of birth is required.";
-                lblDobErr.Visible = true;
+                ValidationHelper.SetFieldError(dtpDob, lblDobErr, "Date of birth is required.");
                 hasErrors = true;
             }
             else if (dtpDob.Value.Date > DateTime.Today)
             {
-                lblDobErr.Text = "Date of birth cannot be in the future.";
-                lblDobErr.Visible = true;
+                ValidationHelper.SetFieldError(dtpDob, lblDobErr, "Date of birth cannot be in the future.");
                 hasErrors = true;
             }
             else
             {
-                lblDobErr.Visible = false;
+                ValidationHelper.ClearFieldError(dtpDob, lblDobErr);
             }
 
             // Validate Username
             if (!ValidationHelper.IsValidUsername(txtUsername.Text, 3, 50))
             {
-                ValidationHelper.SetFieldError(txtUsername, lblUsernameErr, "Username must be 3-50 alphanumeric characters or underscores.");
-                hasErrors = true;
-            }
-
-            // Validate Role
-            if (cmbRole.SelectedItem == null)
-            {
-                ValidationHelper.SetFieldError(cmbRole, lblRoleErr, "Please select an account role.");
+                ValidationHelper.SetFieldError(txtUsername, lblUsernameErr, "Username must be 3-50 alphanumeric characters or _.");
                 hasErrors = true;
             }
 
@@ -167,7 +159,7 @@ namespace LibraryManagementSystem.Dialogs
             }
             else if (!ValidationHelper.IsValidPhone(txtPhone.Text))
             {
-                ValidationHelper.SetFieldError(txtPhone, lblPhoneErr, "Invalid phone number (must start with 0, 9-10 digits).");
+                ValidationHelper.SetFieldError(txtPhone, lblPhoneErr, "Invalid phone (must start with 0, 9-10 digits).");
                 hasErrors = true;
             }
 
@@ -179,7 +171,7 @@ namespace LibraryManagementSystem.Dialogs
             }
             else if (!ValidationHelper.IsValidEmail(txtEmail.Text))
             {
-                ValidationHelper.SetFieldError(txtEmail, lblEmailErr, "Please enter a valid email address (e.g. name@domain.com).");
+                ValidationHelper.SetFieldError(txtEmail, lblEmailErr, "Please enter a valid email address.");
                 hasErrors = true;
             }
 
@@ -208,7 +200,7 @@ namespace LibraryManagementSystem.Dialogs
 
             if (hasErrors) return;
 
-            string selectedRole = cmbRole.SelectedItem?.ToString() == "Admin" ? "Admin" : "Librarian";
+            string selectedRole = _existing?.Role ?? AuthorizationHelper.RoleLibrarian;
 
             var librarian = new Librarian
             {
@@ -249,7 +241,8 @@ namespace LibraryManagementSystem.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not save librarian account.\n\nDetails: {ex.Message}", "Database Error",
+                System.Diagnostics.Debug.WriteLine($"[LibrarianEditDialog.BtnSave_Click] {ex}");
+                MessageBox.Show("Could not save librarian account. Please try again.", "Database Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

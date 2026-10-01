@@ -20,11 +20,17 @@ namespace LibraryManagementSystem.Forms
         private readonly ToolTip _navToolTip = new();
         private bool _isSidebarCollapsed = false;
         private bool _isLogoutPressed = false;
+        private bool _bypassCloseConfirmation = false;
+        private FormWindowState _previousWindowState = FormWindowState.Maximized;
+        private const int WM_SYSCOMMAND = 0x0112;
+        private const int SC_RESTORE = 0xF120;
 
         public MainShellForm()
         {
             Instance = this;
-            InitializeComponent();
+            InitializeComponent();
+            this.Icon = UIHelper.AppIcon;
+
             UIHelper.ApplyPaddingToAllTextBoxes(this, 8);
 
             // Strict dock layout and Z-order enforcement:
@@ -36,6 +42,7 @@ namespace LibraryManagementSystem.Forms
             pnlNavButtons.AutoScroll = false;
 
             this.Load += MainShellForm_Load;
+            this.Shown += MainShellForm_Shown;
             this.Resize += MainShellForm_Resize;
             pnlSidebar.Resize += (s, e) => AdjustNavButtonHeights();
             lblLogoIcon.Click += (s, e) => SetSidebarCollapsed(!_isSidebarCollapsed);
@@ -49,6 +56,8 @@ namespace LibraryManagementSystem.Forms
             InitNavRegistry();
             ApplySessionState();
 
+            CenterNormalBounds();
+
             // Initial check for small screens
             if (this.ClientSize.Width < 1120)
             {
@@ -56,12 +65,49 @@ namespace LibraryManagementSystem.Forms
             }
 
             AdjustNavButtonHeights();
+        }
 
-            NavigateTo("Dashboard");
+        private void MainShellForm_Shown(object? sender, EventArgs e)
+        {
+            if (DesignMode) return;
+
+            if (SessionManager.CurrentLibrarian == null)
+            {
+                if (!PromptLogin())
+                {
+                    _bypassCloseConfirmation = true;
+                    this.Close();
+                    Application.Exit();
+                }
+            }
+        }
+
+        private bool PromptLogin()
+        {
+            this.Refresh();
+            using var loginForm = new LoginForm();
+            loginForm.StartPosition = FormStartPosition.CenterParent;
+            if (loginForm.ShowDialog(this) == DialogResult.OK)
+            {
+                ApplySessionState();
+                NavigateTo("Dashboard");
+                return true;
+            }
+            return false;
         }
 
         private void MainShellForm_Resize(object? sender, EventArgs e)
         {
+            if (_previousWindowState == FormWindowState.Maximized && this.WindowState == FormWindowState.Normal)
+            {
+                if ((Control.MouseButtons & MouseButtons.Left) == 0)
+                {
+                    CenterNormalBounds();
+                    this.BeginInvoke(new Action(CenterNormalBounds));
+                }
+            }
+            _previousWindowState = this.WindowState;
+
             if (this.ClientSize.Width < 1120 && !_isSidebarCollapsed)
             {
                 SetSidebarCollapsed(true);
@@ -77,14 +123,15 @@ namespace LibraryManagementSystem.Forms
         private void SetSidebarCollapsed(bool collapsed)
         {
             _isSidebarCollapsed = collapsed;
-            pnlSidebar.Width = collapsed ? 64 : 220;
+            pnlSidebar.Width = collapsed ? 64 : 225;
             lblBrandTitle.Visible = !collapsed;
+            lblLogoIcon.Location = collapsed ? new Point(16, 26) : new Point(12, 30);
 
             lblGroupMain.Visible = !collapsed;
             lblGroupOperations.Visible = !collapsed;
             lblGroupManagement.Visible = !collapsed;
             lblGroupMetadata.Visible = !collapsed;
-            lblGroupAdmin.Visible = !collapsed && SessionManager.IsAdmin;
+            lblGroupAdmin.Visible = !collapsed;
 
             foreach (var kvp in _buttonTitles)
             {
@@ -228,9 +275,16 @@ namespace LibraryManagementSystem.Forms
             btnLogout.MouseUp += (s, e) => { _isLogoutPressed = false; btnLogout.Invalidate(); };
             btnLogout.MouseLeave += (s, e) => { _isLogoutPressed = false; btnLogout.Invalidate(); };
 
-            Color logoutDarkOuter = Color.FromArgb(23, 44, 60);
+            Color logoutDarkOuter = Color.FromArgb(13, 59, 102);
             Color logoutLightHighlight = Color.FromArgb(162, 193, 219);
             Color logoutDarkShadow = Color.FromArgb(18, 35, 48);
+
+            pnlBrand.Paint += (s, e) =>
+            {
+                using var pDivider = new Pen(Color.FromArgb(13, 59, 102), 1);
+                e.Graphics.DrawLine(pDivider, 0, pnlBrand.Height - 1, pnlBrand.Width - 1, pnlBrand.Height - 1);
+            };
+            pnlBrand.Resize += (s, e) => pnlBrand.Invalidate();
 
             btnLogout.Paint += (s, e) =>
             {
@@ -302,16 +356,16 @@ namespace LibraryManagementSystem.Forms
             }
             else
             {
-                lblUserName.Text = "Guest User";
-                lblUserRole.Text = AuthorizationHelper.RoleLibrarian;
+                lblUserName.Text = string.Empty;
+                lblUserRole.Text = string.Empty;
             }
 
             btnNavCategories.Visible = true;
             btnNavAuthors.Visible = true;
             btnNavPublishers.Visible = true;
             btnNavLibrarians.Visible = SessionManager.IsAdmin;
-            lblGroupAdmin.Visible = SessionManager.IsAdmin && !_isSidebarCollapsed;
-            pnlNavDivider5.Visible = SessionManager.IsAdmin;
+            lblGroupAdmin.Visible = !_isSidebarCollapsed;
+            pnlNavDivider5.Visible = true;
 
             AdjustNavButtonHeights();
         }
@@ -344,7 +398,7 @@ namespace LibraryManagementSystem.Forms
                 return;
             }
 
-            this.Text = $"Library Management System — {name}";
+            this.Text = $"  Library Management System — {name}";
             SetActiveButton(item.Button);
 
             if (!_panelCache.TryGetValue(name, out var panel) || panel.IsDisposed)
@@ -401,15 +455,27 @@ namespace LibraryManagementSystem.Forms
             {
                 SessionManager.Clear();
                 InvalidateCache();
-                this.Hide();
-                var loginForm = new LoginForm();
-                loginForm.FormClosed += (s, args) => this.Close();
-                loginForm.Show();
+                pnlContentHost.Controls.Clear();
+
+                if (_activeNavButton != null)
+                {
+                    _activeNavButton.BackColor = Color.SteelBlue;
+                    _activeNavButton = null;
+                }
+
+                this.Text = "Library Management System";
+                ApplySessionState();
+
+                if (!PromptLogin())
+                {
+                    _bypassCloseConfirmation = true;
+                    this.Close();
+                    Application.Exit();
+                }
             }
-        }
-
-
-        private void AdjustNavButtonHeights()
+        }
+
+private void AdjustNavButtonHeights()
         {
             if (pnlSidebar == null || pnlBrand == null || pnlNavButtons == null || btnLogout == null)
                 return;
@@ -497,6 +563,65 @@ namespace LibraryManagementSystem.Forms
             pnlSidebar.ResumeLayout(true);
             pnlSidebar.PerformLayout();
             pnlNavButtons.PerformLayout();
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_SYSCOMMAND && (m.WParam.ToInt32() & 0xFFF0) == SC_RESTORE)
+            {
+                base.WndProc(ref m);
+                if (this.WindowState == FormWindowState.Normal)
+                {
+                    CenterNormalBounds();
+                    this.BeginInvoke(new Action(CenterNormalBounds));
+                }
+                return;
+            }
+
+            base.WndProc(ref m);
+        }
+
+        private void CenterNormalBounds()
+        {
+            try
+            {
+                var screen = Screen.FromControl(this);
+                var workingArea = screen.WorkingArea;
+                int w = this.WindowState == FormWindowState.Normal ? this.Width : this.RestoreBounds.Width;
+                int h = this.WindowState == FormWindowState.Normal ? this.Height : this.RestoreBounds.Height;
+                if (w <= 0) w = 1264;
+                if (h <= 0) h = 721;
+
+                int x = workingArea.X + Math.Max(0, (workingArea.Width - w) / 2);
+                int y = workingArea.Y + Math.Max(0, (workingArea.Height - h) / 2);
+
+                this.Location = new Point(x, y);
+            }
+            catch
+            {
+                this.CenterToScreen();
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (!_bypassCloseConfirmation && e.CloseReason == CloseReason.UserClosing)
+            {
+                var result = MessageBox.Show(
+                    "Are you sure you want to exit the application?",
+                    "Confirm Exit",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button1);
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+
+            base.OnFormClosing(e);
         }
     }
 }

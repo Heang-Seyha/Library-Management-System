@@ -25,13 +25,13 @@ namespace LibraryManagementSystem.Dialogs
 
             if (existing != null)
             {
-                this.Text = "Library Management System — Edit Book";
+                this.Text = "  Library Management System — Edit Book";
                 lblHeader.Text = "Edit Book Information";
                 btnSave.Text = "Save Changes";
             }
             else
             {
-                this.Text = "Library Management System — Add Book";
+                this.Text = "  Library Management System — Add Book";
                 lblHeader.Text = "Add New Book";
                 btnSave.Text = "Save Book";
             }
@@ -41,6 +41,11 @@ namespace LibraryManagementSystem.Dialogs
 
         private void BookEditDialog_Load(object? sender, EventArgs e)
         {
+            btnCancel.Location = new Point(320, 526);
+            btnSave.Location = new Point(440, 526);
+            btnCancel.BringToFront();
+            btnSave.BringToFront();
+
             if (DesignMode) return;
 
             LoadDropdowns();
@@ -76,7 +81,8 @@ namespace LibraryManagementSystem.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load master dropdown data: {ex.Message}", "Data Error",
+                System.Diagnostics.Debug.WriteLine($"[BookEditDialog.LoadDropdowns] {ex}");
+                MessageBox.Show("Failed to load master dropdown data. Please check database connectivity and try again.", "Data Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -123,7 +129,7 @@ namespace LibraryManagementSystem.Dialogs
             // Validate ISBN
             if (!ValidationHelper.IsValidISBN(txtISBN.Text))
             {
-                ValidationHelper.SetFieldError(txtISBN, lblISBNErr, "Enter a valid ISBN-13 (e.g. 978-0132350884).");
+                ValidationHelper.SetFieldError(txtISBN, lblISBNErr, "Enter a valid ISBN-10 or ISBN-13.");
                 hasErrors = true;
             }
 
@@ -217,7 +223,8 @@ namespace LibraryManagementSystem.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not save book record.\n\nDetails: {ex.Message}", "Database Error",
+                System.Diagnostics.Debug.WriteLine($"[BookEditDialog.BtnSave_Click] {ex}");
+                MessageBox.Show("Could not save book record. Please try again.", "Database Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

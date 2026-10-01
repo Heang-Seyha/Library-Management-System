@@ -25,13 +25,13 @@ namespace LibraryManagementSystem.Dialogs
 
             if (existing != null)
             {
-                this.Text = "Library Management System — Edit Member";
+                this.Text = "  Library Management System — Edit Member";
                 lblHeader.Text = "Edit Member Information";
                 btnSave.Text = "Save Changes";
             }
             else
             {
-                this.Text = "Library Management System — Add Member";
+                this.Text = "  Library Management System — Add Member";
                 lblHeader.Text = "Add New Member";
                 btnSave.Text = "Save Member";
             }
@@ -59,6 +59,11 @@ namespace LibraryManagementSystem.Dialogs
 
         private void MemberEditDialog_Load(object? sender, EventArgs e)
         {
+            btnCancel.Location = new Point(300, 526);
+            btnSave.Location = new Point(420, 526);
+            btnCancel.BringToFront();
+            btnSave.BringToFront();
+
             if (DesignMode) return;
 
             if (_existing != null)
@@ -129,19 +134,17 @@ namespace LibraryManagementSystem.Dialogs
             // Validate Date of Birth (required & cannot be in the future)
             if (string.IsNullOrWhiteSpace(dtpDob.CustomFormat) || dtpDob.CustomFormat == " ")
             {
-                lblDobErr.Text = "Date of birth is required.";
-                lblDobErr.Visible = true;
+                ValidationHelper.SetFieldError(dtpDob, lblDobErr, "Date of birth is required.");
                 hasErrors = true;
             }
             else if (dtpDob.Value.Date > DateTime.Today)
             {
-                lblDobErr.Text = "Date of birth cannot be in the future.";
-                lblDobErr.Visible = true;
+                ValidationHelper.SetFieldError(dtpDob, lblDobErr, "Date of birth cannot be in the future.");
                 hasErrors = true;
             }
             else
             {
-                lblDobErr.Visible = false;
+                ValidationHelper.ClearFieldError(dtpDob, lblDobErr);
             }
 
             // Validate Phone
@@ -152,7 +155,7 @@ namespace LibraryManagementSystem.Dialogs
             }
             else if (!ValidationHelper.IsValidPhone(txtPhone.Text))
             {
-                ValidationHelper.SetFieldError(txtPhone, lblPhoneErr, "Invalid phone number (must start with 0, 9-10 digits).");
+                ValidationHelper.SetFieldError(txtPhone, lblPhoneErr, "Invalid phone (must start with 0, 9-10 digits).");
                 hasErrors = true;
             }
 
@@ -164,7 +167,7 @@ namespace LibraryManagementSystem.Dialogs
             }
             else if (!ValidationHelper.IsValidEmail(txtEmail.Text))
             {
-                ValidationHelper.SetFieldError(txtEmail, lblEmailErr, "Please enter a valid email address (e.g. name@domain.com).");
+                ValidationHelper.SetFieldError(txtEmail, lblEmailErr, "Please enter a valid email address.");
                 hasErrors = true;
             }
 
@@ -178,9 +181,12 @@ namespace LibraryManagementSystem.Dialogs
             // Validate Join Date (cannot be in the future)
             if (dtpJoin.Value.Date > DateTime.Today)
             {
-                lblJoinErr.Text = "Join date cannot be in the future.";
-                lblJoinErr.Visible = true;
+                ValidationHelper.SetFieldError(dtpJoin, lblJoinErr, "Join date cannot be in the future.");
                 hasErrors = true;
+            }
+            else
+            {
+                ValidationHelper.ClearFieldError(dtpJoin, lblJoinErr);
             }
 
             if (hasErrors) return;
@@ -215,7 +221,8 @@ namespace LibraryManagementSystem.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not save member record.\n\nDetails: {ex.Message}", "Database Error",
+                System.Diagnostics.Debug.WriteLine($"[MemberEditDialog.BtnSave_Click] {ex}");
+                MessageBox.Show("Could not save member record. Please try again.", "Database Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

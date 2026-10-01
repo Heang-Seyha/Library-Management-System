@@ -25,13 +25,13 @@ namespace LibraryManagementSystem.Dialogs
 
             if (existing != null)
             {
-                this.Text = "Library Management System — Edit Author";
+                this.Text = "  Library Management System — Edit Author";
                 lblHeader.Text = "Edit Author Information";
                 btnSave.Text = "Save Changes";
             }
             else
             {
-                this.Text = "Library Management System — Add Author";
+                this.Text = "  Library Management System — Add Author";
                 lblHeader.Text = "Add New Author";
                 btnSave.Text = "Save Author";
             }
@@ -59,6 +59,11 @@ namespace LibraryManagementSystem.Dialogs
 
         private void AuthorEditDialog_Load(object? sender, EventArgs e)
         {
+            btnCancel.Location = new Point(300, 412);
+            btnSave.Location = new Point(420, 412);
+            btnCancel.BringToFront();
+            btnSave.BringToFront();
+
             if (DesignMode) return;
 
             if (_existing != null)
@@ -70,6 +75,15 @@ namespace LibraryManagementSystem.Dialogs
                 cmbGender.SelectedIndex = -1;
                 dtpDob.CustomFormat = " ";
             }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            btnCancel.Location = new Point(300, 412);
+            btnSave.Location = new Point(420, 412);
+            btnCancel.BringToFront();
+            btnSave.BringToFront();
         }
 
         private void PopulateFields(Author a)
@@ -119,19 +133,17 @@ namespace LibraryManagementSystem.Dialogs
             // Validate Date of Birth (required & cannot be in the future)
             if (string.IsNullOrWhiteSpace(dtpDob.CustomFormat) || dtpDob.CustomFormat == " ")
             {
-                lblDobErr.Text = "Date of birth is required.";
-                lblDobErr.Visible = true;
+                ValidationHelper.SetFieldError(dtpDob, lblDobErr, "Date of birth is required.");
                 hasErrors = true;
             }
             else if (dtpDob.Value.Date > DateTime.Today)
             {
-                lblDobErr.Text = "Date of birth cannot be in the future.";
-                lblDobErr.Visible = true;
+                ValidationHelper.SetFieldError(dtpDob, lblDobErr, "Date of birth cannot be in the future.");
                 hasErrors = true;
             }
             else
             {
-                lblDobErr.Visible = false;
+                ValidationHelper.ClearFieldError(dtpDob, lblDobErr);
             }
 
             // Validate Bio
@@ -170,7 +182,8 @@ namespace LibraryManagementSystem.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not save author record.\n\nDetails: {ex.Message}", "Database Error",
+                System.Diagnostics.Debug.WriteLine($"[AuthorEditDialog.BtnSave_Click] {ex}");
+                MessageBox.Show("Could not save author record. Please try again.", "Database Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

@@ -70,7 +70,8 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Unable to load circulation data.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[BorrowPanel.LoadData] {ex}");
+                MessageBox.Show("Unable to load circulation data. Please check database connectivity and try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -208,14 +209,13 @@ namespace LibraryManagementSystem.Panels
                 return;
             }
 
-            var librarianId = SessionManager.CurrentLibrarian.LibrarianId;
             var items = _borrowItems.Values.Select(i => (i.book.BookId, i.quantity)).ToList();
 
             try
             {
                 using var ctx = Program.CreateDbContext();
                 var (ok, msg) = new BorrowService(ctx).CreateBorrow(
-                    _selectedMember.MemberId, librarianId, dtpDueDate.Value.Date, items);
+                    _selectedMember.MemberId, dtpDueDate.Value.Date, items);
 
                 if (ok)
                 {
@@ -239,23 +239,9 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not record borrow transaction.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[BorrowPanel.BtnConfirmBorrow_Click] {ex}");
+                MessageBox.Show("Could not record borrow transaction. Please try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void lblMTitle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblSTitle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblBTitle_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void ConfigureGridColumns()
@@ -296,5 +282,9 @@ namespace LibraryManagementSystem.Panels
             colQty.MinimumWidth = 150;
             colQty.Resizable = DataGridViewTriState.True;
         }
+
+        private void lblSTitle_Click(object sender, EventArgs e) { }
+        private void lblBTitle_Click(object sender, EventArgs e) { }
+        private void lblMTitle_Click(object sender, EventArgs e) { }
     }
 }

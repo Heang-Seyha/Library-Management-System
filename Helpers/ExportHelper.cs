@@ -297,7 +297,8 @@ namespace LibraryManagementSystem.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to export Excel report.\n\nDetails: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[ExportHelper.ExportToExcel] {ex}");
+                MessageBox.Show("Failed to export Excel report. Please verify file permissions and try again.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -350,7 +351,8 @@ namespace LibraryManagementSystem.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to export PDF report.\n\nDetails: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[ExportHelper.ExportToPdf] {ex}");
+                MessageBox.Show("Failed to export PDF report. Please verify file permissions and try again.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -484,7 +486,8 @@ namespace LibraryManagementSystem.Helpers
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Unable to display print preview.\n\nDetails: {ex.Message}", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[ExportHelper.PrintReport] {ex}");
+                MessageBox.Show("Unable to display print preview. Please verify printer configuration and try again.", "Print Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

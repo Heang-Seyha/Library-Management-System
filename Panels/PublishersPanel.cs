@@ -55,8 +55,9 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[PublishersPanel.LoadData] {ex}");
                 MessageBox.Show(
-                    $"Unable to load publishers from database.\n\nDetails: {ex.Message}",
+                    "Unable to load publishers from database. Please check database connectivity and try again.",
                     "Database Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -90,7 +91,7 @@ namespace LibraryManagementSystem.Panels
             dgv.Rows.Clear();
             foreach (var p in publishers)
             {
-                dgv.Rows.Add(p.PublisherId, p.Name, p.Address, p.Phone);
+                dgv.Rows.Add(p.PublisherId, p.Name, p.Phone, p.Address);
             }
             UIHelper.UpdateGridState(dgv, publishers.Count, isSearchActive, "Publisher", query, () =>
             {
@@ -106,8 +107,8 @@ namespace LibraryManagementSystem.Panels
             using var dlg = new SimpleEditDialog("Add Publisher", new (string, string, bool, int, bool)[]
             {
                 ("Publisher Name", "", false, 150, true),
-                ("Address", "", false, 500, false),
-                ("Phone", "", false, 50, false)
+                ("Address", "", false, 500, true),
+                ("Phone", "", false, 20, true)
             });
 
             if (dlg.ShowDialog() != DialogResult.OK) return;
@@ -129,7 +130,8 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not save publisher.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[PublishersPanel.BtnAdd_Click] {ex}");
+                MessageBox.Show("Could not save publisher. Please try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -154,8 +156,8 @@ namespace LibraryManagementSystem.Panels
             using var dlg = new SimpleEditDialog("Edit Publisher", new (string, string, bool, int, bool)[]
             {
                 ("Publisher Name", pub.Name, false, 150, true),
-                ("Address", pub.Address, false, 500, false),
-                ("Phone", pub.Phone, false, 50, false)
+                ("Address", pub.Address ?? "", false, 500, true),
+                ("Phone", pub.Phone ?? "", false, 20, true)
             });
 
             if (dlg.ShowDialog() != DialogResult.OK) return;
@@ -178,7 +180,8 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not update publisher.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[PublishersPanel.BtnEdit_Click] {ex}");
+                MessageBox.Show("Could not update publisher. Please try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -212,7 +215,8 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not delete publisher.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[PublishersPanel.BtnDelete_Click] {ex}");
+                MessageBox.Show("Could not delete publisher. Please try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -23,6 +23,7 @@ namespace LibraryManagementSystem.Panels
         private System.Windows.Forms.DataGridViewTextBoxColumn colISBN;
         private System.Windows.Forms.DataGridViewTextBoxColumn colAuthor;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCategory;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPublisher;
         private System.Windows.Forms.DataGridViewTextBoxColumn colYear;
         private System.Windows.Forms.DataGridViewTextBoxColumn colAvailable;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTotal;
@@ -53,6 +54,7 @@ namespace LibraryManagementSystem.Panels
             colISBN = new DataGridViewTextBoxColumn();
             colAuthor = new DataGridViewTextBoxColumn();
             colCategory = new DataGridViewTextBoxColumn();
+            colPublisher = new DataGridViewTextBoxColumn();
             colYear = new DataGridViewTextBoxColumn();
             colAvailable = new DataGridViewTextBoxColumn();
             colTotal = new DataGridViewTextBoxColumn();
@@ -219,7 +221,7 @@ namespace LibraryManagementSystem.Panels
             dgvBooks.BorderStyle = BorderStyle.Fixed3D;
             dgvBooks.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvBooks.ColumnHeadersHeight = 36;
-            dgvBooks.Columns.AddRange(new DataGridViewColumn[] { colId, colTitle, colISBN, colAuthor, colCategory, colYear, colAvailable, colTotal });
+            dgvBooks.Columns.AddRange(new DataGridViewColumn[] { colId, colTitle, colISBN, colAuthor, colCategory, colPublisher, colYear, colAvailable, colTotal });
             dgvBooks.Dock = DockStyle.Fill;
             dgvBooks.EnableHeadersVisualStyles = false;
             dgvBooks.GridColor = SystemColors.MenuHighlight;
@@ -283,6 +285,16 @@ namespace LibraryManagementSystem.Panels
             colCategory.Name = "colCategory";
             colCategory.ReadOnly = true;
             colCategory.Resizable = DataGridViewTriState.True;
+            // 
+            // colPublisher
+            // 
+            colPublisher.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colPublisher.FillWeight = 25F;
+            colPublisher.HeaderText = "Publisher";
+            colPublisher.MinimumWidth = 110;
+            colPublisher.Name = "colPublisher";
+            colPublisher.ReadOnly = true;
+            colPublisher.Resizable = DataGridViewTriState.True;
             // 
             // colYear
             // 

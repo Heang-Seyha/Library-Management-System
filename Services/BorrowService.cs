@@ -24,10 +24,11 @@ namespace LibraryManagementSystem.Services
 
         /// <summary>
         /// Creates a new borrow transaction with one or more books.
+        /// Transaction actor is derived securely from the authenticated session (SessionManager.CurrentLibrarian).
         /// 
         /// Business rules:
         /// - Member must exist
-        /// - Librarian must be authenticated
+        /// - Authenticated Librarian session must exist (cannot be spoofed from caller)
         /// - At least one book must be selected
         /// - Duplicate books in request are automatically merged
         /// - Each book must have sufficient available copies
@@ -35,6 +36,33 @@ namespace LibraryManagementSystem.Services
         /// - Everything is saved atomically (all or nothing, rollback on failure)
         /// </summary>
         public (bool success, string message) CreateBorrow(
+            int memberId,
+            DateTime dueDate,
+            List<(int bookId, int quantity)> items)
+        {
+            var currentLibrarian = Helpers.SessionManager.CurrentLibrarian;
+            if (currentLibrarian == null)
+            {
+                return (false, "Authentication required. You must be logged in to process a borrow transaction.");
+            }
+
+            return CreateBorrowInternal(memberId, currentLibrarian.LibrarianId, dueDate, items);
+        }
+
+        /// <summary>
+        /// Internal overload for automated testing when setting up specific test fixtures.
+        /// Production UI operations must always call the authenticated 3-parameter overload.
+        /// </summary>
+        internal (bool success, string message) CreateBorrow(
+            int memberId,
+            int librarianId,
+            DateTime dueDate,
+            List<(int bookId, int quantity)> items)
+        {
+            return CreateBorrowInternal(memberId, librarianId, dueDate, items);
+        }
+
+        private (bool success, string message) CreateBorrowInternal(
             int memberId,
             int librarianId,
             DateTime dueDate,
@@ -135,10 +163,16 @@ namespace LibraryManagementSystem.Services
                 transaction.Rollback();
                 return (false, "This book's availability was just changed by another action. Please refresh and try again.");
             }
-            catch (Exception ex)
+            catch (DbUpdateException)
             {
                 transaction.Rollback();
-                return (false, $"Failed to create borrow: {ex.Message}");
+                return (false, "A database error occurred while creating the borrow record. Please try again.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[BorrowService.CreateBorrow] {ex}");
+                transaction.Rollback();
+                return (false, "Unable to complete the borrow transaction. Please try again.");
             }
         }
 
@@ -214,12 +248,18 @@ namespace LibraryManagementSystem.Services
             catch (DbUpdateConcurrencyException)
             {
                 transaction.Rollback();
-                return (false, "This book's availability was just changed by another action. Please refresh and try again.", 0m);
+                return (false, "This borrow or book was modified by another user. Please refresh and try again.", 0m);
+            }
+            catch (DbUpdateException)
+            {
+                transaction.Rollback();
+                return (false, "A database error occurred while processing the return. Please try again.", 0m);
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[BorrowService.ProcessReturn] {ex}");
                 transaction.Rollback();
-                return (false, $"Failed to process return: {ex.Message}", 0m);
+                return (false, "Unable to complete the return process. Please try again.", 0m);
             }
         }
 

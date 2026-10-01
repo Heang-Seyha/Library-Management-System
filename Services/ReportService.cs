@@ -71,7 +71,28 @@ namespace LibraryManagementSystem.Services
         /// <summary>Only overdue borrows.</summary>
         public List<BorrowReportRow> GetOverdueBorrows()
         {
-            return GetActiveBorrows().Where(r => r.DaysOverdue > 0).ToList();
+            // Filtered directly in SQL to avoid double-loading the active borrows list.
+            return _context.Borrows
+                .Include(b => b.Member)
+                .Include(b => b.Librarian)
+                .Include(b => b.BorrowDetails).ThenInclude(bd => bd.Book)
+                .Where(b => (b.Status == BorrowStatus.Active || b.Status == BorrowStatus.Overdue)
+                            && b.DueDate < DateTime.Today)
+                .OrderByDescending(b => b.BorrowDate)
+                .AsEnumerable()
+                .Select(b => new BorrowReportRow
+                {
+                    BorrowId = b.BorrowId,
+                    MemberName = b.Member?.Name ?? "",
+                    LibrarianName = b.Librarian?.Name ?? "",
+                    Books = string.Join(", ", b.BorrowDetails.Select(bd => $"{bd.Book?.Title} ×{bd.Quantity}")),
+                    BorrowDate = b.BorrowDate,
+                    DueDate = b.DueDate,
+                    Status = b.Status,
+                    DaysOverdue = (DateTime.Today - b.DueDate.Date).Days,
+                    EstimatedFine = FinePolicy.CalculateFine(b.DueDate, DateTime.Today)
+                })
+                .ToList();
         }
 
         /// <summary>Total fines collected (from returned borrows with fine > 0).</summary>
@@ -85,9 +106,16 @@ namespace LibraryManagementSystem.Services
             if (criteria != null)
             {
                 if (criteria.FromDate.HasValue)
-                    query = query.Where(b => b.BorrowDate >= criteria.FromDate.Value.Date);
+                {
+                    var from = criteria.FromDate.Value.Date;
+                    query = query.Where(b => b.BorrowDate >= from);
+                }
                 if (criteria.ToDate.HasValue)
-                    query = query.Where(b => b.BorrowDate <= criteria.ToDate.Value.Date);
+                {
+                    // Use exclusive upper bound (< start of next day) to include the entire ToDate day.
+                    var toExclusive = criteria.ToDate.Value.Date.AddDays(1);
+                    query = query.Where(b => b.BorrowDate < toExclusive);
+                }
                 if (criteria.MemberId.HasValue && criteria.MemberId.Value > 0)
                     query = query.Where(b => b.MemberId == criteria.MemberId.Value);
                 if (criteria.BookId.HasValue && criteria.BookId.Value > 0)
@@ -110,15 +138,15 @@ namespace LibraryManagementSystem.Services
         }
 
         /// <summary>Top 10 most borrowed books.</summary>
+        /// <summary>Top 10 most borrowed books.</summary>
         public List<PopularBookRow> GetMostBorrowedBooks()
         {
             return _context.BorrowDetails
-                .Include(bd => bd.Book).ThenInclude(b => b!.Author)
-                .GroupBy(bd => bd.BookId)
+                .GroupBy(bd => new { bd.BookId, Title = bd.Book!.Title, AuthorName = bd.Book!.Author!.Name })
                 .Select(g => new PopularBookRow
                 {
-                    Title = g.First().Book!.Title,
-                    Author = g.First().Book!.Author!.Name,
+                    Title = g.Key.Title,
+                    Author = g.Key.AuthorName,
                     TotalBorrowed = g.Sum(bd => bd.Quantity)
                 })
                 .OrderByDescending(r => r.TotalBorrowed)
@@ -130,11 +158,10 @@ namespace LibraryManagementSystem.Services
         public List<ActiveMemberRow> GetMostActiveMembers()
         {
             return _context.Borrows
-                .Include(b => b.Member)
-                .GroupBy(b => b.MemberId)
+                .GroupBy(b => new { b.MemberId, MemberName = b.Member!.Name })
                 .Select(g => new ActiveMemberRow
                 {
-                    MemberName = g.First().Member!.Name,
+                    MemberName = g.Key.MemberName,
                     TotalBorrows = g.Count(),
                     TotalFines = g.Sum(b => b.FineAmount)
                 })
@@ -146,10 +173,7 @@ namespace LibraryManagementSystem.Services
         /// <summary>Current book inventory.</summary>
         public List<InventoryRow> GetInventory(ReportFilterCriteria? criteria = null)
         {
-            var query = _context.Books
-                .Include(b => b.Category)
-                .Include(b => b.Author)
-                .AsQueryable();
+            var query = _context.Books.AsQueryable();
 
             if (criteria != null && criteria.BookId.HasValue && criteria.BookId.Value > 0)
             {
@@ -194,11 +218,11 @@ namespace LibraryManagementSystem.Services
             return _context.Borrows.Count(b => b.Status == BorrowStatus.Overdue || (b.Status == BorrowStatus.Active && b.DueDate < today));
         }
 
-        // ── Filtered Query (Requirement 37) ──────────────────────────────────
+        // ── Filtered Query ────────────────────────────────────────────────────
 
         /// <summary>
-        /// Retrieves borrow records dynamically filtered in SQL Server / EF Core by
-        /// date range, status, member, and book without loading unnecessary datasets into memory.
+        /// Retrieves borrow records dynamically filtered in SQL Server by date range, status,
+        /// member, and book. Uses an exclusive upper bound on ToDate to capture the full day.
         /// </summary>
         public List<BorrowReportRow> GetFilteredBorrows(ReportFilterCriteria criteria)
         {
@@ -216,8 +240,9 @@ namespace LibraryManagementSystem.Services
 
             if (criteria.ToDate.HasValue)
             {
-                var to = criteria.ToDate.Value.Date;
-                query = query.Where(b => b.BorrowDate <= to);
+                // Exclusive upper bound ensures the entire ToDate is included.
+                var toExclusive = criteria.ToDate.Value.Date.AddDays(1);
+                query = query.Where(b => b.BorrowDate < toExclusive);
             }
 
             if (!string.IsNullOrWhiteSpace(criteria.Status) && !criteria.Status.Equals("All", StringComparison.OrdinalIgnoreCase))
@@ -258,12 +283,6 @@ namespace LibraryManagementSystem.Services
                 })
                 .ToList();
         }
-
-        public List<(int MemberId, string Name)> GetMembersList() =>
-            _context.Members.OrderBy(m => m.Name).Select(m => new ValueTuple<int, string>(m.MemberId, m.Name)).ToList();
-
-        public List<(int BookId, string Title)> GetBooksList() =>
-            _context.Books.OrderBy(b => b.Title).Select(b => new ValueTuple<int, string>(b.BookId, b.Title)).ToList();
     }
 
     /// <summary>
@@ -285,11 +304,6 @@ namespace LibraryManagementSystem.Services
         public int BorrowId { get; set; }
         public string MemberName { get; set; } = "";
         public string LibrarianName { get; set; } = "";
-        public string EmployeeName
-        {
-            get => LibrarianName;
-            set => LibrarianName = value;
-        }
         public string Books { get; set; } = "";
         public DateTime BorrowDate { get; set; }
         public DateTime DueDate { get; set; }

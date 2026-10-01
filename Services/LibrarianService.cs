@@ -26,6 +26,10 @@ namespace LibraryManagementSystem.Services
             if (!Helpers.AuthorizationHelper.CanManageLibrarians())
                 return (false, "Administrator privileges are required to add a librarian account.");
 
+            // Always force new accounts to the Librarian role regardless of caller input.
+            // This prevents privilege escalation from the UI layer.
+            librarian.Role = Helpers.AuthorizationHelper.RoleLibrarian;
+
             var valResult = _validator.Validate(librarian);
             if (!valResult.IsValid)
                 return (false, valResult.Errors.First().ErrorMessage);
@@ -37,14 +41,23 @@ namespace LibraryManagementSystem.Services
             if (!pwdResult.IsValid)
                 return (false, pwdResult.Errors.First().ErrorMessage);
 
-            if (_context.Librarians.Any(l => l.Username.ToLower() == librarian.Username.Trim().ToLower()))
+            var trimmedUsername = librarian.Username.Trim();
+            if (_context.Librarians.Any(l => l.Username == trimmedUsername))
                 return (false, $"Username '{librarian.Username}' is already taken.");
+
+            var trimmedEmail = librarian.Email.Trim();
+            if (!string.IsNullOrEmpty(trimmedEmail) && _context.Librarians.Any(l => l.Email == trimmedEmail))
+                return (false, $"A librarian with email '{librarian.Email}' already exists.");
+
+            var trimmedPhone = librarian.Phone.Trim();
+            if (!string.IsNullOrEmpty(trimmedPhone) && _context.Librarians.Any(l => l.Phone == trimmedPhone))
+                return (false, $"A librarian with phone '{librarian.Phone}' already exists.");
 
             librarian.Name = librarian.Name.Trim();
             librarian.Gender = string.IsNullOrWhiteSpace(librarian.Gender) ? "Male" : librarian.Gender.Trim();
-            librarian.Username = librarian.Username.Trim();
-            librarian.Phone = librarian.Phone.Trim();
-            librarian.Email = librarian.Email.Trim();
+            librarian.Username = trimmedUsername;
+            librarian.Phone = trimmedPhone;
+            librarian.Email = trimmedEmail;
             librarian.PasswordHash = Helpers.PasswordHasher.Hash(plainPassword);
             _context.Librarians.Add(librarian);
             _context.SaveChanges();
@@ -59,20 +72,60 @@ namespace LibraryManagementSystem.Services
             var existing = _context.Librarians.Find(librarian.LibrarianId);
             if (existing == null) return (false, "Librarian not found.");
 
+            // Read the original role from the database to prevent role manipulation.
+            var originalRole = _context.Entry(existing).Property(e => e.Role).OriginalValue ?? existing.Role;
+
+            // Invariant: The Admin role cannot be changed — prevents demotion of the only Admin.
+            if (originalRole == Helpers.AuthorizationHelper.RoleAdmin &&
+                !string.Equals(librarian.Role, Helpers.AuthorizationHelper.RoleAdmin, StringComparison.OrdinalIgnoreCase))
+            {
+                _context.Entry(existing).Reload();
+                return (false, "Cannot change role of the Administrator account. The system must always have exactly one Admin.");
+            }
+
+            // Invariant: A Librarian cannot be promoted to Administrator.
+            if (originalRole != Helpers.AuthorizationHelper.RoleAdmin &&
+                string.Equals(librarian.Role, Helpers.AuthorizationHelper.RoleAdmin, StringComparison.OrdinalIgnoreCase))
+            {
+                _context.Entry(existing).Reload();
+                return (false, "Cannot promote a Librarian to Administrator. Exactly one Administrator account is permitted.");
+            }
+
             var valResult = _validator.Validate(librarian);
             if (!valResult.IsValid)
+            {
+                _context.Entry(existing).Reload();
                 return (false, valResult.Errors.First().ErrorMessage);
+            }
 
-            if (_context.Librarians.Any(l => l.Username.ToLower() == librarian.Username.Trim().ToLower()
-                                         && l.LibrarianId != librarian.LibrarianId))
+            var trimmedUsername = librarian.Username.Trim();
+            if (_context.Librarians.Any(l => l.Username == trimmedUsername
+                                             && l.LibrarianId != librarian.LibrarianId))
+            {
+                _context.Entry(existing).Reload();
                 return (false, $"Username '{librarian.Username}' is already taken.");
+            }
+
+            var trimmedEmail = librarian.Email.Trim();
+            if (!string.IsNullOrEmpty(trimmedEmail) && _context.Librarians.Any(l => l.Email == trimmedEmail && l.LibrarianId != librarian.LibrarianId))
+            {
+                _context.Entry(existing).Reload();
+                return (false, $"A librarian with email '{librarian.Email}' already exists.");
+            }
+
+            var trimmedPhone = librarian.Phone.Trim();
+            if (!string.IsNullOrEmpty(trimmedPhone) && _context.Librarians.Any(l => l.Phone == trimmedPhone && l.LibrarianId != librarian.LibrarianId))
+            {
+                _context.Entry(existing).Reload();
+                return (false, $"A librarian with phone '{librarian.Phone}' already exists.");
+            }
 
             existing.Name = librarian.Name.Trim();
             existing.Gender = string.IsNullOrWhiteSpace(librarian.Gender) ? "Male" : librarian.Gender.Trim();
             existing.DateOfBirth = librarian.DateOfBirth;
-            existing.Phone = librarian.Phone.Trim();
-            existing.Email = librarian.Email.Trim();
-            existing.Username = librarian.Username.Trim();
+            existing.Phone = trimmedPhone;
+            existing.Email = trimmedEmail;
+            existing.Username = trimmedUsername;
             existing.Role = librarian.Role;
 
             if (!string.IsNullOrWhiteSpace(newPassword))
@@ -93,24 +146,38 @@ namespace LibraryManagementSystem.Services
             if (!Helpers.AuthorizationHelper.CanManageLibrarians())
                 return (false, "Administrator privileges are required to delete a librarian account.");
 
-            if (librarianId == Helpers.SessionManager.CurrentLibrarian?.LibrarianId)
-                return (false, "You cannot delete your own logged-in account.");
+            var existing = _context.Librarians.Find(librarianId);
+            if (existing == null)
+                return (false, "Librarian not found.");
 
+            _context.Entry(existing).Reload();
+
+            // The system must have exactly one Admin account — do not allow deletion of the Admin
+            if (string.Equals(existing.Role, Helpers.AuthorizationHelper.RoleAdmin, StringComparison.OrdinalIgnoreCase))
+                return (false, "Cannot delete the Administrator account. The system must always have exactly one Admin.");
+
+            // Prevent deleting the currently authenticated account
+            if (Helpers.SessionManager.CurrentLibrarian?.LibrarianId == librarianId)
+                return (false, "Cannot delete your own account while logged in.");
+
+            // Historical borrowing records must be preserved — reject deletion if borrowing history exists
             if (_context.Borrows.Any(b => b.LibrarianId == librarianId))
-                return (false, "Cannot delete: this librarian has processed borrow transactions.");
-
-            var librarian = _context.Librarians.Find(librarianId);
-            if (librarian == null) return (false, "Librarian not found.");
+                return (false, "Cannot delete librarian because historical borrowing records are associated with this account.");
 
             try
             {
-                _context.Librarians.Remove(librarian);
+                _context.Librarians.Remove(existing);
                 _context.SaveChanges();
                 return (true, "Librarian deleted successfully.");
             }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException)
+            {
+                return (false, "Cannot delete this librarian because they are referenced by existing library records.");
+            }
             catch (Exception ex)
             {
-                return (false, $"Cannot delete librarian: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[LibrarianService.Delete] {ex}");
+                return (false, "An error occurred while deleting the librarian account.");
             }
         }
     }

@@ -82,6 +82,7 @@ namespace LibraryManagementSystem.Forms
             // picLogo
             // 
             picLogo.BackColor = Color.Transparent;
+            picLogo.Image = Properties.Resources.libraryLogo;
             picLogo.Location = new Point(0, 184);
             picLogo.Name = "picLogo";
             picLogo.Size = new Size(313, 241);
@@ -266,6 +267,8 @@ namespace LibraryManagementSystem.Forms
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
+            AcceptButton = btnLogin;
+            CancelButton = btnCancel;
             ClientSize = new Size(759, 425);
             Controls.Add(pnlRight);
             Controls.Add(pnlLeft);
@@ -275,8 +278,9 @@ namespace LibraryManagementSystem.Forms
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "LoginForm";
-            StartPosition = FormStartPosition.CenterScreen;
-            Text = "Library Management System — Sign In";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "  Library Management System — Sign In";
+            Icon = Properties.Resources.app_icon;
             pnlLeft.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
             pnlRight.ResumeLayout(false);

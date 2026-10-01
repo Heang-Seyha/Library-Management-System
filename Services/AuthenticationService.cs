@@ -31,9 +31,10 @@ namespace LibraryManagementSystem.Services
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 return null;
 
-            // Find librarian by username (case-insensitive)
+            // Find librarian by username (collation-aware index seek)
+            var trimmedUsername = username.Trim();
             var librarian = _context.Librarians
-                .FirstOrDefault(l => l.Username.ToLower() == username.Trim().ToLower());
+                .FirstOrDefault(l => l.Username == trimmedUsername);
 
             if (librarian == null) return null;
 

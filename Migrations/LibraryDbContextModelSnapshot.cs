@@ -108,7 +108,14 @@ namespace LibraryManagementSystem.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Books_AvailableCopies_Lte_TotalCopies", "[AvailableCopies] <= [TotalCopies]");
+
+                            t.HasCheckConstraint("CK_Books_AvailableCopies_NonNegative", "[AvailableCopies] >= 0");
+
+                            t.HasCheckConstraint("CK_Books_TotalCopies_Positive", "[TotalCopies] >= 1");
+                        });
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Borrow", b =>
@@ -130,14 +137,18 @@ namespace LibraryManagementSystem.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("LibrarianId")
-                        .HasColumnType("int")
-                        .HasColumnName("EmployeeId");
+                        .HasColumnType("int");
 
                     b.Property<int>("MemberId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -178,7 +189,10 @@ namespace LibraryManagementSystem.Migrations
 
                     b.HasIndex("BorrowId");
 
-                    b.ToTable("BorrowDetails");
+                    b.ToTable("BorrowDetails", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_BorrowDetails_Quantity_Positive", "[Quantity] >= 1");
+                        });
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Category", b =>
@@ -208,8 +222,7 @@ namespace LibraryManagementSystem.Migrations
                 {
                     b.Property<int>("LibrarianId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("EmployeeId");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibrarianId"));
 
@@ -264,7 +277,7 @@ namespace LibraryManagementSystem.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Librarians", (string)null);
                 });
 
             modelBuilder.Entity("LibraryManagementSystem.Models.Member", b =>

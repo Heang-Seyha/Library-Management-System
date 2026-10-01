@@ -30,18 +30,14 @@ namespace LibraryManagementSystem.Data
                     changed = true;
                 }
 
-                // Ensure demo librarian account exists for automated regression tests and demos
-                if (!context.Librarians.Any(l => l.Username.ToLower() == "librarian"))
+                // Authoritative Business Rule: Exactly ONE Admin account exists (username 'admin').
+                // Demote any stray or secondary accounts with Role == "Admin" to "Librarian".
+                var extraAdmins = context.Librarians
+                    .Where(l => l.Role == "Admin" && l.Username.ToLower() != "admin")
+                    .ToList();
+                foreach (var extra in extraAdmins)
                 {
-                    context.Librarians.Add(new Librarian
-                    {
-                        Name = "Demo Librarian",
-                        Phone = "012-777-666",
-                        Email = "librarian@library.gov.kh",
-                        Username = "librarian",
-                        PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
-                        Role = "Librarian"
-                    });
+                    extra.Role = "Librarian";
                     changed = true;
                 }
 
@@ -141,928 +137,377 @@ namespace LibraryManagementSystem.Data
             };
             context.Librarians.Add(admin);
 
-            var librarian = new Librarian
+            // ── Step 2: Seed New Librarians ────────────────────────────────────
+            var librarians = new[]
             {
-                Name = "Demo Librarian",
-                Gender = "Male",
-                DateOfBirth = new DateTime(1992, 8, 20),
-                Phone = "012-777-666",
-                Email = "librarian@library.gov.kh",
-                Username = "librarian",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
-                Role = "Librarian"
+                new Librarian
+                {
+                    Name = "Heang Seyha",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1999, 4, 12),
+                    Phone = "010-234-567",
+                    Email = "seyha@gmail.com",
+                    Username = "seyha",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
+                    Role = "Librarian"
+                },
+                new Librarian
+                {
+                    Name = "Heng Daravathanak",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2001, 8, 25),
+                    Phone = "015-345-678",
+                    Email = "dara@gmail.com",
+                    Username = "dara",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
+                    Role = "Librarian"
+                },
+                new Librarian
+                {
+                    Name = "Lay Sali",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(2003, 11, 3),
+                    Phone = "016-456-789",
+                    Email = "sali@gmail.com",
+                    Username = "sali",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
+                    Role = "Librarian"
+                }
             };
-            context.Librarians.Add(librarian);
+            context.Librarians.AddRange(librarians);
+            context.SaveChanges();
 
-            // ── Step 3: Seed Categories (7 Categories) ─────────────────────────
+            // ── Step 3: Seed Categories (10 Categories) ────────────────────────
             var categories = new[]
             {
-                new Category
-                {
-                    Name = "Computer Science & IT",
-                    Description = "Programming languages, algorithms, cloud computing, cybersecurity, and computational systems."
-                },
-                new Category
-                {
-                    Name = "Software Engineering",
-                    Description = "Software architecture, design patterns, clean code practices, testing, and agile workflows."
-                },
-                new Category
-                {
-                    Name = "Business & Economics",
-                    Description = "Entrepreneurship, microeconomics, Southeast Asian markets, public finance, and trade policy."
-                },
-                new Category
-                {
-                    Name = "Cambodian History & Culture",
-                    Description = "Khmer civilization, Angkorian heritage, traditional arts, post-war history, and national identity."
-                },
-                new Category
-                {
-                    Name = "Khmer Literature",
-                    Description = "Classical Khmer prose, modernist novels, contemporary poetry, folktales, and literary anthologies."
-                },
-                new Category
-                {
-                    Name = "Science & Mathematics",
-                    Description = "Calculus, discrete mathematics, linear algebra, applied physics, and statistics."
-                },
-                new Category
-                {
-                    Name = "Personal Development",
-                    Description = "Leadership, effective communication, emotional intelligence, productivity, and career development."
-                }
+                new Category { Name = "Khmer Literature", Description = "Classic and modern Khmer prose, novels, poetry, and folktales." },
+                new Category { Name = "Khmer History",    Description = "Ancient Angkor civilization, post-colonial era, and heritage." },
+                new Category { Name = "Computer Science", Description = "Theoretical computing, algorithms, architecture, and systems." },
+                new Category { Name = "Software Eng.",    Description = "System design, clean code, agile practices, and architecture." },
+                new Category { Name = "Business",         Description = "Leadership, corporate finance, market strategy, and economics." },
+                new Category { Name = "Mathematics",      Description = "Calculus, discrete mathematics, linear algebra, and logic." },
+                new Category { Name = "Science",          Description = "Applied physics, chemistry, biology, and environmental study." },
+                new Category { Name = "Self-Development", Description = "Habit formation, communication skills, mindset, and focus." },
+                new Category { Name = "Biography",        Description = "Memoirs and biographies of historic leaders and visionaries." },
+                new Category { Name = "Fiction",          Description = "Classic literature, science fiction, and modern short stories." }
             };
             context.Categories.AddRange(categories);
 
-            // ── Step 4: Seed Authors (14 Authors: 50% Cambodian, 50% International) ──
+            // ── Step 4: Seed Authors (22 Authors: 50% Cambodian, 50% International) ──
             var authors = new[]
             {
-                // Cambodian Authors (7)
-                new Author
-                {
-                    Name = "Rim Kin",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1911, 1, 1),
-                    Bio = "Pioneering modern Khmer author and novelist, best known for Sophat (1938), widely recognized as the first modern Khmer novel."
-                },
-                new Author
-                {
-                    Name = "Nou Hach",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1916, 6, 26),
-                    Bio = "Distinguished Cambodian diplomat and modernist writer, celebrated for the classic romance novel Phka Srapoun (Wilted Flower)."
-                },
-                new Author
-                {
-                    Name = "Soth Polin",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1943, 2, 9),
-                    Bio = "Influential Cambodian existentialist novelist and philosopher, author of A Meaningless Life and The Dead Heart."
-                },
-                new Author
-                {
-                    Name = "Chuth Khay",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1940, 4, 5),
-                    Bio = "Cambodian scholar, writer, and jurist, acclaimed for nostalgic memoirs of youth and poignant post-war literature."
-                },
-                new Author
-                {
-                    Name = "Pich Tum Kravel",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1943, 6, 2),
-                    Bio = "Cambodian performing arts scholar, playwright, and director who dedicated his career to revitalizing Khmer traditional theatre and shadow puppetry."
-                },
-                new Author
-                {
-                    Name = "Dr. Hang Chuon Naron",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1962, 1, 16),
-                    Bio = "Cambodian scholar, economist, and Minister of Education, Youth and Sport; author of authoritative treatises on Cambodian economy and fiscal history."
-                },
-                new Author
-                {
-                    Name = "Vann Molyvann",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1926, 11, 23),
-                    Bio = "Visionary Cambodian architect and urban planner, pioneer of New Khmer Architecture, and author of Modern Khmer Cities."
-                },
+                // Cambodian Authors (11)
+                new Author { Name = "Rim Kin",          Gender = "Male",   DateOfBirth = new DateTime(1911, 1, 1),   Bio = "Pioneering novelist behind Sophat." },
+                new Author { Name = "Nou Hach",          Gender = "Male",   DateOfBirth = new DateTime(1916, 6, 26),  Bio = "Modernist writer of Phka Srapoun." },
+                new Author { Name = "Pich Tum Krovil",  Gender = "Male",   DateOfBirth = new DateTime(1943, 6, 2),   Bio = "Scholar of Khmer shadow theatre." },
+                new Author { Name = "Kong Bunchhoeun",   Gender = "Male",   DateOfBirth = new DateTime(1939, 11, 23), Bio = "Prolific Battambang novelist." },
+                new Author { Name = "Vann Molyvann",     Gender = "Male",   DateOfBirth = new DateTime(1926, 11, 23), Bio = "Legendary architect and urbanist." },
+                new Author { Name = "Chuth Khay",        Gender = "Male",   DateOfBirth = new DateTime(1940, 4, 5),   Bio = "Renowned author of pagoda memoirs." },
+                new Author { Name = "Soth Polin",        Gender = "Male",   DateOfBirth = new DateTime(1943, 2, 9),   Bio = "Philosopher and existential writer." },
+                new Author { Name = "Hang Chuon Naron",  Gender = "Male",   DateOfBirth = new DateTime(1962, 1, 16),  Bio = "Cambodian scholar and economist." },
+                new Author { Name = "Ouch Kalyan",       Gender = "Female", DateOfBirth = new DateTime(1974, 5, 18),  Bio = "Contemporary Cambodian essayist." },
+                new Author { Name = "Pal Vannarirak",    Gender = "Female", DateOfBirth = new DateTime(1954, 7, 21),  Bio = "Prize-winning Cambodian novelist." },
+                new Author { Name = "You Bo",            Gender = "Male",   DateOfBirth = new DateTime(1946, 9, 14),  Bio = "President of Khmer Writers Assoc." },
 
-                // International Authors (7)
-                new Author
-                {
-                    Name = "Robert C. Martin",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1952, 12, 5),
-                    Bio = "Software craftsman and author, globally recognized for Clean Code and formulating the SOLID object-oriented principles."
-                },
-                new Author
-                {
-                    Name = "Martin Fowler",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1963, 12, 18),
-                    Bio = "Chief Scientist at Thoughtworks, author of groundbreaking works on refactoring, enterprise application architecture, and microservices."
-                },
-                new Author
-                {
-                    Name = "Donald E. Knuth",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1938, 1, 10),
-                    Bio = "Turing Award laureate, Stanford Professor Emeritus, and author of the landmark multi-volume work The Art of Computer Programming."
-                },
-                new Author
-                {
-                    Name = "Thomas H. Cormen",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1956, 3, 30),
-                    Bio = "Dartmouth Computer Science professor and primary co-author of the premier textbook Introduction to Algorithms (CLRS)."
-                },
-                new Author
-                {
-                    Name = "Walter Isaacson",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1952, 5, 20),
-                    Bio = "Acclaimed biographer, historian, and former CEO of the Aspen Institute; biographer of Steve Jobs, Albert Einstein, and Leonardo da Vinci."
-                },
-                new Author
-                {
-                    Name = "Peter Thiel",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1967, 10, 11),
-                    Bio = "Venture capitalist, co-founder of PayPal and Palantir Technologies, and author of Zero to One: Notes on Startups."
-                },
-                new Author
-                {
-                    Name = "Andrew Hunt",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1964, 7, 15),
-                    Bio = "Pioneer of the Agile software movement, co-author of The Pragmatic Programmer, and co-founder of The Pragmatic Bookshelf."
-                }
+                // International Authors (11)
+                new Author { Name = "Robert C. Martin",  Gender = "Male",   DateOfBirth = new DateTime(1952, 12, 5),  Bio = "Co-author of Agile Manifesto." },
+                new Author { Name = "Martin Fowler",     Gender = "Male",   DateOfBirth = new DateTime(1963, 12, 18), Bio = "Pioneer in software refactoring." },
+                new Author { Name = "Donald Knuth",      Gender = "Male",   DateOfBirth = new DateTime(1938, 1, 10),  Bio = "Author of The Art of Programming." },
+                new Author { Name = "Thomas Cormen",     Gender = "Male",   DateOfBirth = new DateTime(1956, 3, 30),  Bio = "Primary author of CLRS textbook." },
+                new Author { Name = "Walter Isaacson",   Gender = "Male",   DateOfBirth = new DateTime(1952, 5, 20),  Bio = "Biographer of Jobs and Da Vinci." },
+                new Author { Name = "Dale Carnegie",     Gender = "Male",   DateOfBirth = new DateTime(1888, 11, 24), Bio = "Pioneer in corporate public speaking." },
+                new Author { Name = "George Orwell",     Gender = "Male",   DateOfBirth = new DateTime(1903, 6, 25),  Bio = "Novelist known for dystopian satire." },
+                new Author { Name = "Paulo Coelho",      Gender = "Male",   DateOfBirth = new DateTime(1947, 8, 24),  Bio = "Brazilian author of The Alchemist." },
+                new Author { Name = "Ada Lovelace",      Gender = "Female", DateOfBirth = new DateTime(1815, 12, 10), Bio = "World's first computer programmer." },
+                new Author { Name = "Marie Curie",       Gender = "Female", DateOfBirth = new DateTime(1867, 11, 7),  Bio = "Nobel laureate in physics & chemistry." },
+                new Author { Name = "Frank Herbert",     Gender = "Male",   DateOfBirth = new DateTime(1920, 10, 8),  Bio = "Science fiction creator of Dune." }
             };
             context.Authors.AddRange(authors);
 
-            // ── Step 5: Seed Publishers (7 Publishers: Majority Cambodian) ─────
+            // ── Step 5: Seed Publishers (9 Publishers: Majority Cambodian) ─────
             var publishers = new[]
             {
-                // Cambodian Publishers (5)
-                new Publisher
-                {
-                    Name = "Publishing and Distribution Department",
-                    Address = "Corner of Norodom Blvd & St. 106, Khan Daun Penh, Phnom Penh, Cambodia",
-                    Phone = "023-217-024"
-                },
-                new Publisher
-                {
-                    Name = "Bophana Center",
-                    Address = "No. 64 St. 200, Khan Daun Penh, Phnom Penh, Cambodia",
-                    Phone = "023-992-174"
-                },
-                new Publisher
-                {
-                    Name = "Sipar Books",
-                    Address = "No. 9 St. 334, Khan Chamkarmon, Phnom Penh, Cambodia",
-                    Phone = "023-212-407"
-                },
-                new Publisher
-                {
-                    Name = "Angkor Books Phnom Penh",
-                    Address = "No. 222 Preah Sihanouk Blvd, Khan 7 Makara, Phnom Penh, Cambodia",
-                    Phone = "023-880-991"
-                },
-                new Publisher
-                {
-                    Name = "Cambodia Book Center",
-                    Address = "Building 32, St. 271, Khan Toul Kork, Phnom Penh, Cambodia",
-                    Phone = "023-219-556"
-                },
+                // Cambodian Publishers (7)
+                new Publisher { Name = "Sipar Books",    Address = "No. 9 St. 334, Chamkarmon, Phnom Penh",         Phone = "023-212-407" },
+                new Publisher { Name = "Angkor Books",   Address = "No. 222 Sihanouk Blvd, 7 Makara, Phnom Penh",   Phone = "023-880-991" },
+                new Publisher { Name = "Bophana Media",  Address = "No. 64 St. 200, Daun Penh, Phnom Penh",         Phone = "023-992-174" },
+                new Publisher { Name = "CBC Books",      Address = "Building 32, St. 271, Toul Kork, Phnom Penh",   Phone = "023-219-556" },
+                new Publisher { Name = "SR Publishing",  Address = "Wat Bo Village, Sala Kamreuk, Siem Reap",       Phone = "063-964-123" },
+                new Publisher { Name = "BTB Books",      Address = "St. 1.5, Svay Por, Battambang",                 Phone = "053-952-456" },
+                new Publisher { Name = "MoEYS Publish",  Address = "Corner Norodom & St. 106, Daun Penh, Phnom Penh", Phone = "023-217-024" },
 
                 // International Publishers (2)
-                new Publisher
-                {
-                    Name = "O'Reilly Media",
-                    Address = "Sebastopol, CA, USA / Regional Distribution, Phnom Penh",
-                    Phone = "023-998-877"
-                },
-                new Publisher
-                {
-                    Name = "Pearson Education",
-                    Address = "London, UK / Higher Education Services Cambodia",
-                    Phone = "023-722-101"
-                }
+                new Publisher { Name = "O'Reilly",       Address = "1005 Gravenstein Hwy N, Sebastopol, CA, USA",   Phone = "023-998-877" },
+                new Publisher { Name = "Pearson",        Address = "80 Strand, London, WC2R 0RL, United Kingdom",   Phone = "023-722-101" }
             };
             context.Publishers.AddRange(publishers);
-
-            // Persist parents so their generated primary keys are available
             context.SaveChanges();
 
-            // ── Step 6: Seed Books (26 Books: 50% Khmer Context, 50% International) ──
+            // ── Step 6: Seed Books (50 Books: 24 Cambodian Context, 26 International) ──
             var books = new[]
             {
-                // ── Khmer Context & Literature (13 Books) ──
-                new Book
-                {
-                    Title = "Sophat",
-                    ISBN = CreateIsbn13("978-99950-0-101"),
-                    Year = 1950,
-                    TotalCopies = 6,
-                    AvailableCopies = 6,
-                    CategoryId = categories[4].CategoryId, // Khmer Literature
-                    AuthorId = authors[0].AuthorId,       // Rim Kin
-                    PublisherId = publishers[0].PublisherId // Publishing and Distribution Dept
-                },
-                new Book
-                {
-                    Title = "Phka Srapoun",
-                    ISBN = CreateIsbn13("978-99950-0-102"),
-                    Year = 1953,
-                    TotalCopies = 8,
-                    AvailableCopies = 8,
-                    CategoryId = categories[4].CategoryId, // Khmer Literature
-                    AuthorId = authors[1].AuthorId,       // Nou Hach
-                    PublisherId = publishers[0].PublisherId
-                },
-                new Book
-                {
-                    Title = "Mealea Duong Chett",
-                    ISBN = CreateIsbn13("978-99950-0-103"),
-                    Year = 1972,
-                    TotalCopies = 5,
-                    AvailableCopies = 5,
-                    CategoryId = categories[4].CategoryId, // Khmer Literature
-                    AuthorId = authors[1].AuthorId,       // Nou Hach
-                    PublisherId = publishers[3].PublisherId // Angkor Books
-                },
-                new Book
-                {
-                    Title = "A Meaningless Life",
-                    ISBN = CreateIsbn13("978-99950-0-104"),
-                    Year = 1965,
-                    TotalCopies = 4,
-                    AvailableCopies = 4,
-                    CategoryId = categories[4].CategoryId, // Khmer Literature
-                    AuthorId = authors[2].AuthorId,       // Soth Polin
-                    PublisherId = publishers[1].PublisherId // Bophana Center
-                },
-                new Book
-                {
-                    Title = "The Dead Heart",
-                    ISBN = CreateIsbn13("978-99950-0-105"),
-                    Year = 1973,
-                    TotalCopies = 4,
-                    AvailableCopies = 4,
-                    CategoryId = categories[4].CategoryId, // Khmer Literature
-                    AuthorId = authors[2].AuthorId,       // Soth Polin
-                    PublisherId = publishers[1].PublisherId
-                },
-                new Book
-                {
-                    Title = "The Pagoda Boy",
-                    ISBN = CreateIsbn13("978-99950-0-106"),
-                    Year = 2002,
-                    TotalCopies = 7,
-                    AvailableCopies = 7,
-                    CategoryId = categories[3].CategoryId, // Cambodian History & Culture
-                    AuthorId = authors[3].AuthorId,       // Chuth Khay
-                    PublisherId = publishers[2].PublisherId // Sipar Books
-                },
-                new Book
-                {
-                    Title = "Shadow Theatre of Cambodia",
-                    ISBN = CreateIsbn13("978-99950-0-107"),
-                    Year = 2001,
-                    TotalCopies = 5,
-                    AvailableCopies = 5,
-                    CategoryId = categories[3].CategoryId, // Cambodian History & Culture
-                    AuthorId = authors[4].AuthorId,       // Pich Tum Kravel
-                    PublisherId = publishers[2].PublisherId
-                },
-                new Book
-                {
-                    Title = "Cambodian Economy: Charting the Course",
-                    ISBN = CreateIsbn13("978-99950-0-108"),
-                    Year = 2012,
-                    TotalCopies = 6,
-                    AvailableCopies = 6,
-                    CategoryId = categories[2].CategoryId, // Business & Economics
-                    AuthorId = authors[5].AuthorId,       // Dr. Hang Chuon Naron
-                    PublisherId = publishers[4].PublisherId // Cambodia Book Center
-                },
-                new Book
-                {
-                    Title = "Public Finance in Cambodia",
-                    ISBN = CreateIsbn13("978-99950-0-109"),
-                    Year = 2015,
-                    TotalCopies = 5,
-                    AvailableCopies = 5,
-                    CategoryId = categories[2].CategoryId, // Business & Economics
-                    AuthorId = authors[5].AuthorId,       // Dr. Hang Chuon Naron
-                    PublisherId = publishers[4].PublisherId
-                },
-                new Book
-                {
-                    Title = "Modern Khmer Architecture: 1953-1970",
-                    ISBN = CreateIsbn13("978-99950-0-110"),
-                    Year = 2008,
-                    TotalCopies = 4,
-                    AvailableCopies = 4,
-                    CategoryId = categories[3].CategoryId, // Cambodian History & Culture
-                    AuthorId = authors[6].AuthorId,       // Vann Molyvann
-                    PublisherId = publishers[1].PublisherId // Bophana Center
-                },
-                new Book
-                {
-                    Title = "Angkor and the Khmer Civilization",
-                    ISBN = CreateIsbn13("978-99950-0-111"),
-                    Year = 2003,
-                    TotalCopies = 6,
-                    AvailableCopies = 6,
-                    CategoryId = categories[3].CategoryId, // Cambodian History & Culture
-                    AuthorId = authors[6].AuthorId,       // Vann Molyvann
-                    PublisherId = publishers[3].PublisherId // Angkor Books
-                },
-                new Book
-                {
-                    Title = "Treasures of Khmer Folktales",
-                    ISBN = CreateIsbn13("978-99950-0-112"),
-                    Year = 1968,
-                    TotalCopies = 5,
-                    AvailableCopies = 5,
-                    CategoryId = categories[4].CategoryId, // Khmer Literature
-                    AuthorId = authors[0].AuthorId,       // Rim Kin
-                    PublisherId = publishers[2].PublisherId // Sipar Books
-                },
-                new Book
-                {
-                    Title = "Education Reform in Cambodia",
-                    ISBN = CreateIsbn13("978-99950-0-113"),
-                    Year = 2019,
-                    TotalCopies = 5,
-                    AvailableCopies = 5,
-                    CategoryId = categories[6].CategoryId, // Personal Development
-                    AuthorId = authors[5].AuthorId,       // Dr. Hang Chuon Naron
-                    PublisherId = publishers[4].PublisherId // Cambodia Book Center
-                },
+                // ── Category 0: Khmer Literature (6 books) ──
+                new Book { Title = "Sophat",             ISBN = CreateIsbn13("978-1-01-100001"), Year = 1950, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[0].CategoryId, AuthorId = authors[0].AuthorId, PublisherId = publishers[0].PublisherId },
+                new Book { Title = "Phka Srapoun",       ISBN = CreateIsbn13("978-1-01-100002"), Year = 1953, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[0].CategoryId, AuthorId = authors[1].AuthorId, PublisherId = publishers[0].PublisherId },
+                new Book { Title = "Mealea Duong Chett", ISBN = CreateIsbn13("978-1-01-100003"), Year = 1972, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[0].CategoryId, AuthorId = authors[1].AuthorId, PublisherId = publishers[1].PublisherId },
+                new Book { Title = "Kolab Pailin",       ISBN = CreateIsbn13("978-1-01-100004"), Year = 1943, TotalCopies = 6, AvailableCopies = 6, CategoryId = categories[0].CategoryId, AuthorId = authors[0].AuthorId, PublisherId = publishers[0].PublisherId },
+                new Book { Title = "Tum Teav",           ISBN = CreateIsbn13("978-1-01-100005"), Year = 1965, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[0].CategoryId, AuthorId = authors[2].AuthorId, PublisherId = publishers[1].PublisherId },
+                new Book { Title = "Kakey",              ISBN = CreateIsbn13("978-1-01-100006"), Year = 1960, TotalCopies = 1, AvailableCopies = 1, CategoryId = categories[0].CategoryId, AuthorId = authors[3].AuthorId, PublisherId = publishers[5].PublisherId },
 
-                // ── International Software, Science & Business (13 Books) ──
-                new Book
-                {
-                    Title = "Clean Code: A Handbook of Agile Software Craftsmanship",
-                    ISBN = CreateIsbn13("978-0-132-35088"),
-                    Year = 2008,
-                    TotalCopies = 8,
-                    AvailableCopies = 8,
-                    CategoryId = categories[1].CategoryId, // Software Engineering
-                    AuthorId = authors[7].AuthorId,       // Robert C. Martin
-                    PublisherId = publishers[6].PublisherId // Pearson Education
-                },
-                new Book
-                {
-                    Title = "Clean Architecture: A Craftsman's Guide to Software Structure",
-                    ISBN = CreateIsbn13("978-0-134-49416"),
-                    Year = 2017,
-                    TotalCopies = 6,
-                    AvailableCopies = 6,
-                    CategoryId = categories[1].CategoryId, // Software Engineering
-                    AuthorId = authors[7].AuthorId,       // Robert C. Martin
-                    PublisherId = publishers[6].PublisherId
-                },
-                new Book
-                {
-                    Title = "Refactoring: Improving the Design of Existing Code",
-                    ISBN = CreateIsbn13("978-0-134-75759"),
-                    Year = 2018,
-                    TotalCopies = 5,
-                    AvailableCopies = 5,
-                    CategoryId = categories[1].CategoryId, // Software Engineering
-                    AuthorId = authors[8].AuthorId,       // Martin Fowler
-                    PublisherId = publishers[6].PublisherId
-                },
-                new Book
-                {
-                    Title = "Patterns of Enterprise Application Architecture",
-                    ISBN = CreateIsbn13("978-0-321-12742"),
-                    Year = 2002,
-                    TotalCopies = 4,
-                    AvailableCopies = 4,
-                    CategoryId = categories[1].CategoryId, // Software Engineering
-                    AuthorId = authors[8].AuthorId,       // Martin Fowler
-                    PublisherId = publishers[6].PublisherId
-                },
-                new Book
-                {
-                    Title = "The Art of Computer Programming, Vol. 1: Fundamental Algorithms",
-                    ISBN = CreateIsbn13("978-0-201-89683"),
-                    Year = 1997,
-                    TotalCopies = 4,
-                    AvailableCopies = 4,
-                    CategoryId = categories[0].CategoryId, // Computer Science & IT
-                    AuthorId = authors[9].AuthorId,       // Donald E. Knuth
-                    PublisherId = publishers[6].PublisherId
-                },
-                new Book
-                {
-                    Title = "The Art of Computer Programming, Vol. 2: Seminumerical Algorithms",
-                    ISBN = CreateIsbn13("978-0-201-89684"),
-                    Year = 1998,
-                    TotalCopies = 3,
-                    AvailableCopies = 3,
-                    CategoryId = categories[0].CategoryId, // Computer Science & IT
-                    AuthorId = authors[9].AuthorId,       // Donald E. Knuth
-                    PublisherId = publishers[6].PublisherId
-                },
-                new Book
-                {
-                    Title = "Introduction to Algorithms, Fourth Edition",
-                    ISBN = CreateIsbn13("978-0-262-04630"),
-                    Year = 2022,
-                    TotalCopies = 7,
-                    AvailableCopies = 7,
-                    CategoryId = categories[0].CategoryId, // Computer Science & IT
-                    AuthorId = authors[10].AuthorId,      // Thomas H. Cormen
-                    PublisherId = publishers[5].PublisherId // O'Reilly Media
-                },
-                new Book
-                {
-                    Title = "Algorithms Unlocked",
-                    ISBN = CreateIsbn13("978-0-262-53305"),
-                    Year = 2013,
-                    TotalCopies = 5,
-                    AvailableCopies = 5,
-                    CategoryId = categories[0].CategoryId, // Computer Science & IT
-                    AuthorId = authors[10].AuthorId,      // Thomas H. Cormen
-                    PublisherId = publishers[5].PublisherId
-                },
-                new Book
-                {
-                    Title = "Steve Jobs",
-                    ISBN = CreateIsbn13("978-1-451-64853"),
-                    Year = 2011,
-                    TotalCopies = 7,
-                    AvailableCopies = 7,
-                    CategoryId = categories[6].CategoryId, // Personal Development
-                    AuthorId = authors[11].AuthorId,      // Walter Isaacson
-                    PublisherId = publishers[5].PublisherId
-                },
-                new Book
-                {
-                    Title = "Leonardo da Vinci",
-                    ISBN = CreateIsbn13("978-1-501-13915"),
-                    Year = 2017,
-                    TotalCopies = 5,
-                    AvailableCopies = 5,
-                    CategoryId = categories[6].CategoryId, // Personal Development
-                    AuthorId = authors[11].AuthorId,      // Walter Isaacson
-                    PublisherId = publishers[5].PublisherId
-                },
-                new Book
-                {
-                    Title = "Zero to One: Notes on Startups, or How to Build the Future",
-                    ISBN = CreateIsbn13("978-0-804-13929"),
-                    Year = 2014,
-                    TotalCopies = 8,
-                    AvailableCopies = 8,
-                    CategoryId = categories[2].CategoryId, // Business & Economics
-                    AuthorId = authors[12].AuthorId,      // Peter Thiel
-                    PublisherId = publishers[6].PublisherId
-                },
-                new Book
-                {
-                    Title = "The Pragmatic Programmer: 20th Anniversary Edition",
-                    ISBN = CreateIsbn13("978-0-135-95705"),
-                    Year = 2019,
-                    TotalCopies = 6,
-                    AvailableCopies = 6,
-                    CategoryId = categories[1].CategoryId, // Software Engineering
-                    AuthorId = authors[13].AuthorId,      // Andrew Hunt
-                    PublisherId = publishers[6].PublisherId
-                },
-                new Book
-                {
-                    Title = "Discrete Mathematics and Its Applications",
-                    ISBN = CreateIsbn13("978-0-073-38309"),
-                    Year = 2019,
-                    TotalCopies = 6,
-                    AvailableCopies = 6,
-                    CategoryId = categories[5].CategoryId, // Science & Mathematics
-                    AuthorId = authors[9].AuthorId,       // Donald E. Knuth
-                    PublisherId = publishers[6].PublisherId
-                }
+                // ── Category 1: Khmer History (7 books) ──
+                new Book { Title = "Shadow Theatre",     ISBN = CreateIsbn13("978-1-01-100007"), Year = 2001, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[1].CategoryId, AuthorId = authors[2].AuthorId, PublisherId = publishers[2].PublisherId },
+                new Book { Title = "Angkor Civilization",ISBN = CreateIsbn13("978-1-01-100008"), Year = 2003, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[1].CategoryId, AuthorId = authors[4].AuthorId, PublisherId = publishers[1].PublisherId },
+                new Book { Title = "Modern Architecture",ISBN = CreateIsbn13("978-1-01-100009"), Year = 2008, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[1].CategoryId, AuthorId = authors[4].AuthorId, PublisherId = publishers[2].PublisherId },
+                new Book { Title = "The Pagoda Boy",     ISBN = CreateIsbn13("978-1-01-100010"), Year = 2002, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[1].CategoryId, AuthorId = authors[5].AuthorId, PublisherId = publishers[0].PublisherId },
+                new Book { Title = "The Lost Heritage",  ISBN = CreateIsbn13("978-1-01-100011"), Year = 2010, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[1].CategoryId, AuthorId = authors[5].AuthorId, PublisherId = publishers[2].PublisherId },
+                new Book { Title = "Monsoon Rain",       ISBN = CreateIsbn13("978-1-01-100012"), Year = 2016, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[1].CategoryId, AuthorId = authors[8].AuthorId, PublisherId = publishers[3].PublisherId },
+                new Book { Title = "City Lights",        ISBN = CreateIsbn13("978-1-01-100013"), Year = 2019, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[1].CategoryId, AuthorId = authors[8].AuthorId, PublisherId = publishers[3].PublisherId },
+
+                // ── Category 4: Business (3 books) ──
+                new Book { Title = "Cambodian Economy",  ISBN = CreateIsbn13("978-1-01-100014"), Year = 2012, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[4].CategoryId, AuthorId = authors[7].AuthorId, PublisherId = publishers[3].PublisherId },
+                new Book { Title = "Public Finance",     ISBN = CreateIsbn13("978-1-01-100015"), Year = 2015, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[4].CategoryId, AuthorId = authors[7].AuthorId, PublisherId = publishers[3].PublisherId },
+                new Book { Title = "Win Friends",        ISBN = CreateIsbn13("978-1-01-100016"), Year = 1936, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[4].CategoryId, AuthorId = authors[16].AuthorId,PublisherId = publishers[6].PublisherId },
+
+                // ── Category 8: Biography (4 books) ──
+                new Book { Title = "A Meaningless Life", ISBN = CreateIsbn13("978-1-01-100017"), Year = 1965, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[8].CategoryId, AuthorId = authors[6].AuthorId, PublisherId = publishers[2].PublisherId },
+                new Book { Title = "The Dead Heart",     ISBN = CreateIsbn13("978-1-01-100018"), Year = 1973, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[8].CategoryId, AuthorId = authors[6].AuthorId, PublisherId = publishers[2].PublisherId },
+                new Book { Title = "Steve Jobs",         ISBN = CreateIsbn13("978-1-01-100019"), Year = 2011, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[8].CategoryId, AuthorId = authors[15].AuthorId,PublisherId = publishers[7].PublisherId },
+                new Book { Title = "Leonardo da Vinci",  ISBN = CreateIsbn13("978-1-01-100020"), Year = 2017, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[8].CategoryId, AuthorId = authors[15].AuthorId,PublisherId = publishers[7].PublisherId },
+
+                // ── Category 9: Fiction (11 books) ──
+                new Book { Title = "The Moonlit Lake",   ISBN = CreateIsbn13("978-1-01-100021"), Year = 1970, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[9].CategoryId, AuthorId = authors[3].AuthorId, PublisherId = publishers[5].PublisherId },
+                new Book { Title = "Champa Sak",         ISBN = CreateIsbn13("978-1-01-100022"), Year = 1974, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[9].CategoryId, AuthorId = authors[3].AuthorId, PublisherId = publishers[5].PublisherId },
+                new Book { Title = "River of Secrets",   ISBN = CreateIsbn13("978-1-01-100023"), Year = 1993, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[9].CategoryId, AuthorId = authors[3].AuthorId, PublisherId = publishers[5].PublisherId },
+                new Book { Title = "Dark Evening",       ISBN = CreateIsbn13("978-1-01-100024"), Year = 1989, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[9].CategoryId, AuthorId = authors[9].AuthorId, PublisherId = publishers[4].PublisherId },
+                new Book { Title = "Tearful Smile",      ISBN = CreateIsbn13("978-1-01-100025"), Year = 1995, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[9].CategoryId, AuthorId = authors[9].AuthorId, PublisherId = publishers[4].PublisherId },
+                new Book { Title = "Flower of Hope",     ISBN = CreateIsbn13("978-1-01-100026"), Year = 2005, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[9].CategoryId, AuthorId = authors[9].AuthorId, PublisherId = publishers[4].PublisherId },
+                new Book { Title = "Battambang Memoir",  ISBN = CreateIsbn13("978-1-01-100027"), Year = 1998, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[9].CategoryId, AuthorId = authors[9].AuthorId, PublisherId = publishers[5].PublisherId },
+                new Book { Title = "1984",               ISBN = CreateIsbn13("978-1-01-100028"), Year = 1949, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[9].CategoryId, AuthorId = authors[17].AuthorId,PublisherId = publishers[0].PublisherId },
+                new Book { Title = "Animal Farm",        ISBN = CreateIsbn13("978-1-01-100029"), Year = 1945, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[9].CategoryId, AuthorId = authors[17].AuthorId,PublisherId = publishers[0].PublisherId },
+                new Book { Title = "Dune",               ISBN = CreateIsbn13("978-1-01-100030"), Year = 1965, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[9].CategoryId, AuthorId = authors[21].AuthorId,PublisherId = publishers[7].PublisherId },
+                new Book { Title = "Dune Messiah",       ISBN = CreateIsbn13("978-1-01-100031"), Year = 1969, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[9].CategoryId, AuthorId = authors[21].AuthorId,PublisherId = publishers[7].PublisherId },
+
+                // ── Category 2: Computer Science (3 books) ──
+                new Book { Title = "TAOCP Vol. 1",       ISBN = CreateIsbn13("978-1-01-100032"), Year = 1997, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[2].CategoryId, AuthorId = authors[13].AuthorId,PublisherId = publishers[8].PublisherId },
+                new Book { Title = "Intro to Algorithms",ISBN = CreateIsbn13("978-1-01-100033"), Year = 2022, TotalCopies = 6, AvailableCopies = 6, CategoryId = categories[2].CategoryId, AuthorId = authors[14].AuthorId,PublisherId = publishers[7].PublisherId },
+                new Book { Title = "Algorithms Unlocked",ISBN = CreateIsbn13("978-1-01-100034"), Year = 2013, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[2].CategoryId, AuthorId = authors[14].AuthorId,PublisherId = publishers[7].PublisherId },
+
+                // ── Category 3: Software Eng. (6 books) ──
+                new Book { Title = "Clean Code",         ISBN = CreateIsbn13("978-1-01-100035"), Year = 2008, TotalCopies = 2, AvailableCopies = 2, CategoryId = categories[3].CategoryId, AuthorId = authors[11].AuthorId,PublisherId = publishers[8].PublisherId },
+                new Book { Title = "Clean Architecture", ISBN = CreateIsbn13("978-1-01-100036"), Year = 2017, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[3].CategoryId, AuthorId = authors[11].AuthorId,PublisherId = publishers[8].PublisherId },
+                new Book { Title = "The Clean Coder",    ISBN = CreateIsbn13("978-1-01-100037"), Year = 2011, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[3].CategoryId, AuthorId = authors[11].AuthorId,PublisherId = publishers[8].PublisherId },
+                new Book { Title = "Agile Principles",   ISBN = CreateIsbn13("978-1-01-100038"), Year = 2006, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[3].CategoryId, AuthorId = authors[11].AuthorId,PublisherId = publishers[8].PublisherId },
+                new Book { Title = "Refactoring",        ISBN = CreateIsbn13("978-1-01-100039"), Year = 2018, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[3].CategoryId, AuthorId = authors[12].AuthorId,PublisherId = publishers[8].PublisherId },
+                new Book { Title = "Enterprise Patterns",ISBN = CreateIsbn13("978-1-01-100040"), Year = 2002, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[3].CategoryId, AuthorId = authors[12].AuthorId,PublisherId = publishers[8].PublisherId },
+
+                // ── Category 5: Mathematics (3 books) ──
+                new Book { Title = "Discrete Math",      ISBN = CreateIsbn13("978-1-01-100041"), Year = 2019, TotalCopies = 5, AvailableCopies = 5, CategoryId = categories[5].CategoryId, AuthorId = authors[13].AuthorId,PublisherId = publishers[8].PublisherId },
+                new Book { Title = "Concrete Math",      ISBN = CreateIsbn13("978-1-01-100042"), Year = 1994, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[5].CategoryId, AuthorId = authors[13].AuthorId,PublisherId = publishers[8].PublisherId },
+                new Book { Title = "Calculus Essentials",ISBN = CreateIsbn13("978-1-01-100043"), Year = 2015, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[5].CategoryId, AuthorId = authors[13].AuthorId,PublisherId = publishers[8].PublisherId },
+
+                // ── Category 6: Science (4 books) ──
+                new Book { Title = "Radioactivity",      ISBN = CreateIsbn13("978-1-01-100044"), Year = 1910, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[6].CategoryId, AuthorId = authors[20].AuthorId,PublisherId = publishers[4].PublisherId },
+                new Book { Title = "Modern Physics",     ISBN = CreateIsbn13("978-1-01-100045"), Year = 1935, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[6].CategoryId, AuthorId = authors[20].AuthorId,PublisherId = publishers[4].PublisherId },
+                new Book { Title = "Radium Research",    ISBN = CreateIsbn13("978-1-01-100046"), Year = 1921, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[6].CategoryId, AuthorId = authors[20].AuthorId,PublisherId = publishers[4].PublisherId },
+                new Book { Title = "Science Treatise",   ISBN = CreateIsbn13("978-1-01-100047"), Year = 1930, TotalCopies = 3, AvailableCopies = 3, CategoryId = categories[6].CategoryId, AuthorId = authors[20].AuthorId,PublisherId = publishers[6].PublisherId },
+
+                // ── Category 7: Self-Development (3 books) ──
+                new Book { Title = "Stop Worrying",      ISBN = CreateIsbn13("978-1-01-100048"), Year = 1948, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[7].CategoryId, AuthorId = authors[16].AuthorId,PublisherId = publishers[6].PublisherId },
+                new Book { Title = "The Alchemist",      ISBN = CreateIsbn13("978-1-01-100049"), Year = 1988, TotalCopies = 6, AvailableCopies = 6, CategoryId = categories[7].CategoryId, AuthorId = authors[18].AuthorId,PublisherId = publishers[6].PublisherId },
+                new Book { Title = "The Zahir",          ISBN = CreateIsbn13("978-1-01-100050"), Year = 2005, TotalCopies = 4, AvailableCopies = 4, CategoryId = categories[7].CategoryId, AuthorId = authors[18].AuthorId,PublisherId = publishers[6].PublisherId }
             };
             context.Books.AddRange(books);
 
-            // ── Step 7: Seed Members (18 Members: All Cambodian Names & Cities) ─
-            var members = new[]
-            {
-                new Member
-                {
-                    Name = "Chan Vicheka",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(2000, 3, 15),
-                    Phone = "012-345-678",
-                    Email = "chan.vicheka@cambodia-edu.kh",
-                    Address = "Khan Toul Kork, Phnom Penh",
-                    JoinDate = new DateTime(2023, 3, 15)
-                },
-                new Member
-                {
-                    Name = "Keo Sarath",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(2001, 5, 20),
-                    Phone = "011-234-567",
-                    Email = "keo.sarath@cambodia-edu.kh",
-                    Address = "Khan Daun Penh, Phnom Penh",
-                    JoinDate = new DateTime(2023, 5, 20)
-                },
-                new Member
-                {
-                    Name = "Seng Dara",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1999, 8, 11),
-                    Phone = "015-678-901",
-                    Email = "seng.dara@cambodia-edu.kh",
-                    Address = "Khan Sen Sok, Phnom Penh",
-                    JoinDate = new DateTime(2023, 8, 11)
-                },
-                new Member
-                {
-                    Name = "Meas Bopha",
-                    Gender = "Female",
-                    DateOfBirth = new DateTime(2002, 11, 4),
-                    Phone = "078-901-234",
-                    Email = "meas.bopha@cambodia-edu.kh",
-                    Address = "Krong Siem Reap, Siem Reap",
-                    JoinDate = new DateTime(2023, 11, 4)
-                },
-                new Member
-                {
-                    Name = "Kim Heang",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(2000, 1, 18),
-                    Phone = "096-345-678",
-                    Email = "kim.heang@cambodia-edu.kh",
-                    Address = "Krong Battambang, Battambang",
-                    JoinDate = new DateTime(2024, 1, 18)
-                },
-                new Member
-                {
-                    Name = "Sok Chenda",
-                    Gender = "Female",
-                    DateOfBirth = new DateTime(2003, 2, 22),
-                    Phone = "085-456-789",
-                    Email = "sok.chenda@cambodia-edu.kh",
-                    Address = "Khan Chamkarmon, Phnom Penh",
-                    JoinDate = new DateTime(2024, 2, 22)
-                },
-                new Member
-                {
-                    Name = "Tep Vanna",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1998, 3, 30),
-                    Phone = "077-567-890",
-                    Email = "tep.vanna@cambodia-edu.kh",
-                    Address = "Krong Ta Khmau, Kandal",
-                    JoinDate = new DateTime(2024, 3, 30)
-                },
-                new Member
-                {
-                    Name = "Ouk Panha",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(2001, 5, 14),
-                    Phone = "093-456-789",
-                    Email = "ouk.panha@cambodia-edu.kh",
-                    Address = "Khan Chroy Changvar, Phnom Penh",
-                    JoinDate = new DateTime(2024, 5, 14)
-                },
-                new Member
-                {
-                    Name = "Rath Sovann",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1997, 7, 9),
-                    Phone = "010-889-911",
-                    Email = "rath.sovann@cambodia-edu.kh",
-                    Address = "Khan Boeng Keng Kang, Phnom Penh",
-                    JoinDate = new DateTime(2024, 7, 9)
-                },
-                new Member
-                {
-                    Name = "Chhorn Piseth",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(2002, 9, 12),
-                    Phone = "012-771-122",
-                    Email = "chhorn.piseth@cambodia-edu.kh",
-                    Address = "Khan Russey Keo, Phnom Penh",
-                    JoinDate = new DateTime(2024, 9, 12)
-                },
-                new Member
-                {
-                    Name = "Ly Sreynoch",
-                    Gender = "Female",
-                    DateOfBirth = new DateTime(2004, 11, 5),
-                    Phone = "016-554-433",
-                    Email = "ly.sreynoch@cambodia-edu.kh",
-                    Address = "Krong Kampong Cham, Kampong Cham",
-                    JoinDate = new DateTime(2024, 11, 5)
-                },
-                new Member
-                {
-                    Name = "Heng Samnang",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(1999, 1, 10),
-                    Phone = "069-443-322",
-                    Email = "heng.samnang@cambodia-edu.kh",
-                    Address = "Khan Pur Senchey, Phnom Penh",
-                    JoinDate = new DateTime(2025, 1, 10)
-                },
-                new Member
-                {
-                    Name = "Prak Kolab",
-                    Gender = "Female",
-                    DateOfBirth = new DateTime(2003, 3, 15),
-                    Phone = "089-332-211",
-                    Email = "prak.kolab@cambodia-edu.kh",
-                    Address = "Krong Kampot, Kampot",
-                    JoinDate = new DateTime(2025, 3, 15)
-                },
-                new Member
-                {
-                    Name = "Nget Makara",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(2001, 5, 20),
-                    Phone = "070-221-199",
-                    Email = "nget.makara@cambodia-edu.kh",
-                    Address = "Khan Meanchey, Phnom Penh",
-                    JoinDate = new DateTime(2025, 5, 20)
-                },
-                new Member
-                {
-                    Name = "Ros Chantrea",
-                    Gender = "Female",
-                    DateOfBirth = new DateTime(2000, 8, 1),
-                    Phone = "098-112-233",
-                    Email = "ros.chantrea@cambodia-edu.kh",
-                    Address = "Krong Sihanoukville, Preah Sihanouk",
-                    JoinDate = new DateTime(2025, 8, 1)
-                },
-                new Member
-                {
-                    Name = "Khuon Visal",
-                    Gender = "Male",
-                    DateOfBirth = new DateTime(2002, 10, 18),
-                    Phone = "092-667-788",
-                    Email = "khuon.visal@cambodia-edu.kh",
-                    Address = "Khan Prek Pnov, Phnom Penh",
-                    JoinDate = new DateTime(2025, 10, 18)
-                },
-                new Member
-                {
-                    Name = "Chea Sreymao",
-                    Gender = "Female",
-                    DateOfBirth = new DateTime(2003, 1, 12),
-                    Phone = "095-778-899",
-                    Email = "chea.sreymao@cambodia-edu.kh",
-                    Address = "Krong Chbar Mon, Kampong Speu",
-                    JoinDate = new DateTime(2026, 1, 12)
-                },
-                new Member
-                {
-                    Name = "Vannak Boramey",
-                    Gender = "Female",
-                    DateOfBirth = new DateTime(2004, 2, 25),
-                    Phone = "087-889-900",
-                    Email = "vannak.boramey@cambodia-edu.kh",
-                    Address = "Khan Toul Kork, Phnom Penh",
-                    JoinDate = new DateTime(2026, 2, 25)
-                }
-            };
-            context.Members.AddRange(members);
-
-            // Persist books and members so their IDs are generated
-            context.SaveChanges();
-
-            // ── Step 8: Seed Borrows & BorrowDetails (15 Realistic Transactions) ─
-            // Processed exclusively by the single Admin librarian
+            // ── Step 7: Seed Members (Exactly 40 Members: All Cambodian Names & Cities) ─
             var today = DateTime.Today;
 
-            // ── Active Borrows (~5 records, due in the future, fine = 0, status = Active) ──
-            var activeBorrow1 = new Borrow
+            var members = new[]
             {
-                MemberId = members[0].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-4),
-                DueDate = today.AddDays(10),
-                ReturnDate = null,
-                FineAmount = 0m,
-                Status = BorrowStatus.Active
-            };
-            var activeBorrow2 = new Borrow
-            {
-                MemberId = members[1].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-6),
-                DueDate = today.AddDays(8),
-                ReturnDate = null,
-                FineAmount = 0m,
-                Status = BorrowStatus.Active
-            };
-            var activeBorrow3 = new Borrow
-            {
-                MemberId = members[2].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-2),
-                DueDate = today.AddDays(12),
-                ReturnDate = null,
-                FineAmount = 0m,
-                Status = BorrowStatus.Active
-            };
-            var activeBorrow4 = new Borrow
-            {
-                MemberId = members[3].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-5),
-                DueDate = today.AddDays(9),
-                ReturnDate = null,
-                FineAmount = 0m,
-                Status = BorrowStatus.Active
-            };
-            var activeBorrow5 = new Borrow
-            {
-                MemberId = members[4].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-1),
-                DueDate = today.AddDays(13),
-                ReturnDate = null,
-                FineAmount = 0m,
-                Status = BorrowStatus.Active
-            };
+                new Member { Name = "Chan Vicheka",     Gender = "Male",   DateOfBirth = new DateTime(2000, 3, 15),  Phone = "011-201-101", Email = "vicheka.c@gmail.com", Address = "7 Makara, Phnom Penh",   JoinDate = today.AddDays(-700) },
+                new Member { Name = "Keo Sarath",       Gender = "Male",   DateOfBirth = new DateTime(2001, 5, 20),  Phone = "012-202-102", Email = "sarath.k@gmail.com",  Address = "Sen Sok, Phnom Penh",    JoinDate = today.AddDays(-685) },
+                new Member { Name = "Seng Dara",        Gender = "Male",   DateOfBirth = new DateTime(1999, 8, 11),  Phone = "017-203-103", Email = "dara.seng@gmail.com", Address = "Dangkao, Phnom Penh",   JoinDate = today.AddDays(-670) },
+                new Member { Name = "Meas Bopha",       Gender = "Female", DateOfBirth = new DateTime(2002, 11, 4),  Phone = "069-204-104", Email = "bopha.m@gmail.com",   Address = "Wat Bo, Siem Reap",      JoinDate = today.AddDays(-655) },
+                new Member { Name = "Kim Heang",        Gender = "Male",   DateOfBirth = new DateTime(2000, 1, 18),  Phone = "070-205-105", Email = "heang.kim@gmail.com", Address = "Svay Por, Battambang",  JoinDate = today.AddDays(-640) },
+                new Member { Name = "Sok Chenda",       Gender = "Female", DateOfBirth = new DateTime(2003, 2, 22),  Phone = "077-206-106", Email = "chenda.s@gmail.com",  Address = "Kamboul, Phnom Penh",   JoinDate = today.AddDays(-625) },
+                new Member { Name = "Tep Vanna",        Gender = "Male",   DateOfBirth = new DateTime(1998, 3, 30),  Phone = "078-207-107", Email = "vanna.tep@gmail.com", Address = "Ta Khmau, Kandal",      JoinDate = today.AddDays(-610) },
+                new Member { Name = "Ouk Panha",        Gender = "Male",   DateOfBirth = new DateTime(2001, 5, 14),  Phone = "085-208-108", Email = "panha.ouk@gmail.com", Address = "Puok, Siem Reap",       JoinDate = today.AddDays(-595) },
+                new Member { Name = "Rath Sovann",      Gender = "Male",   DateOfBirth = new DateTime(1997, 7, 9),   Phone = "086-209-109", Email = "sovann.r@gmail.com",  Address = "Ratanak, Battambang",   JoinDate = today.AddDays(-580) },
+                new Member { Name = "Chhorn Piseth",    Gender = "Male",   DateOfBirth = new DateTime(2002, 9, 12),  Phone = "092-210-110", Email = "piseth.c@gmail.com",  Address = "Saang, Kandal",         JoinDate = today.AddDays(-565) },
+                new Member { Name = "Ly Sreynoch",      Gender = "Female", DateOfBirth = new DateTime(2004, 11, 5),  Phone = "095-211-111", Email = "sreynoch.l@gmail.com",Address = "Chhouk, Kampot",        JoinDate = today.AddDays(-550) },
+                new Member { Name = "Heng Samnang",     Gender = "Male",   DateOfBirth = new DateTime(1999, 1, 10),  Phone = "096-212-112", Email = "samnang.h@gmail.com", Address = "7 Makara, Phnom Penh",   JoinDate = today.AddDays(-535) },
+                new Member { Name = "Prak Kolab",       Gender = "Female", DateOfBirth = new DateTime(2003, 3, 15),  Phone = "098-213-113", Email = "kolab.p@gmail.com",   Address = "Tuek Chhou, Kampot",     JoinDate = today.AddDays(-520) },
+                new Member { Name = "Nget Makara",      Gender = "Male",   DateOfBirth = new DateTime(2001, 5, 20),  Phone = "099-214-114", Email = "makara.n@gmail.com",  Address = "Sen Sok, Phnom Penh",    JoinDate = today.AddDays(-505) },
+                new Member { Name = "Ros Chantrea",     Gender = "Female", DateOfBirth = new DateTime(2000, 8, 1),   Phone = "010-315-115", Email = "chantrea.r@gmail.com",Address = "Prey Nob, Sihanouk",    JoinDate = today.AddDays(-490) },
+                new Member { Name = "Khuon Visal",      Gender = "Male",   DateOfBirth = new DateTime(2002, 10, 18), Phone = "011-316-116", Email = "visal.k@gmail.com",   Address = "Bavel, Battambang",     JoinDate = today.AddDays(-475) },
+                new Member { Name = "Chea Sreymao",     Gender = "Female", DateOfBirth = new DateTime(2003, 1, 12),  Phone = "012-317-117", Email = "sreymao.c@gmail.com", Address = "Doun Keo, Takeo",      JoinDate = today.AddDays(-460) },
+                new Member { Name = "Vannak Boramey",   Gender = "Female", DateOfBirth = new DateTime(2004, 2, 25),  Phone = "015-318-118", Email = "boramey.v@gmail.com", Address = "Dangkao, Phnom Penh",   JoinDate = today.AddDays(-445) },
+                new Member { Name = "Em Sovannarith",   Gender = "Male",   DateOfBirth = new DateTime(1988, 6, 14),  Phone = "016-319-119", Email = "rith.em@gmail.com",   Address = "Kien Svay, Kandal",     JoinDate = today.AddDays(-430) },
+                new Member { Name = "Long Sovatha",     Gender = "Male",   DateOfBirth = new DateTime(1996, 4, 18),  Phone = "017-320-120", Email = "sovatha.l@gmail.com", Address = "Ang Snuol, Kandal",     JoinDate = today.AddDays(-415) },
+                new Member { Name = "Orn Sothea",       Gender = "Male",   DateOfBirth = new DateTime(1982, 12, 5),  Phone = "069-321-121", Email = "sothea.o@gmail.com",  Address = "Kralanh, Siem Reap",    JoinDate = today.AddDays(-400) },
+                new Member { Name = "Som Rathana",      Gender = "Female", DateOfBirth = new DateTime(2002, 7, 22),  Phone = "070-322-122", Email = "rathana.s@gmail.com", Address = "Kampong Bay, Kampot",   JoinDate = today.AddDays(-385) },
+                new Member { Name = "Sin Chantha",      Gender = "Female", DateOfBirth = new DateTime(2001, 9, 17),  Phone = "077-323-123", Email = "chantha.s@gmail.com", Address = "Bati, Takeo",          JoinDate = today.AddDays(-370) },
+                new Member { Name = "Hun Sophal",       Gender = "Male",   DateOfBirth = new DateTime(1997, 11, 28), Phone = "078-324-124", Email = "sophal.h@gmail.com",  Address = "Moung, Battambang",     JoinDate = today.AddDays(-355) },
+                new Member { Name = "Lim Sreypov",      Gender = "Female", DateOfBirth = new DateTime(2003, 4, 19),  Phone = "085-325-125", Email = "sreypov.l@gmail.com", Address = "Tram Kak, Takeo",      JoinDate = today.AddDays(-340) },
+                new Member { Name = "Khorn Chamroeun",  Gender = "Male",   DateOfBirth = new DateTime(2000, 8, 30),  Phone = "086-326-126", Email = "chamroeun@gmail.com", Address = "Mittapheap, Sihanouk",  JoinDate = today.AddDays(-325) },
+                new Member { Name = "Mao Pich",         Gender = "Male",   DateOfBirth = new DateTime(1998, 2, 14),  Phone = "092-327-127", Email = "pich.mao@gmail.com",  Address = "Samraong, Takeo",       JoinDate = today.AddDays(-310) },
+                new Member { Name = "Nouv Pisey",       Gender = "Female", DateOfBirth = new DateTime(2002, 12, 8),  Phone = "095-328-128", Email = "pisey.n@gmail.com",   Address = "Angkor Chey, Kampot",   JoinDate = today.AddDays(-295) },
+                new Member { Name = "Pen Vutha",        Gender = "Male",   DateOfBirth = new DateTime(1978, 5, 25),  Phone = "096-329-129", Email = "vutha.pen@gmail.com", Address = "Sen Sok, Phnom Penh",    JoinDate = today.AddDays(-280) },
+                new Member { Name = "Bun Theara",       Gender = "Male",   DateOfBirth = new DateTime(2001, 10, 10), Phone = "098-330-130", Email = "theara.b@gmail.com",  Address = "Wat Bo, Siem Reap",      JoinDate = today.AddDays(-265) },
+                new Member { Name = "Suy Mengleang",    Gender = "Male",   DateOfBirth = new DateTime(2004, 3, 3),   Phone = "099-331-131", Email = "mengleang@gmail.com", Address = "7 Makara, Phnom Penh",   JoinDate = today.AddDays(-250) },
+                new Member { Name = "Phorn Rithy",      Gender = "Male",   DateOfBirth = new DateTime(1999, 6, 20),  Phone = "010-432-132", Email = "rithy.p@gmail.com",   Address = "Dangkao, Phnom Penh",   JoinDate = today.AddDays(-235) },
+                new Member { Name = "Sarun Bunna",      Gender = "Male",   DateOfBirth = new DateTime(2000, 11, 15), Phone = "011-433-133", Email = "bunna.s@gmail.com",   Address = "Kamboul, Phnom Penh",   JoinDate = today.AddDays(-220) },
+                new Member { Name = "Roeun Kanha",      Gender = "Female", DateOfBirth = new DateTime(2003, 8, 8),   Phone = "012-434-134", Email = "kanha.r@gmail.com",   Address = "Ta Khmau, Kandal",      JoinDate = today.AddDays(-205) },
 
-            // ── Overdue Borrows (~5 records, borrowed 20-30 days ago, due 5-15 days ago, status = Overdue) ──
-            var overdueBorrow1 = new Borrow
-            {
-                MemberId = members[5].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-22),
-                DueDate = today.AddDays(-8),
-                ReturnDate = null,
-                FineAmount = FinePolicy.CalculateFine(today.AddDays(-8), today),
-                Status = BorrowStatus.Overdue
+                // ── Members who have never borrowed (6 Members) ──
+                new Member { Name = "Someth Phearith",  Gender = "Male",   DateOfBirth = new DateTime(2002, 1, 5),   Phone = "015-435-135", Email = "phearith.s@gmail.com",Address = "Puok, Siem Reap",       JoinDate = today.AddDays(-120) },
+                new Member { Name = "Try Sokunthea",    Gender = "Female", DateOfBirth = new DateTime(2004, 5, 12),  Phone = "016-436-136", Email = "sokunthea@gmail.com", Address = "Svay Por, Battambang",  JoinDate = today.AddDays(-102) },
+                new Member { Name = "Voeun Chandara",   Gender = "Male",   DateOfBirth = new DateTime(2001, 7, 29),  Phone = "017-437-137", Email = "chandara.v@gmail.com",Address = "Sen Sok, Phnom Penh",    JoinDate = today.AddDays(-84) },
+                new Member { Name = "Yan Navy",         Gender = "Female", DateOfBirth = new DateTime(2003, 10, 2),  Phone = "069-438-138", Email = "navy.yan@gmail.com",  Address = "Chhouk, Kampot",        JoinDate = today.AddDays(-66) },
+                new Member { Name = "Yim Vibol",        Gender = "Male",   DateOfBirth = new DateTime(1995, 12, 14), Phone = "070-439-139", Email = "vibol.yim@gmail.com",  Address = "Bati, Takeo",          JoinDate = today.AddDays(-48) },
+                new Member { Name = "Yun Kosal",        Gender = "Male",   DateOfBirth = new DateTime(2000, 4, 25),  Phone = "077-440-140", Email = "kosal.yun@gmail.com", Address = "Mittapheap, Sihanouk",  JoinDate = today.AddDays(-30) }
             };
-            var overdueBorrow2 = new Borrow
-            {
-                MemberId = members[6].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-25),
-                DueDate = today.AddDays(-11),
-                ReturnDate = null,
-                FineAmount = FinePolicy.CalculateFine(today.AddDays(-11), today),
-                Status = BorrowStatus.Overdue
-            };
-            var overdueBorrow3 = new Borrow
-            {
-                MemberId = members[7].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-28),
-                DueDate = today.AddDays(-14),
-                ReturnDate = null,
-                FineAmount = FinePolicy.CalculateFine(today.AddDays(-14), today),
-                Status = BorrowStatus.Overdue
-            };
-            var overdueBorrow4 = new Borrow
-            {
-                MemberId = members[8].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-20),
-                DueDate = today.AddDays(-6),
-                ReturnDate = null,
-                FineAmount = FinePolicy.CalculateFine(today.AddDays(-6), today),
-                Status = BorrowStatus.Overdue
-            };
-            var overdueBorrow5 = new Borrow
-            {
-                MemberId = members[9].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-26),
-                DueDate = today.AddDays(-12),
-                ReturnDate = null,
-                FineAmount = FinePolicy.CalculateFine(today.AddDays(-12), today),
-                Status = BorrowStatus.Overdue
-            };
-
-            // ── Returned Borrows (~5 records, historical dates, ReturnDate set, status = Returned) ──
-            var returnDueDate1 = today.AddDays(-31);
-            var returnActualDate1 = today.AddDays(-33); // On time -> 0 fine
-            var returnedBorrow1 = new Borrow
-            {
-                MemberId = members[10].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-45),
-                DueDate = returnDueDate1,
-                ReturnDate = returnActualDate1,
-                FineAmount = FinePolicy.CalculateFine(returnDueDate1, returnActualDate1),
-                Status = BorrowStatus.Returned
-            };
-
-            var returnDueDate2 = today.AddDays(-46);
-            var returnActualDate2 = today.AddDays(-42); // 4 days late -> 8,000 KHR fine
-            var returnedBorrow2 = new Borrow
-            {
-                MemberId = members[11].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-60),
-                DueDate = returnDueDate2,
-                ReturnDate = returnActualDate2,
-                FineAmount = FinePolicy.CalculateFine(returnDueDate2, returnActualDate2),
-                Status = BorrowStatus.Returned
-            };
-
-            var returnDueDate3 = today.AddDays(-76);
-            var returnActualDate3 = today.AddDays(-78); // On time -> 0 fine
-            var returnedBorrow3 = new Borrow
-            {
-                MemberId = members[12].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-90),
-                DueDate = returnDueDate3,
-                ReturnDate = returnActualDate3,
-                FineAmount = FinePolicy.CalculateFine(returnDueDate3, returnActualDate3),
-                Status = BorrowStatus.Returned
-            };
-
-            var returnDueDate4 = today.AddDays(-96);
-            var returnActualDate4 = today.AddDays(-90); // 6 days late -> 12,000 KHR fine
-            var returnedBorrow4 = new Borrow
-            {
-                MemberId = members[13].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-110),
-                DueDate = returnDueDate4,
-                ReturnDate = returnActualDate4,
-                FineAmount = FinePolicy.CalculateFine(returnDueDate4, returnActualDate4),
-                Status = BorrowStatus.Returned
-            };
-
-            var returnDueDate5 = today.AddDays(-126);
-            var returnActualDate5 = today.AddDays(-128); // On time -> 0 fine
-            var returnedBorrow5 = new Borrow
-            {
-                MemberId = members[14].MemberId,
-                LibrarianId = admin.LibrarianId,
-                BorrowDate = today.AddDays(-140),
-                DueDate = returnDueDate5,
-                ReturnDate = returnActualDate5,
-                FineAmount = FinePolicy.CalculateFine(returnDueDate5, returnActualDate5),
-                Status = BorrowStatus.Returned
-            };
-
-            var allBorrows = new[]
-            {
-                activeBorrow1, activeBorrow2, activeBorrow3, activeBorrow4, activeBorrow5,
-                overdueBorrow1, overdueBorrow2, overdueBorrow3, overdueBorrow4, overdueBorrow5,
-                returnedBorrow1, returnedBorrow2, returnedBorrow3, returnedBorrow4, returnedBorrow5
-            };
-            context.Borrows.AddRange(allBorrows);
+            context.Members.AddRange(members);
             context.SaveChanges();
 
-            // ── Line Items (BorrowDetails) & AvailableCopies Decrement ───────────
+            // ── Step 8: Seed Borrows (40 Transactions: 10 per Librarian) ───────
+            // Evenly handled across: Admin (0..9), Seyha (10..19), Dara (20..29), Sali (30..39)
+            var allLibrarians = new[] { admin, librarians[0], librarians[1], librarians[2] };
+
+            var borrows = new[]
+            {
+                // ── Active Borrows (11 records: BorrowDate 1-12 days ago, DueDate in future) ──
+                new Borrow { MemberId = members[0].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-1),  DueDate = today.AddDays(13), ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[1].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-2),  DueDate = today.AddDays(12), ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[2].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-3),  DueDate = today.AddDays(11), ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[3].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-4),  DueDate = today.AddDays(10), ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[4].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-5),  DueDate = today.AddDays(9),  ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[5].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-6),  DueDate = today.AddDays(8),  ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[6].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-7),  DueDate = today.AddDays(7),  ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[7].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-8),  DueDate = today.AddDays(6),  ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[8].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-9),  DueDate = today.AddDays(5),  ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[9].MemberId,  LibrarianId = allLibrarians[0].LibrarianId, BorrowDate = today.AddDays(-10), DueDate = today.AddDays(4),  ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+                new Borrow { MemberId = members[10].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-12), DueDate = today.AddDays(2),  ReturnDate = null, FineAmount = 0m, Status = BorrowStatus.Active },
+
+                // ── Overdue Borrows (9 records: DueDate 3-20 days ago, fine computed to today) ──
+                new Borrow { MemberId = members[0].MemberId,  LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-17), DueDate = today.AddDays(-3),  ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-3), today),  Status = BorrowStatus.Overdue },
+                new Borrow { MemberId = members[11].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-19), DueDate = today.AddDays(-5),  ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-5), today),  Status = BorrowStatus.Overdue },
+                new Borrow { MemberId = members[12].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-21), DueDate = today.AddDays(-7),  ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-7), today),  Status = BorrowStatus.Overdue },
+                new Borrow { MemberId = members[13].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-23), DueDate = today.AddDays(-9),  ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-9), today),  Status = BorrowStatus.Overdue },
+                new Borrow { MemberId = members[14].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-25), DueDate = today.AddDays(-11), ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-11), today), Status = BorrowStatus.Overdue },
+                new Borrow { MemberId = members[15].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-28), DueDate = today.AddDays(-14), ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-14), today), Status = BorrowStatus.Overdue },
+                new Borrow { MemberId = members[16].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-30), DueDate = today.AddDays(-16), ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-16), today), Status = BorrowStatus.Overdue },
+                new Borrow { MemberId = members[17].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-32), DueDate = today.AddDays(-18), ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-18), today), Status = BorrowStatus.Overdue },
+                new Borrow { MemberId = members[18].MemberId, LibrarianId = allLibrarians[1].LibrarianId, BorrowDate = today.AddDays(-34), DueDate = today.AddDays(-20), ReturnDate = null, FineAmount = FinePolicy.CalculateFine(today.AddDays(-20), today), Status = BorrowStatus.Overdue },
+
+                // ── Returned on time (11 records: ReturnDate <= DueDate, fine = 0) ──
+                new Borrow { MemberId = members[0].MemberId,  LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-30), DueDate = today.AddDays(-16), ReturnDate = today.AddDays(-18), FineAmount = FinePolicy.CalculateFine(today.AddDays(-16), today.AddDays(-18)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[1].MemberId,  LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-35), DueDate = today.AddDays(-21), ReturnDate = today.AddDays(-21), FineAmount = FinePolicy.CalculateFine(today.AddDays(-21), today.AddDays(-21)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[2].MemberId,  LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-40), DueDate = today.AddDays(-26), ReturnDate = today.AddDays(-28), FineAmount = FinePolicy.CalculateFine(today.AddDays(-26), today.AddDays(-28)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[19].MemberId, LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-45), DueDate = today.AddDays(-31), ReturnDate = today.AddDays(-33), FineAmount = FinePolicy.CalculateFine(today.AddDays(-31), today.AddDays(-33)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[20].MemberId, LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-50), DueDate = today.AddDays(-36), ReturnDate = today.AddDays(-37), FineAmount = FinePolicy.CalculateFine(today.AddDays(-36), today.AddDays(-37)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[21].MemberId, LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-55), DueDate = today.AddDays(-41), ReturnDate = today.AddDays(-43), FineAmount = FinePolicy.CalculateFine(today.AddDays(-41), today.AddDays(-43)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[22].MemberId, LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-60), DueDate = today.AddDays(-46), ReturnDate = today.AddDays(-47), FineAmount = FinePolicy.CalculateFine(today.AddDays(-46), today.AddDays(-47)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[23].MemberId, LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-65), DueDate = today.AddDays(-51), ReturnDate = today.AddDays(-53), FineAmount = FinePolicy.CalculateFine(today.AddDays(-51), today.AddDays(-53)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[24].MemberId, LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-70), DueDate = today.AddDays(-56), ReturnDate = today.AddDays(-58), FineAmount = FinePolicy.CalculateFine(today.AddDays(-56), today.AddDays(-58)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[25].MemberId, LibrarianId = allLibrarians[2].LibrarianId, BorrowDate = today.AddDays(-75), DueDate = today.AddDays(-61), ReturnDate = today.AddDays(-63), FineAmount = FinePolicy.CalculateFine(today.AddDays(-61), today.AddDays(-63)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[26].MemberId, LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-80), DueDate = today.AddDays(-66), ReturnDate = today.AddDays(-67), FineAmount = FinePolicy.CalculateFine(today.AddDays(-66), today.AddDays(-67)), Status = BorrowStatus.Returned },
+
+                // ── Returned late (9 records: ReturnDate > DueDate, fine computed via FinePolicy) ──
+                new Borrow { MemberId = members[1].MemberId,  LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-40),  DueDate = today.AddDays(-26), ReturnDate = today.AddDays(-23), FineAmount = FinePolicy.CalculateFine(today.AddDays(-26), today.AddDays(-23)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[2].MemberId,  LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-45),  DueDate = today.AddDays(-31), ReturnDate = today.AddDays(-27), FineAmount = FinePolicy.CalculateFine(today.AddDays(-31), today.AddDays(-27)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[27].MemberId, LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-50),  DueDate = today.AddDays(-36), ReturnDate = today.AddDays(-33), FineAmount = FinePolicy.CalculateFine(today.AddDays(-36), today.AddDays(-33)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[28].MemberId, LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-60),  DueDate = today.AddDays(-46), ReturnDate = today.AddDays(-41), FineAmount = FinePolicy.CalculateFine(today.AddDays(-46), today.AddDays(-41)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[29].MemberId, LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-70),  DueDate = today.AddDays(-56), ReturnDate = today.AddDays(-52), FineAmount = FinePolicy.CalculateFine(today.AddDays(-56), today.AddDays(-52)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[30].MemberId, LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-80),  DueDate = today.AddDays(-66), ReturnDate = today.AddDays(-60), FineAmount = FinePolicy.CalculateFine(today.AddDays(-66), today.AddDays(-60)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[31].MemberId, LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-90),  DueDate = today.AddDays(-76), ReturnDate = today.AddDays(-73), FineAmount = FinePolicy.CalculateFine(today.AddDays(-76), today.AddDays(-73)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[32].MemberId, LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-100), DueDate = today.AddDays(-86), ReturnDate = today.AddDays(-81), FineAmount = FinePolicy.CalculateFine(today.AddDays(-86), today.AddDays(-81)), Status = BorrowStatus.Returned },
+                new Borrow { MemberId = members[33].MemberId, LibrarianId = allLibrarians[3].LibrarianId, BorrowDate = today.AddDays(-115), DueDate = today.AddDays(-101),ReturnDate = today.AddDays(-94), FineAmount = FinePolicy.CalculateFine(today.AddDays(-101),today.AddDays(-94)), Status = BorrowStatus.Returned }
+            };
+            context.Borrows.AddRange(borrows);
+            context.SaveChanges();
+
+            // ── Step 9: Seed BorrowDetails (47 Line Items) ──────────────────────
             var borrowDetails = new List<BorrowDetail>
             {
-                // Active Borrows (decrease available copies)
-                new BorrowDetail { BorrowId = activeBorrow1.BorrowId, BookId = books[0].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = activeBorrow2.BorrowId, BookId = books[13].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = activeBorrow3.BorrowId, BookId = books[19].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = activeBorrow4.BorrowId, BookId = books[1].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = activeBorrow4.BorrowId, BookId = books[21].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = activeBorrow5.BorrowId, BookId = books[23].BookId, Quantity = 1 },
+                // Active Borrows (indices 0..10)
+                new BorrowDetail { BorrowId = borrows[0].BorrowId,  BookId = books[0].BookId,  Quantity = 1 }, // Sophat
+                new BorrowDetail { BorrowId = borrows[0].BorrowId,  BookId = books[29].BookId, Quantity = 1 }, // Dune
+                new BorrowDetail { BorrowId = borrows[1].BorrowId,  BookId = books[0].BookId,  Quantity = 2 }, // Sophat (x2)
+                new BorrowDetail { BorrowId = borrows[1].BorrowId,  BookId = books[27].BookId, Quantity = 1 }, // 1984
+                new BorrowDetail { BorrowId = borrows[2].BorrowId,  BookId = books[29].BookId, Quantity = 1 }, // Dune
+                new BorrowDetail { BorrowId = borrows[2].BorrowId,  BookId = books[5].BookId,  Quantity = 1 }, // Kakey
+                new BorrowDetail { BorrowId = borrows[3].BorrowId,  BookId = books[34].BookId, Quantity = 1 }, // Clean Code
+                new BorrowDetail { BorrowId = borrows[4].BorrowId,  BookId = books[1].BookId,  Quantity = 1 }, // Phka Srapoun
+                new BorrowDetail { BorrowId = borrows[5].BorrowId,  BookId = books[2].BookId,  Quantity = 1 }, // Mealea Duong Chett
+                new BorrowDetail { BorrowId = borrows[6].BorrowId,  BookId = books[7].BookId,  Quantity = 1 }, // Angkor Civilization
+                new BorrowDetail { BorrowId = borrows[7].BorrowId,  BookId = books[9].BookId,  Quantity = 1 }, // The Pagoda Boy
+                new BorrowDetail { BorrowId = borrows[8].BorrowId,  BookId = books[35].BookId, Quantity = 1 }, // Clean Architecture
+                new BorrowDetail { BorrowId = borrows[9].BorrowId,  BookId = books[31].BookId, Quantity = 1 }, // TAOCP Vol. 1
+                new BorrowDetail { BorrowId = borrows[10].BorrowId, BookId = books[32].BookId, Quantity = 1 }, // Intro to Algorithms
 
-                // Overdue Borrows (decrease available copies)
-                new BorrowDetail { BorrowId = overdueBorrow1.BorrowId, BookId = books[5].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = overdueBorrow2.BorrowId, BookId = books[14].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = overdueBorrow3.BorrowId, BookId = books[7].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = overdueBorrow4.BorrowId, BookId = books[17].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = overdueBorrow5.BorrowId, BookId = books[24].BookId, Quantity = 1 },
+                // Overdue Borrows (indices 11..19)
+                new BorrowDetail { BorrowId = borrows[11].BorrowId, BookId = books[29].BookId, Quantity = 1 }, // Dune
+                new BorrowDetail { BorrowId = borrows[11].BorrowId, BookId = books[4].BookId,  Quantity = 1 }, // Tum Teav
+                new BorrowDetail { BorrowId = borrows[12].BorrowId, BookId = books[34].BookId, Quantity = 1 }, // Clean Code
+                new BorrowDetail { BorrowId = borrows[13].BorrowId, BookId = books[27].BookId, Quantity = 2 }, // 1984 (x2)
+                new BorrowDetail { BorrowId = borrows[14].BorrowId, BookId = books[6].BookId,  Quantity = 1 }, // Shadow Theatre
+                new BorrowDetail { BorrowId = borrows[15].BorrowId, BookId = books[13].BookId, Quantity = 1 }, // Cambodian Economy
+                new BorrowDetail { BorrowId = borrows[16].BorrowId, BookId = books[38].BookId, Quantity = 1 }, // Refactoring
+                new BorrowDetail { BorrowId = borrows[17].BorrowId, BookId = books[18].BookId, Quantity = 1 }, // Steve Jobs
+                new BorrowDetail { BorrowId = borrows[18].BorrowId, BookId = books[48].BookId, Quantity = 1 }, // The Alchemist
+                new BorrowDetail { BorrowId = borrows[19].BorrowId, BookId = books[15].BookId, Quantity = 1 }, // Win Friends
 
-                // Returned Borrows (already returned to shelves — do NOT reduce available copies)
-                new BorrowDetail { BorrowId = returnedBorrow1.BorrowId, BookId = books[2].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = returnedBorrow2.BorrowId, BookId = books[15].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = returnedBorrow3.BorrowId, BookId = books[6].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = returnedBorrow4.BorrowId, BookId = books[9].BookId, Quantity = 1 },
-                new BorrowDetail { BorrowId = returnedBorrow5.BorrowId, BookId = books[22].BookId, Quantity = 1 }
+                // Returned on time (indices 20..30)
+                new BorrowDetail { BorrowId = borrows[20].BorrowId, BookId = books[0].BookId,  Quantity = 1 }, // Sophat
+                new BorrowDetail { BorrowId = borrows[20].BorrowId, BookId = books[4].BookId,  Quantity = 1 }, // Tum Teav
+                new BorrowDetail { BorrowId = borrows[21].BorrowId, BookId = books[29].BookId, Quantity = 1 }, // Dune
+                new BorrowDetail { BorrowId = borrows[21].BorrowId, BookId = books[27].BookId, Quantity = 1 }, // 1984
+                new BorrowDetail { BorrowId = borrows[21].BorrowId, BookId = books[5].BookId,  Quantity = 1 }, // Kakey
+                new BorrowDetail { BorrowId = borrows[22].BorrowId, BookId = books[1].BookId,  Quantity = 1 }, // Phka Srapoun
+                new BorrowDetail { BorrowId = borrows[23].BorrowId, BookId = books[2].BookId,  Quantity = 1 }, // Mealea Duong Chett
+                new BorrowDetail { BorrowId = borrows[24].BorrowId, BookId = books[3].BookId,  Quantity = 1 }, // Kolab Pailin
+                new BorrowDetail { BorrowId = borrows[25].BorrowId, BookId = books[20].BookId, Quantity = 1 }, // The Moonlit Lake
+                new BorrowDetail { BorrowId = borrows[26].BorrowId, BookId = books[7].BookId,  Quantity = 1 }, // Angkor Civilization
+                new BorrowDetail { BorrowId = borrows[27].BorrowId, BookId = books[8].BookId,  Quantity = 1 }, // Modern Architecture
+                new BorrowDetail { BorrowId = borrows[28].BorrowId, BookId = books[10].BookId, Quantity = 1 }, // The Lost Heritage
+                new BorrowDetail { BorrowId = borrows[29].BorrowId, BookId = books[16].BookId, Quantity = 1 }, // A Meaningless Life
+                new BorrowDetail { BorrowId = borrows[30].BorrowId, BookId = books[17].BookId, Quantity = 1 }, // The Dead Heart
+
+                // Returned late (indices 31..39)
+                new BorrowDetail { BorrowId = borrows[31].BorrowId, BookId = books[34].BookId, Quantity = 1 }, // Clean Code
+                new BorrowDetail { BorrowId = borrows[32].BorrowId, BookId = books[35].BookId, Quantity = 1 }, // Clean Architecture
+                new BorrowDetail { BorrowId = borrows[33].BorrowId, BookId = books[36].BookId, Quantity = 1 }, // The Clean Coder
+                new BorrowDetail { BorrowId = borrows[34].BorrowId, BookId = books[38].BookId, Quantity = 1 }, // Refactoring
+                new BorrowDetail { BorrowId = borrows[35].BorrowId, BookId = books[31].BookId, Quantity = 1 }, // TAOCP Vol. 1
+                new BorrowDetail { BorrowId = borrows[36].BorrowId, BookId = books[32].BookId, Quantity = 1 }, // Intro to Algorithms
+                new BorrowDetail { BorrowId = borrows[37].BorrowId, BookId = books[18].BookId, Quantity = 1 }, // Steve Jobs
+                new BorrowDetail { BorrowId = borrows[38].BorrowId, BookId = books[28].BookId, Quantity = 1 }, // Animal Farm
+                new BorrowDetail { BorrowId = borrows[39].BorrowId, BookId = books[48].BookId, Quantity = 1 }  // The Alchemist
             };
             context.BorrowDetails.AddRange(borrowDetails);
 
             // Deduct AvailableCopies for currently unreturned (Active & Overdue) books
-            books[0].AvailableCopies -= 1;  // Sophat
-            books[13].AvailableCopies -= 1; // Clean Code
-            books[19].AvailableCopies -= 1; // Introduction to Algorithms
-            books[1].AvailableCopies -= 1;  // Phka Srapoun
-            books[21].AvailableCopies -= 1; // Steve Jobs
-            books[23].AvailableCopies -= 1; // Zero to One
+            books[0].AvailableCopies  -= 3; // Sophat (1 from Borrow 0, 2 from Borrow 1) -> 0 copies left
+            books[29].AvailableCopies -= 3; // Dune (1 from Borrow 0, 1 from Borrow 2, 1 from Borrow 11) -> 0 copies left
+            books[27].AvailableCopies -= 3; // 1984 (1 from Borrow 1, 2 from Borrow 13) -> 0 copies left
+            books[5].AvailableCopies  -= 1; // Kakey (1 from Borrow 2) -> 0 copies left
+            books[34].AvailableCopies -= 2; // Clean Code (1 from Borrow 3, 1 from Borrow 12) -> 0 copies left
 
-            books[5].AvailableCopies -= 1;  // The Pagoda Boy
-            books[14].AvailableCopies -= 1; // Clean Architecture
-            books[7].AvailableCopies -= 1;  // Cambodian Economy
-            books[17].AvailableCopies -= 1; // TAOCP Vol 1
-            books[24].AvailableCopies -= 1; // The Pragmatic Programmer
+            books[1].AvailableCopies  -= 1; // Phka Srapoun (Borrow 4) -> 4 copies left
+            books[2].AvailableCopies  -= 1; // Mealea Duong Chett (Borrow 5) -> 3 copies left
+            books[7].AvailableCopies  -= 1; // Angkor Civilization (Borrow 6) -> 4 copies left
+            books[9].AvailableCopies  -= 1; // The Pagoda Boy (Borrow 7) -> 4 copies left
+            books[35].AvailableCopies -= 1; // Clean Architecture (Borrow 8) -> 4 copies left
+            books[31].AvailableCopies -= 1; // TAOCP Vol. 1 (Borrow 9) -> 3 copies left
+            books[32].AvailableCopies -= 1; // Intro to Algorithms (Borrow 10) -> 5 copies left
+
+            books[4].AvailableCopies  -= 1; // Tum Teav (Borrow 11) -> 3 copies left
+            books[6].AvailableCopies  -= 1; // Shadow Theatre (Borrow 14) -> 3 copies left
+            books[13].AvailableCopies -= 1; // Cambodian Economy (Borrow 15) -> 4 copies left
+            books[38].AvailableCopies -= 1; // Refactoring (Borrow 16) -> 3 copies left
+            books[18].AvailableCopies -= 1; // Steve Jobs (Borrow 17) -> 4 copies left
+            books[48].AvailableCopies -= 1; // The Alchemist (Borrow 18) -> 5 copies left
+            books[15].AvailableCopies -= 1; // Win Friends (Borrow 19) -> 4 copies left
 
             context.SaveChanges();
         }

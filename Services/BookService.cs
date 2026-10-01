@@ -30,15 +30,18 @@ namespace LibraryManagementSystem.Services
 
         public List<Book> Search(string query)
         {
-            var q = query.Trim().ToLower();
+            if (string.IsNullOrWhiteSpace(query))
+                return GetAll();
+
+            var q = query.Trim();
             return _context.Books
                 .Include(b => b.Category)
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
-                .Where(b => b.Title.ToLower().Contains(q)
-                         || b.ISBN.ToLower().Contains(q)
-                         || b.Author!.Name.ToLower().Contains(q)
-                         || b.Category!.Name.ToLower().Contains(q))
+                .Where(b => b.Title.Contains(q)
+                         || b.ISBN.Contains(q)
+                         || (b.Author != null && b.Author.Name.Contains(q))
+                         || (b.Category != null && b.Category.Name.Contains(q)))
                 .OrderBy(b => b.Title)
                 .ToList();
         }
@@ -58,10 +61,21 @@ namespace LibraryManagementSystem.Services
             if (!result.IsValid)
                 return (false, result.Errors.First().ErrorMessage);
 
-            if (_context.Books.Any(b => b.ISBN == book.ISBN.Trim()))
+            var trimmedIsbn = book.ISBN.Trim();
+            if (_context.Books.Any(b => b.ISBN == trimmedIsbn))
                 return (false, $"A book with ISBN '{book.ISBN}' already exists.");
 
-            book.ISBN = book.ISBN.Trim();
+            // Verify foreign keys exist in database
+            if (!_context.Categories.Any(c => c.CategoryId == book.CategoryId))
+                return (false, "Selected category does not exist.");
+
+            if (!_context.Authors.Any(a => a.AuthorId == book.AuthorId))
+                return (false, "Selected author does not exist.");
+
+            if (!_context.Publishers.Any(p => p.PublisherId == book.PublisherId))
+                return (false, "Selected publisher does not exist.");
+
+            book.ISBN = trimmedIsbn;
             book.Title = book.Title.Trim();
             _context.Books.Add(book);
             _context.SaveChanges();
@@ -74,11 +88,36 @@ namespace LibraryManagementSystem.Services
             if (!result.IsValid)
                 return (false, result.Errors.First().ErrorMessage);
 
-            if (_context.Books.Any(b => b.ISBN == book.ISBN.Trim() && b.BookId != book.BookId))
+            var trimmedIsbn = book.ISBN.Trim();
+            if (_context.Books.Any(b => b.ISBN == trimmedIsbn && b.BookId != book.BookId))
                 return (false, $"Another book with ISBN '{book.ISBN}' already exists.");
 
             var existing = _context.Books.Find(book.BookId);
             if (existing == null) return (false, "Book not found.");
+
+            // Verify foreign keys exist in database
+            if (!_context.Categories.Any(c => c.CategoryId == book.CategoryId))
+                return (false, "Selected category does not exist.");
+
+            if (!_context.Authors.Any(a => a.AuthorId == book.AuthorId))
+                return (false, "Selected author does not exist.");
+
+            if (!_context.Publishers.Any(p => p.PublisherId == book.PublisherId))
+                return (false, "Selected publisher does not exist.");
+
+            int currentlyBorrowed = _context.BorrowDetails
+                .Where(bd => bd.BookId == book.BookId && bd.Borrow != null && (bd.Borrow.Status == BorrowStatus.Active || bd.Borrow.Status == BorrowStatus.Overdue))
+                .Sum(bd => (int?)bd.Quantity) ?? 0;
+
+            if (book.TotalCopies < currentlyBorrowed)
+            {
+                return (false, $"Cannot reduce total copies to {book.TotalCopies}. There are currently {currentlyBorrowed} copies on loan.");
+            }
+
+            if (book.AvailableCopies + currentlyBorrowed > book.TotalCopies)
+            {
+                return (false, $"Available copies ({book.AvailableCopies}) plus currently borrowed copies ({currentlyBorrowed}) cannot exceed total copies ({book.TotalCopies}).");
+            }
 
             // Concurrency handling: If caller provided RowVersion, ensure EF Core compares against it
             if (book.RowVersion != null && book.RowVersion.Length > 0)
@@ -87,7 +126,7 @@ namespace LibraryManagementSystem.Services
             }
 
             existing.Title = book.Title.Trim();
-            existing.ISBN = book.ISBN.Trim();
+            existing.ISBN = trimmedIsbn;
             existing.Year = book.Year;
             existing.TotalCopies = book.TotalCopies;
             existing.AvailableCopies = book.AvailableCopies;
@@ -121,9 +160,14 @@ namespace LibraryManagementSystem.Services
                 _context.SaveChanges();
                 return (true, "Book deleted successfully.");
             }
+            catch (DbUpdateException)
+            {
+                return (false, "Cannot delete this book because it is referenced by existing transactions or records.");
+            }
             catch (Exception ex)
             {
-                return (false, $"Cannot delete book: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[BookService.Delete] {ex}");
+                return (false, "An error occurred while deleting the book. Please try again.");
             }
         }
     }

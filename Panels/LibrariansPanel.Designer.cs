@@ -6,9 +6,8 @@ namespace LibraryManagementSystem.Panels
 
         private System.Windows.Forms.Panel pnlHeaderContainer;
         private System.Windows.Forms.Panel pnlHeader;
-        private System.Windows.Forms.Label lblTitle;
-
-
+        private System.Windows.Forms.Label lblTitle;
+
         private System.Windows.Forms.Panel pnlToolbar;
         private System.Windows.Forms.FlowLayoutPanel flpActions;
         private System.Windows.Forms.Button btnAdd;
@@ -37,26 +36,26 @@ namespace LibraryManagementSystem.Panels
 
         private void InitializeComponent()
         {
-            pnlHeaderContainer = new Panel();
-            pnlHeader = new Panel();
-            lblTitle = new Label();
-            pnlToolbar = new Panel();
-            flpActions = new FlowLayoutPanel();
-            btnAdd = new Button();
-            btnEdit = new Button();
-            btnDelete = new Button();
-            btnRefresh = new Button();
-            txtSearch = new TextBox();
-            pnlGridContainer = new Panel();
-            dgv = new DataGridView();
-            colId = new DataGridViewTextBoxColumn();
-            colName = new DataGridViewTextBoxColumn();
-            colGender = new DataGridViewTextBoxColumn();
-            colDob = new DataGridViewTextBoxColumn();
-            colUsername = new DataGridViewTextBoxColumn();
-            colRole = new DataGridViewTextBoxColumn();
-            colEmail = new DataGridViewTextBoxColumn();
-            colPhone = new DataGridViewTextBoxColumn();
+            pnlHeaderContainer = new();
+            pnlHeader = new();
+            lblTitle = new();
+            pnlToolbar = new();
+            flpActions = new();
+            btnAdd = new();
+            btnEdit = new();
+            btnDelete = new();
+            btnRefresh = new();
+            txtSearch = new();
+            pnlGridContainer = new();
+            dgv = new();
+            colId = new();
+            colName = new();
+            colGender = new();
+            colDob = new();
+            colUsername = new();
+            colRole = new();
+            colEmail = new();
+            colPhone = new();
             pnlHeaderContainer.SuspendLayout();
             pnlHeader.SuspendLayout();
             pnlToolbar.SuspendLayout();
@@ -108,7 +107,7 @@ namespace LibraryManagementSystem.Panels
             pnlToolbar.Name = "pnlToolbar";
             pnlToolbar.Padding = new Padding(16, 7, 16, 7);
             pnlToolbar.Size = new Size(1034, 46);
-            pnlToolbar.TabIndex = 2;
+            pnlToolbar.TabIndex = 1;
             // 
             // flpActions
             // 
@@ -161,7 +160,7 @@ namespace LibraryManagementSystem.Panels
             // 
             btnDelete.BackColor = Color.SteelBlue;
             btnDelete.Cursor = Cursors.Hand;
-            btnDelete.FlatAppearance.BorderSize = 0;
+            btnDelete.FlatAppearance.BorderColor = Color.FromArgb(208, 225, 253);
             btnDelete.FlatStyle = FlatStyle.Flat;
             btnDelete.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnDelete.ForeColor = Color.Transparent;
@@ -178,6 +177,7 @@ namespace LibraryManagementSystem.Panels
             btnRefresh.BackColor = Color.SteelBlue;
             btnRefresh.Cursor = Cursors.Hand;
             btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(208, 225, 253);
+            btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnRefresh.ForeColor = Color.Transparent;

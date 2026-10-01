@@ -326,7 +326,8 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Unable to generate analytics reports.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[ReportsPanel.GenerateReport] {ex}");
+                MessageBox.Show("Unable to generate analytics reports. Please check database connectivity and try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -638,12 +639,7 @@ namespace LibraryManagementSystem.Panels
                         col.Width = width;
                     }
 
-                    if (prop.Contains("Fine") || prop.Contains("TotalBorrows") || prop.Contains("TotalBorrowed") ||
-                        prop.Contains("DaysOverdue") || prop.Contains("Copies"))
-                    {
-                        col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                        col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-                    }
+                    // Left aligned by default (DefaultCellStyle handles this)
 
                     dgv.Columns.Add(col);
                 }

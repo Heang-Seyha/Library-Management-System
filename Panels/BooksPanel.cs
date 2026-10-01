@@ -49,8 +49,9 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[BooksPanel.LoadBooks] {ex}");
                 MessageBox.Show(
-                    $"Unable to load books from database.\n\nDetails: {ex.Message}",
+                    "Unable to load books from database. Please check database connectivity and try again.",
                     "Database Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -74,7 +75,8 @@ namespace LibraryManagementSystem.Panels
                 b.Title.Contains(q, StringComparison.OrdinalIgnoreCase) ||
                 b.ISBN.Contains(q, StringComparison.OrdinalIgnoreCase) ||
                 (b.Author?.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                (b.Category?.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
+                (b.Category?.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                (b.Publisher?.Name.Contains(q, StringComparison.OrdinalIgnoreCase) ?? false)).ToList();
 
             BindGrid(filtered, true, q);
         }
@@ -85,7 +87,7 @@ namespace LibraryManagementSystem.Panels
             foreach (var b in books)
             {
                 int row = dgvBooks.Rows.Add(
-                    b.BookId, b.Title, b.ISBN, b.Author?.Name, b.Category?.Name, b.Year,
+                    b.BookId, b.Title, b.ISBN, b.Author?.Name, b.Category?.Name, b.Publisher?.Name, b.Year,
                     b.AvailableCopies, b.TotalCopies);
 
                 if (b.AvailableCopies == 0)
@@ -181,15 +183,11 @@ namespace LibraryManagementSystem.Panels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Could not delete book.\n\nDetails: {ex.Message}", "Delete Error",
+                    System.Diagnostics.Debug.WriteLine($"[BooksPanel.BtnDelete_Click] {ex}");
+                    MessageBox.Show("Could not delete book. Please try again.", "Delete Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
-
-        private void pnlHeader_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
         private void ConfigureGridColumns()

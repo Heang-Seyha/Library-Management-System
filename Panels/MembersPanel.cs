@@ -112,8 +112,9 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[MembersPanel.LoadData] {ex}");
                 MessageBox.Show(
-                    $"Unable to load members from database.\n\nDetails: {ex.Message}",
+                    "Unable to load members from database. Please check database connectivity and try again.",
                     "Database Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -220,7 +221,8 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not delete member.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[MembersPanel.BtnDelete_Click] {ex}");
+                MessageBox.Show("Could not delete member. Please try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

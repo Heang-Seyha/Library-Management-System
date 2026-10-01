@@ -54,10 +54,9 @@ namespace LibraryManagementSystem.Helpers
                     ApplyPaddingToAllTextBoxes(c, leftPaddingPixels);
                 }
             }
-        }
-
-
-        // ── Color Palette — Soft Light Blue (Matches Exit Button #DCEBFC) ─────
+        }
+
+// ── Color Palette — Soft Light Blue (Matches Exit Button #DCEBFC) ─────
         public static readonly Color PrimaryAccent     = Color.FromArgb(220, 235, 252); // #DCEBFC Soft light blue matching exit button
         public static readonly Color PrimaryAccentDark = Color.FromArgb(195, 220, 250); // #C3DCFA Hover / active highlight tint
         public static readonly Color AccentHover       = Color.FromArgb(195, 220, 250); // Alias
@@ -71,7 +70,7 @@ namespace LibraryManagementSystem.Helpers
         public static readonly Color SidebarText       = Color.FromArgb(13, 59, 102);   // #0D3B66 Deep navy for light blue sidebar
         public static readonly Color GridHeaderBg      = Color.FromArgb(220, 235, 252); // Soft light blue table header
         public static readonly Color GridAltRow        = Color.FromArgb(247, 250, 253); // #F7FAFD Soft alternating row tint
-        public static readonly Color DangerRed         = Color.FromArgb(220, 38, 38);   // Semantic red
+        public static readonly Color DangerRed         = Color.FromArgb(180, 20, 20);   // Darker semantic red
         public static readonly Color SuccessGreen      = Color.FromArgb(22, 101, 52);   // Semantic forest green
         public static readonly Color WarningAmber      = Color.FromArgb(217, 119, 6);   // Semantic dark amber
         public static readonly Color BrandNavy         = Color.FromArgb(13, 71, 161);   // High-contrast navy for cards/accents
@@ -81,6 +80,48 @@ namespace LibraryManagementSystem.Helpers
         public static Color PrimaryGreen => SuccessGreen;
         public static Color LightGray    => MainBackground;
         public static Color BorderGray   => BorderColor;
+
+        // ── Application Icon (SteelBlue Logo) ────────────────────────────────
+        private static Icon? _appIcon;
+        public static Icon AppIcon
+        {
+            get
+            {
+                if (_appIcon != null) return _appIcon;
+
+                try
+                {
+                    if (Properties.Resources.app_icon != null)
+                    {
+                        _appIcon = Properties.Resources.app_icon;
+                        return _appIcon;
+                    }
+                }
+                catch { }
+
+                try
+                {
+                    string[] candidates = new[]
+                    {
+                        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icons", "app_icon.ico"),
+                        Path.Combine(Directory.GetCurrentDirectory(), "icons", "app_icon.ico"),
+                        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "icons", "app_icon.ico")
+                    };
+
+                    foreach (var path in candidates)
+                    {
+                        if (File.Exists(path))
+                        {
+                            _appIcon = new Icon(path);
+                            return _appIcon;
+                        }
+                    }
+                }
+                catch { }
+
+                return SystemIcons.Application;
+            }
+        }
 
         // ── Preferred Icon Font Determination ────────────────────────────────
         public static readonly string IconFontFamily = GetPreferredIconFont();

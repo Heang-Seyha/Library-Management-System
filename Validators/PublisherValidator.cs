@@ -17,13 +17,14 @@ namespace LibraryManagementSystem.Validators
                 .MaximumLength(150).WithMessage("Publisher name cannot exceed 150 characters.");
 
             RuleFor(p => p.Address)
+                .NotEmpty().WithMessage("Address is required.")
                 .MaximumLength(500).WithMessage("Address cannot exceed 500 characters.");
 
             RuleFor(p => p.Phone)
+                .NotEmpty().WithMessage("Phone is required.")
                 .MaximumLength(20).WithMessage("Phone cannot exceed 20 characters.")
                 .Must(ValidationHelper.IsValidPhone)
-                .When(p => !string.IsNullOrWhiteSpace(p.Phone))
-                .WithMessage("Invalid phone number format.");
+                .WithMessage("Invalid phone (must start with 0, 9-10 digits).");
         }
     }
 }

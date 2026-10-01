@@ -180,6 +180,7 @@ namespace LibraryManagementSystem.Helpers
         public static void SetFieldError(TextBox tb, Label errLabel, string? message)
         {
             bool hasError = !string.IsNullOrEmpty(message);
+            errLabel.UseMnemonic = false;
             errLabel.Text = message ?? string.Empty;
             errLabel.Visible = hasError;
             HighlightError(tb, hasError);
@@ -191,9 +192,21 @@ namespace LibraryManagementSystem.Helpers
         public static void SetFieldError(ComboBox cb, Label errLabel, string? message)
         {
             bool hasError = !string.IsNullOrEmpty(message);
+            errLabel.UseMnemonic = false;
             errLabel.Text = message ?? string.Empty;
             errLabel.Visible = hasError;
             HighlightError(cb, hasError);
+        }
+
+        /// <summary>
+        /// Sets or clears an inline field error for a DateTimePicker in a single reusable call.
+        /// </summary>
+        public static void SetFieldError(DateTimePicker dtp, Label errLabel, string? message)
+        {
+            bool hasError = !string.IsNullOrEmpty(message);
+            errLabel.UseMnemonic = false;
+            errLabel.Text = message ?? string.Empty;
+            errLabel.Visible = hasError;
         }
 
         /// <summary>
@@ -210,6 +223,14 @@ namespace LibraryManagementSystem.Helpers
         public static void ClearFieldError(ComboBox cb, Label errLabel)
         {
             SetFieldError(cb, errLabel, null);
+        }
+
+        /// <summary>
+        /// Clears field error state for a DateTimePicker.
+        /// </summary>
+        public static void ClearFieldError(DateTimePicker dtp, Label errLabel)
+        {
+            SetFieldError(dtp, errLabel, null);
         }
     }
 }

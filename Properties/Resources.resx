@@ -118,7 +118,46 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="app_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\app_icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="libraryLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\libraryLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_dashboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_dashboard.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_books" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_books.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_members" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_members.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_borrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_borrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_return" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_return.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_categories" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_categories.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_authors" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_authors.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_publishers" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_publishers.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_reports" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_reports.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_librarians" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_librarians.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_logout" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_logout.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nav_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\nav_logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

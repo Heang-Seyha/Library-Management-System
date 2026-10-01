@@ -30,12 +30,5 @@ namespace LibraryManagementSystem.Models
         public bool IsLibrarian => Role == "Librarian" || IsAdmin;
 
         public override string ToString() => Name;
-
-        // Backward compatibility property for database mapping
-        public int EmployeeId
-        {
-            get => LibrarianId;
-            set => LibrarianId = value;
-        }
     }
 }

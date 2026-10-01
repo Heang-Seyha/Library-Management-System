@@ -28,6 +28,7 @@ namespace LibraryManagementSystem.Panels
             btnAdd.Click += BtnAdd_Click;
             btnEdit.Click += BtnEdit_Click;
             btnDelete.Click += BtnDelete_Click;
+
             btnRefresh.Click += (s, ev) => { txtSearch.Clear(); LoadData(); };
 
             LoadData();
@@ -44,8 +45,9 @@ namespace LibraryManagementSystem.Panels
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[LibrariansPanel.LoadLibrarians] {ex}");
                 MessageBox.Show(
-                    $"Unable to load librarians from database.\n\nDetails: {ex.Message}",
+                    "Unable to load librarians from database. Please check database connectivity and try again.",
                     "Database Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -85,10 +87,10 @@ namespace LibraryManagementSystem.Panels
             {
                 string displayRole = l.Role;
                 int row = dgv.Rows.Add(l.LibrarianId, l.Name, l.Gender, l.DateOfBirth?.ToString("MM/dd/yyyy") ?? "", l.Username, displayRole, l.Email, l.Phone);
-                if (l.Role == "Admin")
+                if (string.Equals(l.Role, "Admin", StringComparison.OrdinalIgnoreCase))
                 {
                     dgv.Rows[row].DefaultCellStyle.ForeColor = UIHelper.BrandNavy;
-                    dgv.Rows[row].DefaultCellStyle.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+                    dgv.Rows[row].DefaultCellStyle.Font = new("Segoe UI", 9.5f, FontStyle.Bold);
                 }
             }
             UIHelper.UpdateGridState(dgv, librarians.Count, isSearchActive, "Librarian", query, () =>
@@ -141,9 +143,9 @@ namespace LibraryManagementSystem.Panels
 
         private void BtnDelete_Click(object? sender, EventArgs e)
         {
-            if (!AuthorizationHelper.CanManageLibrarians())
+            if (!AuthorizationHelper.CanDeleteLibrarians())
             {
-                MessageBox.Show("Administrator privileges are required to delete librarians.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Administrator privileges are required to delete a librarian account.", "Unauthorized", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -154,19 +156,12 @@ namespace LibraryManagementSystem.Panels
                 return;
             }
 
-            if (id == SessionManager.CurrentLibrarian?.LibrarianId)
-            {
-                MessageBox.Show("You cannot delete your own logged-in account.", "Action Prohibited",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             var librarian = _librarians.FirstOrDefault(l => l.LibrarianId == id);
-            string libName = librarian?.Name ?? $"ID {id}";
+            string librarianName = librarian?.Name ?? $"ID {id}";
 
             if (MessageBox.Show(
-                $"Are you sure you want to permanently delete librarian account '{libName}' ({librarian?.Username})?\n\nThis will revoke access immediately.",
-                "Confirm Librarian Deletion",
+                $"Are you sure you want to delete librarian \"{librarianName}\"?\n\nNote: Deletion will be rejected if this librarian has borrowing history or is the Administrator account.",
+                "Confirm Deletion",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning) != DialogResult.Yes) return;
 
@@ -174,18 +169,19 @@ namespace LibraryManagementSystem.Panels
             {
                 using var ctx = Program.CreateDbContext();
                 var (ok, msg) = new LibrarianService(ctx).Delete(id);
-                MessageBox.Show(msg, ok ? "Success" : "Delete Failed", MessageBoxButtons.OK,
+                MessageBox.Show(msg, ok ? "Success" : "Delete Blocked", MessageBoxButtons.OK,
                     ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
 
                 if (ok) LoadData();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not delete librarian.\n\nDetails: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Diagnostics.Debug.WriteLine($"[LibrariansPanel.BtnDelete_Click] {ex}");
+                MessageBox.Show("Could not delete librarian. Please try again.", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void ConfigureGridColumns()
+        }
+
+private void ConfigureGridColumns()
         {
             dgv.AllowUserToResizeColumns = true;
             dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;

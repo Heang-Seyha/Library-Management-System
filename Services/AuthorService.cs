@@ -1,6 +1,7 @@
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
 using LibraryManagementSystem.Validators;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Services
 {
@@ -57,9 +58,14 @@ namespace LibraryManagementSystem.Services
                 _context.SaveChanges();
                 return (true, "Author deleted successfully.");
             }
+            catch (DbUpdateException)
+            {
+                return (false, "Cannot delete this author because books are assigned to them.");
+            }
             catch (Exception ex)
             {
-                return (false, $"Cannot delete author: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[AuthorService.Delete] {ex}");
+                return (false, "An error occurred while deleting the author. Please try again.");
             }
         }
     }
