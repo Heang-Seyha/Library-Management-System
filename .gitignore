@@ -1,0 +1,9 @@
+## Visual Studio Workspace Settings
+.vs/
+
+## Build & Output Folders
+bin/
+obj/
+
+## Repomix Packed Files
+repomix-output.xml
