@@ -148,7 +148,7 @@ namespace LibraryManagementSystem.Data
                     Phone = "010-234-567",
                     Email = "seyha@gmail.com",
                     Username = "seyha",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("seyha123"),
                     Role = "Librarian"
                 },
                 new Librarian
@@ -158,8 +158,8 @@ namespace LibraryManagementSystem.Data
                     DateOfBirth = new DateTime(2001, 8, 25),
                     Phone = "015-345-678",
                     Email = "dara@gmail.com",
-                    Username = "dara",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
+                    Username = "vathanak",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("vathanak123"),
                     Role = "Librarian"
                 },
                 new Librarian
@@ -170,7 +170,7 @@ namespace LibraryManagementSystem.Data
                     Phone = "016-456-789",
                     Email = "sali@gmail.com",
                     Username = "sali",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("librarian123"),
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("laysali123"),
                     Role = "Librarian"
                 }
             };

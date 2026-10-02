@@ -15,7 +15,7 @@ namespace LibraryManagementSystem.Services
         public AuthorService(LibraryDbContext context) : base(context) { }
 
         public override List<Author> GetAll() =>
-            _context.Authors.OrderBy(a => a.Name).ToList();
+            _context.Authors.OrderBy(a => a.AuthorId).ToList();
 
         public (bool success, string message) Add(Author author)
         {

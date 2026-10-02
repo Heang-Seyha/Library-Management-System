@@ -15,7 +15,7 @@ namespace LibraryManagementSystem.Services
         public MemberService(LibraryDbContext context) : base(context) { }
 
         public override List<Member> GetAll() =>
-            _context.Members.OrderBy(m => m.Name).ToList();
+            _context.Members.OrderBy(m => m.MemberId).ToList();
 
         public List<Member> Search(string query)
         {
@@ -29,7 +29,7 @@ namespace LibraryManagementSystem.Services
                          || m.Phone.Contains(q)
                          || (m.Email != null && m.Email.Contains(q))
                          || (m.Address != null && m.Address.Contains(q)))
-                .OrderBy(m => m.Name)
+                .OrderBy(m => m.MemberId)
                 .ToList();
         }
 

@@ -24,7 +24,7 @@ namespace LibraryManagementSystem.Services
                 .Include(b => b.Category)
                 .Include(b => b.Author)
                 .Include(b => b.Publisher)
-                .OrderBy(b => b.Title)
+                .OrderBy(b => b.BookId)
                 .ToList();
         }
 
@@ -42,7 +42,7 @@ namespace LibraryManagementSystem.Services
                          || b.ISBN.Contains(q)
                          || (b.Author != null && b.Author.Name.Contains(q))
                          || (b.Category != null && b.Category.Name.Contains(q)))
-                .OrderBy(b => b.Title)
+                .OrderBy(b => b.BookId)
                 .ToList();
         }
 

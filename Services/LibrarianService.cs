@@ -16,7 +16,7 @@ namespace LibraryManagementSystem.Services
         public LibrarianService(LibraryDbContext context) : base(context) { }
 
         public override List<Librarian> GetAll() =>
-            _context.Librarians.OrderBy(l => l.Name).ToList();
+            _context.Librarians.OrderBy(l => l.LibrarianId).ToList();
 
         public override Librarian? GetById(int id) =>
             _context.Librarians.Find(id);

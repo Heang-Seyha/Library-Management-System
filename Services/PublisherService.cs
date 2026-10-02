@@ -15,7 +15,7 @@ namespace LibraryManagementSystem.Services
         public PublisherService(LibraryDbContext context) : base(context) { }
 
         public override List<Publisher> GetAll() =>
-            _context.Publishers.OrderBy(p => p.Name).ToList();
+            _context.Publishers.OrderBy(p => p.PublisherId).ToList();
 
         public (bool success, string message) Add(Publisher publisher)
         {

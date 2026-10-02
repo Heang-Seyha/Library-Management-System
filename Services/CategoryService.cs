@@ -15,7 +15,7 @@ namespace LibraryManagementSystem.Services
         public CategoryService(LibraryDbContext context) : base(context) { }
 
         public override List<Category> GetAll() =>
-            _context.Categories.OrderBy(c => c.Name).ToList();
+            _context.Categories.OrderBy(c => c.CategoryId).ToList();
 
         public (bool success, string message) Add(Category category)
         {
